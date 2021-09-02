@@ -13,6 +13,8 @@ public class Driver {
 			pgd.addClass("inverted",InvertedIndex.class,"A map/reduce program that generates the inverted index using words in the input files.");
 			pgd.addClass("matadd",MatrixAdd.class,"A map/reduce program that computes the addition of two matrices.");
 			pgd.addClass("matmulti",MatrixMulti.class,"1-Phase Matrix Multiplication Preparation");
+			pgd.addClass("allpair",AllPairPartition.class,"A map/reduce program that partitions all pairs of tuples from both tables.");
+			pgd.addClass("allpairself",AllPairPartitionSelf.class,"A map/reduce program that partitions all pairs of tuples from a tables.");
 
       			pgd.driver(args);
 			exitCode = 0;
