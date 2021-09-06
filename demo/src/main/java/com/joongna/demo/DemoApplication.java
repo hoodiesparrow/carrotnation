@@ -6,8 +6,10 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -44,12 +46,13 @@ public class DemoApplication {
 		try {
 			HashMap<String, String[]> inandexc = new HashMap<String, String[]>();
 			String[] andlist = { "프로" };
-			String[] orlist = { "64", "128", "256", "512" };
+//			String[] orlist = { "32","64", "128", "256", "512" };
+			String[] gigalist = { "64", "128", "256", "512" };
 			String[] except = { "매입", "교신", "업체" };
 			inandexc.put("and", andlist);
-			inandexc.put("or", orlist);
+//			inandexc.put("or", orlist);
 			inandexc.put("except", except);
-
+			inandexc.put("gigalist", gigalist);
 			URL url = new URL(strUrl);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setConnectTimeout(5000); // 서버에 연결되는 Timeout 시간 설정
@@ -120,12 +123,14 @@ public class DemoApplication {
 									System.out.println(item.get("locationNames"));
 									System.out.println(item.get("articleRegDate"));
 									System.out.println(item.get("price"));
+									System.out.println("giga: "+giga);
 									System.out.println("===============");
 									System.out.println();
 								} else {
 									System.out.println("nonavailable stuff");
 								}
 							} else {
+								
 //								if (joongna("0", item.get("articleUrl").toString().replaceAll("\"", ""), inandexc)) {
 //
 //								} else {
@@ -150,43 +155,61 @@ public class DemoApplication {
 		}
 
 	}
-
+	static String giga;
 	public static boolean availablestuff(String title, HashMap<String, String[]> inandexc) {
-
+		HashMap<String, Boolean> check = new HashMap<String, Boolean>();
+		
 		String[] temp, except;
-		boolean in = false;
-		boolean flagand = true;
-		boolean flagor = true;
-
+		boolean allcheck=true;
 		if (inandexc.containsKey("except")) {
+			check.put("except", true);
 			except = inandexc.get("except");
 			for (String s : except) {
 				if (title.contains(s))
+//					check.put("except", false);
 					return false;
 			}
 		}
 
 		if (inandexc.containsKey("and")) {
 			temp = inandexc.get("and");
+			check.put("and", true);
 			for (String s : temp) {
 				if (!title.contains(s)) {
-					flagand = false;
-					break;
+//					check.put("and", false);
+					return false;
 				}
 			}
 		}
 
 		if (inandexc.containsKey("or")) {
+			check.put("or", false);
 			temp = inandexc.get("or");
 			for (String s : temp) {
 				if (title.contains(s)) {
-					flagor = false;
+					check.put("or", true);
 					break;
 				}
 			}
 		}
+		
+		if (inandexc.containsKey("gigalist")) {
+			check.put("gigalist", false);
+			temp = inandexc.get("gigalist");
+			for (String s : temp) {
+				if (title.contains(s)) {
+					giga=s;
+					check.put("gigalist", true);
+					break;
+				}
+			}
+		}
+		for(String key : check.keySet()){
+            allcheck&=check.get(key);
+        }
 
-		if (flagand && !flagor) {
+
+		if (allcheck) {
 			return true;
 		}
 
