@@ -107,6 +107,7 @@ public class DemoApplication {
 							System.out.println(item.get("locationNames"));
 							System.out.println(item.get("articleRegDate"));
 							System.out.println(item.get("price"));
+							System.out.println("giga: "+giga);
 							System.out.println();
 						} else {
 
@@ -192,7 +193,7 @@ public class DemoApplication {
 				}
 			}
 		}
-		
+		//본문이나 제목에 전화번호 및 겹치는 부분이 있을 경우는 어떻게 해야할까요?ㅠ
 		if (inandexc.containsKey("gigalist")) {
 			check.put("gigalist", false);
 			temp = inandexc.get("gigalist");
@@ -257,7 +258,7 @@ public class DemoApplication {
 					// 제목과 본문내용 기준 있는지 없는지 확인
 					String allcontent = node.get("data").get("productTitle").toString();
 					allcontent += node.get("data").get("productDescription").toString();
-
+					
 					if (availablestuff(allcontent, inandexc)) {
 						System.out.println("OBJECT : " + node.get("data").get("productDescription"));
 						return true;
