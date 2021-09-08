@@ -12,7 +12,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class Product {
+public class ProductDTO {
 	private String name;// 품명
 	private String title;// 제목
 	private long price;// 가격

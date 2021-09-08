@@ -12,7 +12,7 @@ import org.jsoup.select.Elements;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.ssafy.special.dto.Product;
+import com.ssafy.special.dto.ProductDTO;
 
 @Service
 public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
@@ -24,11 +24,11 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 	private static String carrotDetail = "https://www.daangn.com";
 	
 	@Override
-	@Scheduled(fixedRate = 10000)
+	@Scheduled(fixedRate = 1000000)
 	public void crawling() {
 
-		List<Product> productListAll= new ArrayList<Product>();
-		List<Product> productList= null;
+		List<ProductDTO> productListAll= new ArrayList<ProductDTO>();
+		List<ProductDTO> productList= null;
 		
 		//데이터 베이스에 productName을 검색해서 해당 제품을 찾기위한 검색 query, 제외키워드, 필수키워드들을 가져옴
 		// 추후 베이터베이스에서 가져오는것으로 수정 필요
@@ -85,27 +85,27 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 				e.printStackTrace();
 				break;
 			}
-			for(Product product: productList) {
+			for(ProductDTO product: productList) {
 				if(product.getName()!=null)
 					productListAll.add(product);
 			}
 			if(page>1)
 				break;
 		}
-		for(Product product:productListAll) {
+		for(ProductDTO product:productListAll) {
 			System.out.println(product);
 		}
 		System.out.println("갯수: "+productListAll.size());
 	}
 	
 	// 목록 크롤링을 통해 검색어에 해당하는 게시글 id를 가져옴
-	private List<Product> listCrawling(String query, String productName, String page) throws IOException {
+	private List<ProductDTO> listCrawling(String query, String productName, String page) throws IOException {
 		String url = carrot1 + query + carrot2 + page;
 		Document doc = Jsoup.connect(url).get();
 
 		Elements contents = doc.select("article");
 
-		List<Product> productList = new ArrayList<Product>();
+		List<ProductDTO> productList = new ArrayList<ProductDTO>();
 		
 
 		for (Element content : contents) {
@@ -113,7 +113,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 
 			// 걸러진 데이터들만 저장되게함			
 			// 시간정보말고는 리스트에서 저장
-			Product product = new Product();
+			ProductDTO product = new ProductDTO();
 			// 품명
 			product.setName(productName);
 			
@@ -145,10 +145,10 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 		return productList;
 	}
 	
-	private List<Product> detailCrawling(List<Product> productList)throws IOException{
+	private List<ProductDTO> detailCrawling(List<ProductDTO> productList)throws IOException{
 		
 		// 게시글 상세보기 크롤링
-		for (Product product : productList) {
+		for (ProductDTO product : productList) {
 			if(product.getName()==null)
 				continue;
 			Document doc = Jsoup.connect(product.getLink()).get();
@@ -183,8 +183,8 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 		return productList;		
 	}
 	
-	private List<Product> keywordFilter(List<Product> productList, List<String> exceptionKeyword, List<String> ...andOrKeyword){
-		for(Product product : productList) {
+	private List<ProductDTO> keywordFilter(List<ProductDTO> productList, List<String> exceptionKeyword, List<String> ...andOrKeyword){
+		for(ProductDTO product : productList) {
 			//제외키워드
 			for(String keyword : exceptionKeyword) {
 				if(product.getTitle().contains(keyword)) {
