@@ -22,20 +22,20 @@ public class Product {
 	
 	private String name;//품명
 	
-	private String query;//검색어
-	
-	private String market;//마켓종류
-	
 	private long minPrice;//최저가
 	private long avgPrice;//평균가
 	private long maxPrice;//최고가
 	
 	//제외키워드
-	@OneToMany(mappedBy = "productId", cascade = CascadeType.ALL)
-	private List<ExceptionKeyword> exceptionKeywordList= new ArrayList<>();
-	
-	//포함키워드
-	@OneToMany(mappedBy = "productId", cascade = CascadeType.ALL)
-	private List<RequireKeyword> requireKeywordList= new ArrayList<>();
+//	@OneToMany(mappedBy = "productId", cascade = CascadeType.ALL)
+//	private List<ExceptionKeyword> exceptionKeywordList= new ArrayList<>();
+//	
+//	//포함키워드
+//	@OneToMany(mappedBy = "productId", cascade = CascadeType.ALL)
+//	private List<RequireKeyword> requireKeywordList= new ArrayList<>();
+//
+//	//검색 키워드
+//	@OneToMany(mappedBy = "productId", cascade = CascadeType.ALL)
+//	private List<ProductQuery> productQueryList= new ArrayList<>();
 	
 }
