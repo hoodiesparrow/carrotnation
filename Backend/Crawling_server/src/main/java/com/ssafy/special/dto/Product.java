@@ -13,12 +13,12 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class Product {
-	private String name;// Ç°¸í
-	private String title;// Á¦¸ñ
-	private long price;// °¡°İ
-	private LocalDateTime date;// ÀÛ¼ºÀÏÀÚ (³â, ¿ù, ÀÏ)
-	private String time;// ¸îºĞ Àü
-	private String link;// ¿øº» °Ô½Ã±Û ¸µÅ©
-	private String img;// ÀÌ¹ÌÁö´Â ¾î¶»°Ô ÇÏÁö?
-	private String location;// Áö¿ª
+	private String name;// í’ˆëª…
+	private String title;// ì œëª©
+	private long price;// ê°€ê²©
+	private LocalDateTime date;// ì‘ì„±ì¼ì (ë…„, ì›”, ì¼)
+	private String time;// ëª‡ë¶„ ì „
+	private String link;// ì›ë³¸ ê²Œì‹œê¸€ ë§í¬
+	private String img;// ì´ë¯¸ì§€ëŠ” ì–´ë–»ê²Œ í•˜ì§€?
+	private String location;// ì§€ì—­
 }

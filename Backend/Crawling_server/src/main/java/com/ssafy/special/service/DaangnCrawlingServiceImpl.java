@@ -17,7 +17,7 @@ import com.ssafy.special.dto.Product;
 @Service
 public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 
-	// carrot1 + "°Ë»ö¾î" + caroot2 + ÆäÀÌÁö¹øÈ£(1ºÎÅÍ ½ÃÀÛ)
+	// carrot1 + "ê²€ìƒ‰ì–´" + caroot2 + í˜ì´ì§€ë²ˆí˜¸(1ë¶€í„° ì‹œì‘)
 	private static String carrot1 = "https://www.daangn.com/search/";
 	private static String carrot2 = "/more/flea_market?page=";
 	
@@ -30,8 +30,8 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 		List<Product> productListAll= new ArrayList<Product>();
 		List<Product> productList= null;
 		
-		//µ¥ÀÌÅÍ º£ÀÌ½º¿¡ productNameÀ» °Ë»öÇØ¼­ ÇØ´ç Á¦Ç°À» Ã£±âÀ§ÇÑ °Ë»ö query, Á¦¿ÜÅ°¿öµå, ÇÊ¼öÅ°¿öµåµéÀ» °¡Á®¿È
-		// ÃßÈÄ º£ÀÌÅÍº£ÀÌ½º¿¡¼­ °¡Á®¿À´Â°ÍÀ¸·Î ¼öÁ¤ ÇÊ¿ä
+		//ë°ì´í„° ë² ì´ìŠ¤ì— productNameì„ ê²€ìƒ‰í•´ì„œ í•´ë‹¹ ì œí’ˆì„ ì°¾ê¸°ìœ„í•œ ê²€ìƒ‰ query, ì œì™¸í‚¤ì›Œë“œ, í•„ìˆ˜í‚¤ì›Œë“œë“¤ì„ ê°€ì ¸ì˜´
+		// ì¶”í›„ ë² ì´í„°ë² ì´ìŠ¤ì—ì„œ ê°€ì ¸ì˜¤ëŠ”ê²ƒìœ¼ë¡œ ìˆ˜ì • í•„ìš”
 		List<String> exceptionKeyword=new ArrayList<>();
 		List<String> phoneCategory=new ArrayList<String>(); 
 //		List<String> phoneCategory2=new ArrayList<String>(); 
@@ -39,9 +39,9 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 		int page=1;
 		while(true) {	
 			productList=null;
-			//¸ñ·Ï¿¡¼­ ¹°Ç° ¸®½ºÆ® °¡Á®¿È
+			//ëª©ë¡ì—ì„œ ë¬¼í’ˆ ë¦¬ìŠ¤íŠ¸ ê°€ì ¸ì˜´
 			try {
-				productList=listCrawling("¾ÆÀÌÆù12", "¾ÆÀÌÆù12 ¸Æ½º", Integer.toString(page));
+				productList=listCrawling("ì•„ì´í°12", "ì•„ì´í°12 ë§¥ìŠ¤", Integer.toString(page));
 				page++;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -49,35 +49,35 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 				break;
 			}
 			
-			//ÇÊÅÍ¸µÀ» ÅëÇØ ÇÊ¿ä¾ø´Â Ç°¸ñµé Á¦¿Ü½ÃÅ´		
-			//Á¦¿ÜÅ°¿öµå
-			exceptionKeyword.add("¹Ì´Ï");			
-//			exceptionKeyword.add("±³½Å");
-//			exceptionKeyword.add("±³È¯");		
-//			exceptionKeyword.add("»ğ´Ï´Ù");
-//			exceptionKeyword.add("¸ÅÀÔ");
+			//í•„í„°ë§ì„ í†µí•´ í•„ìš”ì—†ëŠ” í’ˆëª©ë“¤ ì œì™¸ì‹œí‚´		
+			//ì œì™¸í‚¤ì›Œë“œ
+			exceptionKeyword.add("ë¯¸ë‹ˆ");			
+//			exceptionKeyword.add("êµì‹ ");
+//			exceptionKeyword.add("êµí™˜");		
+//			exceptionKeyword.add("ì‚½ë‹ˆë‹¤");
+//			exceptionKeyword.add("ë§¤ì…");
 //			
-//			exceptionKeyword.add("¾÷Ã¼");
-//			exceptionKeyword.add("ÄÉÀÌ½º");
-//			exceptionKeyword.add("ÄÉ¿¡½º");
+//			exceptionKeyword.add("ì—…ì²´");
+//			exceptionKeyword.add("ì¼€ì´ìŠ¤");
+//			exceptionKeyword.add("ì¼€ì—ìŠ¤");
 //			
-//			exceptionKeyword.add("Ä¿¹ö");
-//			exceptionKeyword.add("ÇÊ¸§");
-//			exceptionKeyword.add("°­È­À¯¸®");
+//			exceptionKeyword.add("ì»¤ë²„");
+//			exceptionKeyword.add("í•„ë¦„");
+//			exceptionKeyword.add("ê°•í™”ìœ ë¦¬");
 			
 			
-			//ÇÊ¼ö Å°¿öµå
-			phoneCategory.add("ÇÁ·Î");
+			//í•„ìˆ˜ í‚¤ì›Œë“œ
+			phoneCategory.add("í”„ë¡œ");
 			phoneCategory.add("pro");	
 			
-//			phoneCategory2.add("¸Æ½º");
-//			phoneCategory2.add("¸ß½º");
+//			phoneCategory2.add("ë§¥ìŠ¤");
+//			phoneCategory2.add("ë©•ìŠ¤");
 //			phoneCategory2.add("max");
 			
 			
 			keywordFilter(productList, exceptionKeyword, phoneCategory);
 			
-			//»ó¼¼ ÆäÀÌÁöÅ©·Ñ¸µÀ» ÅëÇØ ³¯Â¥, ½Ã°£µ¥ÀÌÅÍ ¹Ş¾Æ¿È
+			//ìƒì„¸ í˜ì´ì§€í¬ë¡¤ë§ì„ í†µí•´ ë‚ ì§œ, ì‹œê°„ë°ì´í„° ë°›ì•„ì˜´
 			try {
 				detailCrawling(productList);
 			} catch (IOException e) {
@@ -95,10 +95,10 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 		for(Product product:productListAll) {
 			System.out.println(product);
 		}
-		System.out.println("°¹¼ö: "+productListAll.size());
+		System.out.println("ê°¯ìˆ˜: "+productListAll.size());
 	}
 	
-	// ¸ñ·Ï Å©·Ñ¸µÀ» ÅëÇØ °Ë»ö¾î¿¡ ÇØ´çÇÏ´Â °Ô½Ã±Û id¸¦ °¡Á®¿È
+	// ëª©ë¡ í¬ë¡¤ë§ì„ í†µí•´ ê²€ìƒ‰ì–´ì— í•´ë‹¹í•˜ëŠ” ê²Œì‹œê¸€ idë¥¼ ê°€ì ¸ì˜´
 	private List<Product> listCrawling(String query, String productName, String page) throws IOException {
 		String url = carrot1 + query + carrot2 + page;
 		Document doc = Jsoup.connect(url).get();
@@ -111,43 +111,43 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 		for (Element content : contents) {
 			String title = content.select(".article-title").text();
 
-			// °É·¯Áø µ¥ÀÌÅÍµé¸¸ ÀúÀåµÇ°ÔÇÔ			
-			// ½Ã°£Á¤º¸¸»°í´Â ¸®½ºÆ®¿¡¼­ ÀúÀå
+			// ê±¸ëŸ¬ì§„ ë°ì´í„°ë“¤ë§Œ ì €ì¥ë˜ê²Œí•¨			
+			// ì‹œê°„ì •ë³´ë§ê³ ëŠ” ë¦¬ìŠ¤íŠ¸ì—ì„œ ì €ì¥
 			Product product = new Product();
-			// Ç°¸í
+			// í’ˆëª…
 			product.setName(productName);
 			
-			// Á¦¸ñ
+			// ì œëª©
 			product.setTitle(content.select(".article-title").text());
 			
-			// °¡°İ
+			// ê°€ê²©
 			String price = content.select(".article-price ").text();
-			if(price.contains("³ª´®"))
+			if(price.contains("ë‚˜ëˆ”"))
 				continue;
-			price = price.substring(0, price.length() - 1);// ¿ø Á¦°Å
-			price = price.replace(",", "");// ÄŞ¸¶ Á¦°Å
-			if(price.length()==0)// °¡°İ ¾øÀ½(-)ÀÎ °æ¿ì´Â ÆĞ½º
+			price = price.substring(0, price.length() - 1);// ì› ì œê±°
+			price = price.replace(",", "");// ì½¤ë§ˆ ì œê±°
+			if(price.length()==0)// ê°€ê²© ì—†ìŒ(-)ì¸ ê²½ìš°ëŠ” íŒ¨ìŠ¤
 				continue;
 			product.setPrice(Long.parseLong(price));
 			
-			// ¿øº» °Ô½Ã±Û ¸µÅ©
+			// ì›ë³¸ ê²Œì‹œê¸€ ë§í¬
 			product.setLink(carrotDetail+content.select("a").attr("href"));
 			
-			// ÀÌ¹ÌÁö ¸µÅ©
+			// ì´ë¯¸ì§€ ë§í¬
 			product.setImg(content.select(".card-photo > img").attr("src"));
 			
-			//Áö¿ª
+			//ì§€ì—­
 			product.setLocation(content.select(".article-region-name").text());
 			
 			productList.add(product);
-			//½Ã°£Á¤º¸´Â »ó¼¼ °Ô½Ã±Û¿¡ ³ª¿ÍÀÖÀ½			
+			//ì‹œê°„ì •ë³´ëŠ” ìƒì„¸ ê²Œì‹œê¸€ì— ë‚˜ì™€ìˆìŒ			
 		}
 		return productList;
 	}
 	
 	private List<Product> detailCrawling(List<Product> productList)throws IOException{
 		
-		// °Ô½Ã±Û »ó¼¼º¸±â Å©·Ñ¸µ
+		// ê²Œì‹œê¸€ ìƒì„¸ë³´ê¸° í¬ë¡¤ë§
 		for (Product product : productList) {
 			if(product.getName()==null)
 				continue;
@@ -155,7 +155,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 
 			Element content = doc.selectFirst("#content > #article-description");
 
-			// ³¯Â¥, ¸î½Ã°£ ÀüÀÎÁö
+			// ë‚ ì§œ, ëª‡ì‹œê°„ ì „ì¸ì§€
 			String time=content.select("#article-category time").text();
 
 			String[] tmp= time.split(" ");
@@ -163,21 +163,21 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 			
 			LocalDateTime dateTime;
 			
-			if(time.contains("³â")) {
-				dateTime=LocalDateTime.now().minusYears(Long.parseLong(time.replace("³â", "")));
-			}else if(time.contains("´Ş")) {
-				dateTime=LocalDateTime.now().minusMonths(Long.parseLong(time.replace("´Ş", "")));
-			}else if(time.contains("ÀÏ")) {
-				dateTime=LocalDateTime.now().minusDays(Long.parseLong(time.replace("ÀÏ", "")));
-			}else if(time.contains("½Ã°£")) {
-				dateTime=LocalDateTime.now().minusHours(Long.parseLong(time.replace("½Ã°£", "")));
-			}else if(time.contains("ºĞ")) {
-				dateTime=LocalDateTime.now().minusMinutes(Long.parseLong(time.replace("ºĞ", "")));
+			if(time.contains("ë…„")) {
+				dateTime=LocalDateTime.now().minusYears(Long.parseLong(time.replace("ë…„", "")));
+			}else if(time.contains("ë‹¬")) {
+				dateTime=LocalDateTime.now().minusMonths(Long.parseLong(time.replace("ë‹¬", "")));
+			}else if(time.contains("ì¼")) {
+				dateTime=LocalDateTime.now().minusDays(Long.parseLong(time.replace("ì¼", "")));
+			}else if(time.contains("ì‹œê°„")) {
+				dateTime=LocalDateTime.now().minusHours(Long.parseLong(time.replace("ì‹œê°„", "")));
+			}else if(time.contains("ë¶„")) {
+				dateTime=LocalDateTime.now().minusMinutes(Long.parseLong(time.replace("ë¶„", "")));
 			}else {
-				dateTime=LocalDateTime.now().minusSeconds(Long.parseLong(time.replace("ÃÊ", "")));
+				dateTime=LocalDateTime.now().minusSeconds(Long.parseLong(time.replace("ì´ˆ", "")));
 			}
 			
-			product.setTime(time.replace("²ø¿Ã", ""));
+			product.setTime(time.replace("ëŒì˜¬", ""));
 			product.setDate(dateTime);
 		}
 		return productList;		
@@ -185,11 +185,11 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 	
 	private List<Product> keywordFilter(List<Product> productList, List<String> exceptionKeyword, List<String> ...andOrKeyword){
 		for(Product product : productList) {
-			//Á¦¿ÜÅ°¿öµå
+			//ì œì™¸í‚¤ì›Œë“œ
 			for(String keyword : exceptionKeyword) {
 				if(product.getTitle().contains(keyword)) {
-					//Á¦¿Ü Å°¿öµå¸¦ Æ÷ÇÔÇÏ°í ÀÖÀ¸¸é ¹ö·Á¾ßÇÔ
-					product.setName(null);//arraylist¶ó¼­ remove´Â ¿¬»ê½Ã°£ ³Ê¹«¿À·¡°É¸²
+					//ì œì™¸ í‚¤ì›Œë“œë¥¼ í¬í•¨í•˜ê³  ìˆìœ¼ë©´ ë²„ë ¤ì•¼í•¨
+					product.setName(null);//arraylistë¼ì„œ removeëŠ” ì—°ì‚°ì‹œê°„ ë„ˆë¬´ì˜¤ë˜ê±¸ë¦¼
 					product.setTitle(null);
 					product.setPrice(0);
 					product.setDate(null);
@@ -202,22 +202,22 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 			}
 			if(product.getName()==null)
 				continue;
-			//andOrÅ°¿öµå
-			/* ¿¹½Ã) ¾ÆÀÌÆù 12 ÇÁ·Î¸¦ °Ë»öÇÏ°í ½ÍÀº°æ¿ì °Ë»öÅ°¿öµå´Â ¾ÆÀÌÆù 12 & (ÇÁ·Î | pro)°¡ µÉ °ÍÀÌ´Ù
-			 * ÀÌ·± °æ¿ì¿¡ Å©°Ô´Â And¿¬»êÀÌÁö¸¸ ³»ºÎÀûÀ¸·Î or¿¬»êÀÌ ÇÊ¿äÇÑ °æ¿ì°¡ Á¸ÀçÇÑ´Ù ÀÌ¸¦ À§ÇØ ±¸ÇöÇÔ
+			//andOrí‚¤ì›Œë“œ
+			/* ì˜ˆì‹œ) ì•„ì´í° 12 í”„ë¡œë¥¼ ê²€ìƒ‰í•˜ê³  ì‹¶ì€ê²½ìš° ê²€ìƒ‰í‚¤ì›Œë“œëŠ” ì•„ì´í° 12 & (í”„ë¡œ | pro)ê°€ ë  ê²ƒì´ë‹¤
+			 * ì´ëŸ° ê²½ìš°ì— í¬ê²ŒëŠ” Andì—°ì‚°ì´ì§€ë§Œ ë‚´ë¶€ì ìœ¼ë¡œ orì—°ì‚°ì´ í•„ìš”í•œ ê²½ìš°ê°€ ì¡´ì¬í•œë‹¤ ì´ë¥¼ ìœ„í•´ êµ¬í˜„í•¨
 			 * 
-			 * ¿ë·®ÀÇ °æ¿ì : ¾ÆÀÌÆù 12 & (ÇÁ·Î|pro) & (128)
+			 * ìš©ëŸ‰ì˜ ê²½ìš° : ì•„ì´í° 12 & (í”„ë¡œ|pro) & (128)
 			 */
 			for(List<String> orKeyword : andOrKeyword) {
-				boolean isContain=false;//or¿¬»êÀÌ±â ¶§¹®¿¡ ÇÏ³ª¶óµµ Æ÷ÇÔÇÏ¸é µÊ
+				boolean isContain=false;//orì—°ì‚°ì´ê¸° ë•Œë¬¸ì— í•˜ë‚˜ë¼ë„ í¬í•¨í•˜ë©´ ë¨
 				for(String keyword: orKeyword) {
-					//Á¦¸ñ ¼Ò¹®ÀÚ·Î º¯È¯½ÃÅ°°í ºñ±³ÇÏµµ·ÏÇÔ
+					//ì œëª© ì†Œë¬¸ìë¡œ ë³€í™˜ì‹œí‚¤ê³  ë¹„êµí•˜ë„ë¡í•¨
 					if(product.getTitle().toLowerCase().contains(keyword)) {
 						isContain=true;
 					}
 				}
 				if(!isContain) {
-					//ÇÏ³ªµµ Æ÷ÇÔ¾ÈÇÏ¸é ¹ö·Á¾ßÇÔ
+					//í•˜ë‚˜ë„ í¬í•¨ì•ˆí•˜ë©´ ë²„ë ¤ì•¼í•¨
 					product.setName(null);
 					product.setTitle(null);
 					product.setPrice(0);
