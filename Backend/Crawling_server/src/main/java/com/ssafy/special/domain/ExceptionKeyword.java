@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import lombok.Getter;
@@ -17,8 +18,10 @@ public class ExceptionKeyword {
 	private long id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	private Product productId;
+	@JoinColumn(name = "productId")
+	private Product productId;//품명
 	
 	private String keyword;//제외키워드
 	
+	private String market;//마켓종류
 }
