@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -12,36 +13,72 @@ import org.jsoup.select.Elements;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.ssafy.special.domain.ExceptionKeyword;
+import com.ssafy.special.domain.Product;
+import com.ssafy.special.domain.ProductQuery;
+import com.ssafy.special.domain.RequireKeyword;
 import com.ssafy.special.dto.ProductDTO;
+import com.ssafy.special.repository.ExceptionKeywordRepository;
+import com.ssafy.special.repository.ProductQueryRepository;
+import com.ssafy.special.repository.ProductRepository;
+import com.ssafy.special.repository.RequireKeywordRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 
+	private final ProductRepository productRepository; 
+	private final ExceptionKeywordRepository exceptionKeywordRepository; 
+	private final RequireKeywordRepository requireKeywordRepository; 
+	private final ProductQueryRepository productQueryRepository; 
+	
+	
+	
 	// carrot1 + "검색어" + caroot2 + 페이지번호(1부터 시작)
 	private static String carrot1 = "https://www.daangn.com/search/";
 	private static String carrot2 = "/more/flea_market?page=";
 	
 	private static String carrotDetail = "https://www.daangn.com";
 	
-	@Override
-	@Scheduled(fixedRate = 1000000)
-	public void crawling() {
+	@Scheduled(fixedRate = 10000)
+	public void crawlingProducts() {
+		
+		//product 테이블에서 제품목록 가져옴
+		List<Product> productList=productRepository.findAll();
+		
+		for(Product product: productList) {
+			crawlingProduct(product);
+		}		
+	}
+	
+
+
+	public void crawlingProduct(Product product) {
+		String market = "daangn";
 
 		List<ProductDTO> productListAll= new ArrayList<ProductDTO>();
 		List<ProductDTO> productList= null;
 		
 		//데이터 베이스에 productName을 검색해서 해당 제품을 찾기위한 검색 query, 제외키워드, 필수키워드들을 가져옴
-		// 추후 베이터베이스에서 가져오는것으로 수정 필요
 		List<String> exceptionKeyword=new ArrayList<>();
-		List<String> phoneCategory=new ArrayList<String>(); 
-//		List<String> phoneCategory2=new ArrayList<String>(); 
+		List<String> requireKeyword=new ArrayList<String>(); 
+		String productQuery;
 		
+		//제외키워드나 필수키워드가 없는 경우 null이 넘어오는걸 대비해 optional을 리턴하도록 함
+		//도메인List를 리턴하는걸 stream함수를 통해 string리스트로 바꾼뒤 변수에 넣어줌
+		exceptionKeyword=exceptionKeywordRepository.findByProductIdAndMarket(product, market).orElse(new ArrayList<ExceptionKeyword>()).stream().map(ExceptionKeyword::getKeyword).collect(Collectors.toList());
+		requireKeyword=requireKeywordRepository.findByProductIdAndMarket(product, market).orElse(new ArrayList<RequireKeyword>()).stream().map(RequireKeyword::getKeyword).collect(Collectors.toList());
+		productQuery=productQueryRepository.findByProductIdAndMarket(product, market).orElse(new ProductQuery()).getQuery();
+
 		int page=1;
+		//페이지관리를 위한 반복문
 		while(true) {	
 			productList=null;
 			//목록에서 물품 리스트 가져옴
 			try {
-				productList=listCrawling("아이폰12", "아이폰12 맥스", Integer.toString(page));
+				productList=listCrawling(productQuery, product.getName(), Integer.toString(page));
 				page++;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -51,7 +88,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 			
 			//필터링을 통해 필요없는 품목들 제외시킴		
 			//제외키워드
-			exceptionKeyword.add("미니");			
+//			exceptionKeyword.add("미니");			
 //			exceptionKeyword.add("교신");
 //			exceptionKeyword.add("교환");		
 //			exceptionKeyword.add("삽니다");
@@ -64,18 +101,18 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 //			exceptionKeyword.add("커버");
 //			exceptionKeyword.add("필름");
 //			exceptionKeyword.add("강화유리");
-			
-			
-			//필수 키워드
-			phoneCategory.add("프로");
-			phoneCategory.add("pro");	
-			
+//			
+//			
+//			//필수 키워드
+//			phoneCategory.add("프로");
+//			phoneCategory.add("pro");	
+//			
 //			phoneCategory2.add("맥스");
 //			phoneCategory2.add("멕스");
 //			phoneCategory2.add("max");
 			
 			
-			keywordFilter(productList, exceptionKeyword, phoneCategory);
+			keywordFilter(productList, exceptionKeyword, requireKeyword);
 			
 			//상세 페이지크롤링을 통해 날짜, 시간데이터 받아옴
 			try {
@@ -85,15 +122,15 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 				e.printStackTrace();
 				break;
 			}
-			for(ProductDTO product: productList) {
-				if(product.getName()!=null)
-					productListAll.add(product);
+			for(ProductDTO productDTO: productList) {
+				if(productDTO.getName()!=null)
+					productListAll.add(productDTO);
 			}
 			if(page>1)
 				break;
 		}
-		for(ProductDTO product:productListAll) {
-			System.out.println(product);
+		for(ProductDTO productDTO:productListAll) {
+			System.out.println(productDTO);
 		}
 		System.out.println("갯수: "+productListAll.size());
 	}
@@ -109,8 +146,6 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 		
 
 		for (Element content : contents) {
-			String title = content.select(".article-title").text();
-
 			// 걸러진 데이터들만 저장되게함			
 			// 시간정보말고는 리스트에서 저장
 			ProductDTO product = new ProductDTO();
@@ -129,6 +164,9 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 			if(price.length()==0)// 가격 없음(-)인 경우는 패스
 				continue;
 			product.setPrice(Long.parseLong(price));
+			
+			//게시글 내용
+			product.setContent(content.select(".article-content").text());
 			
 			// 원본 게시글 링크
 			product.setLink(carrotDetail+content.select("a").attr("href"));
@@ -183,7 +221,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 		return productList;		
 	}
 	
-	private List<ProductDTO> keywordFilter(List<ProductDTO> productList, List<String> exceptionKeyword, List<String> ...andOrKeyword){
+	private List<ProductDTO> keywordFilter(List<ProductDTO> productList, List<String> exceptionKeyword, List<String> requireKeyword){
 		for(ProductDTO product : productList) {
 			//제외키워드
 			for(String keyword : exceptionKeyword) {
@@ -208,12 +246,17 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 			 * 
 			 * 용량의 경우 : 아이폰 12 & (프로|pro) & (128)
 			 */
-			for(List<String> orKeyword : andOrKeyword) {
+			//필수 키워드는 제목뿐 아니라 내용도 확인하도록 함 (용량은 제목에 안적힌 경우가 많아서 내용도 확인함)
+			for(String orKeyword : requireKeyword) {
 				boolean isContain=false;//or연산이기 때문에 하나라도 포함하면 됨
-				for(String keyword: orKeyword) {
+				for(String keyword: orKeyword.split(",")) {
 					//제목 소문자로 변환시키고 비교하도록함
 					if(product.getTitle().toLowerCase().contains(keyword)) {
 						isContain=true;
+						break;
+					}else if(product.getContent().toLowerCase().contains(keyword)) {
+						isContain=true;
+						break;
 					}
 				}
 				if(!isContain) {

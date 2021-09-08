@@ -21,4 +21,5 @@ public class ProductDTO {
 	private String link;// 원본 게시글 링크
 	private String img;// 이미지는 어떻게 하지?
 	private String location;// 지역
+	private String content;//게시글 내용
 }
