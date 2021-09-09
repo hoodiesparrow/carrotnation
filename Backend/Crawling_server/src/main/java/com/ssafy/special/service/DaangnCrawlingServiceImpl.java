@@ -133,7 +133,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 					
 					ProductSellList sellList=new ProductSellList();
 					sellList.setId(Integer.parseInt(p.getSeq()));
-					sellList.setMarket("daangn");
+					sellList.setMarket(market);
 					sellList.setProductId(product);
 					sellList.setTitle(p.getTitle());
 					sellList.setPrice(p.getPrice());
