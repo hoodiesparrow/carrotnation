@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -25,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.special.domain.ExceptionKeyword;
 import com.ssafy.special.domain.Product;
 import com.ssafy.special.domain.ProductQuery;
+import com.ssafy.special.domain.ProductSellList;
 import com.ssafy.special.domain.QueryExceptionKeyword;
 import com.ssafy.special.domain.RequireKeyword;
 import com.ssafy.special.dto.ProductDTO;
@@ -32,13 +35,16 @@ import com.ssafy.special.exception.PageEndException;
 import com.ssafy.special.repository.ExceptionKeywordRepository;
 import com.ssafy.special.repository.ProductQueryRepository;
 import com.ssafy.special.repository.ProductRepository;
+import com.ssafy.special.repository.ProductSellListRepository;
 import com.ssafy.special.repository.QueryExceptionKeywordRepository;
 import com.ssafy.special.repository.RequireKeywordRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 
 	private final QueryExceptionKeywordRepository queryExceptionKeywordRepository;
@@ -46,8 +52,8 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 	private final ProductRepository productRepository;
 	private final ExceptionKeywordRepository exceptionKeywordRepository;
 	private final RequireKeywordRepository requireKeywordRepository;
-	
-	
+	private final ProductSellListRepository productSellListRepository;
+
 	static String giga;
 	static String strUrl = "https://search-api.joongna.com/v25/search/product";
 	SimpleDateFormat fourteen_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -64,7 +70,6 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		cal = Calendar.getInstance();
 		cal.setTime(date_now);
 		cal.add(Calendar.MONTH, -1);
-//		List<ProductQuery> querylist = productQueryRepository.findAll();
 		List<String> queryException;
 		for (ProductQuery p : productQueryRepository.findAll()) {
 			while (true) {
@@ -83,11 +88,31 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 			}
 			listClassify(p);
 		}
-		for (ProductDTO pd : list) {
-			if(pd.getName()!=null)
-				System.out.println(pd.toString());
+//		for (ProductDTO pd : list) {
+//			if (pd.getName() != null)
+//
+//				System.out.println(pd.toString());
+//		}
+
+	}
+
+	public static HashMap<String, String> getQueryMap(String query) {
+		if (query == null)
+			return null;
+
+		int pos1 = query.indexOf("?");
+		if (pos1 >= 0) {
+			query = query.substring(pos1 + 1);
 		}
 
+		String[] params = query.split("&");
+		HashMap<String, String> map = new HashMap<String, String>();
+		for (String param : params) {
+			String name = param.split("=")[0];
+			String value = param.split("=")[1];
+			map.put(name, value);
+		}
+		return map;
 	}
 
 	@Override
@@ -207,7 +232,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		StringTokenizer st;
 		boolean allcheck = true;
 		String lowertitle = title.toLowerCase();
-		
+
 		if (inandexc.containsKey("except")) {
 			check.put("except", true);
 			except = inandexc.get("except");
@@ -217,38 +242,36 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 					if (lowertitle.contains(st.nextToken()))
 						return false;
 				}
-				
+
 			}
 		}
-		//미니, mini & 128
+		// 미니, mini & 128
 		if (inandexc.containsKey("require")) {
 			require = inandexc.get("require");
-			check.put("require", true);
-			int idx=1;
+			int idx = 1;
 			boolean in;
-			
+
 			for (String s : require) {
 				in = false;
 				st = new StringTokenizer(s, ",");
 				while (st.hasMoreTokens()) {
 					if (lowertitle.contains(st.nextToken())) {
-						in=true;
+						in = true;
 						break;
 					}
 				}
-				
-				if(in) {
-					check.put("require"+idx, true);
+
+				if (in) {
+					check.put("require" + idx, true);
 					idx++;
-				}else {
-					check.put("require"+idx, false);
+				} else {
+					check.put("require" + idx, false);
 					idx++;
 				}
-				
+
 			}
 		}
 
-		
 		for (String key : check.keySet()) {
 			allcheck &= check.get(key);
 		}
@@ -290,7 +313,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 
 					// 제목과 본문내용 기준 있는지 없는지 확인
 					return node.get("data").get("productDescription").toString();
-					
+
 				} catch (JsonProcessingException err) {
 					System.out.println("Exception Json: " + err.toString());
 				}
@@ -308,41 +331,79 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 	@Override
 	public void listClassify(ProductQuery query) {
 		// TODO Auto-generated method stub
-		for(ProductDTO pd :list) {
+		for (ProductDTO pd : list) {
 			List<Product> pdlist = productRepository.findByQuery(query).orElse(new ArrayList<Product>());
-			for(Product p:pdlist) {
+			for (Product p : pdlist) {
 				List<String> commaexcept = exceptionKeywordRepository.findByProductIdAndMarket(p, "")
-						.orElse(new ArrayList<ExceptionKeyword>()).stream()
-						.map(ExceptionKeyword::getKeyword).collect(Collectors.toList());
-				
-				List<String> commarequire = requireKeywordRepository.findByProductIdAndMarket(p,"")
-						.orElse(new ArrayList<RequireKeyword>()).stream()
-						.map(RequireKeyword::getKeyword).collect(Collectors.toList());
-				
+						.orElse(new ArrayList<ExceptionKeyword>()).stream().map(ExceptionKeyword::getKeyword)
+						.collect(Collectors.toList());
+
+				List<String> commarequire = requireKeywordRepository.findByProductIdAndMarket(p, "")
+						.orElse(new ArrayList<RequireKeyword>()).stream().map(RequireKeyword::getKeyword)
+						.collect(Collectors.toList());
+
 				HashMap<String, List<String>> inandexc = new HashMap<String, List<String>>();
 				inandexc.put("except", commaexcept);
 				inandexc.put("require", commarequire);
-				
-				if(availablestuff(pd.getTitle(), inandexc)) {
+
+				if (availablestuff(pd.getTitle(), inandexc)) {
 					pd.setName(p.getName());
-				}else {
-					//내용기반 확인
-					if("0".equals(pd.getSeq())) {
-						
-					}else {
-						if(pd.getContent()==null) {
+				} else {
+					// 내용기반 확인
+					if ("0".equals(pd.getSeq())) {
+
+					} else {
+						if (pd.getContent() == null) {
 							pd.setContent(joongnaapp(pd.getSeq()));
 						}
-						
-						String allContent = pd.getTitle()+pd.getContent();
-						if(availablestuff(allContent, inandexc)) {
+
+						String allContent = pd.getTitle() + pd.getContent();
+						if (availablestuff(allContent, inandexc)) {
 							pd.setName(p.getName());
 						}
 					}
 				}
-				
+				if (pd.getName() != null) {
+
+					ProductSellList sellList = new ProductSellList();
+					if ("0".equals(pd.getSeq())) {
+
+						try {
+							URL url = new URL(pd.getLink());
+							HashMap<String, String> map = getQueryMap(url.getQuery());
+							sellList.setId(Integer.parseInt(map.get("articleid")));
+						} catch (MalformedURLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
+					} else {
+						sellList.setId(Integer.parseInt(pd.getSeq()));
+					}
+					sellList.setMarket("joonna");
+					sellList.setProductId(p);
+					sellList.setTitle(pd.getTitle());
+					sellList.setPrice(pd.getPrice());
+					sellList.setCreateDate(pd.getDate());
+					sellList.setLink(pd.getLink());
+					sellList.setLocation(pd.getLocation());
+					boolean result = insertProductSellList(sellList);
+					if(!result) {
+						log.info("(중고나라)데이터 삽입에 실패 했습니다");
+					}
+				}
+
 			}
+
 		}
 	}
-
+	@Transactional
+	private boolean insertProductSellList(ProductSellList sellList) {
+		try {
+			productSellListRepository.save(sellList);
+		} catch (Exception e) {
+			return false;
+		}		
+		return true;
+	}
 }

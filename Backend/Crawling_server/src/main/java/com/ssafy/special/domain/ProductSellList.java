@@ -3,6 +3,8 @@ package com.ssafy.special.domain;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
@@ -22,7 +24,9 @@ import lombok.Setter;
 public class ProductSellList {
 
 	@Id
-//	@GeneratedValue
+//	@GenericGenerator(name = "productId", strategy = "com.ssafy.special.jpa.ProductIdGenerator")
+//	@GeneratedValue(generator = "productId") 
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;//게시글 pid
 	@Id
 	private String market;//마켓종류
