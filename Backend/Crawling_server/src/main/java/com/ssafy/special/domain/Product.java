@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +17,10 @@ public class Product {
 	@Id
 	@GeneratedValue
 	private long id; //기본키
+	
+	@ManyToOne
+	@JoinColumn(name = "query", nullable = false)
+	private ProductQuery query;//검색어
 	
 	@Column(nullable = false)
 	private String name;//품명
