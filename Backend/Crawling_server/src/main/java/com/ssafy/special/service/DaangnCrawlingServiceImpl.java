@@ -19,14 +19,11 @@ import com.ssafy.special.domain.ExceptionKeyword;
 import com.ssafy.special.domain.Product;
 import com.ssafy.special.domain.ProductQuery;
 import com.ssafy.special.domain.ProductSellList;
-import com.ssafy.special.domain.QueryExceptionKeyword;
 import com.ssafy.special.domain.RequireKeyword;
 import com.ssafy.special.dto.ProductDTO;
 import com.ssafy.special.repository.ExceptionKeywordRepository;
-import com.ssafy.special.repository.ProductQueryRepository;
 import com.ssafy.special.repository.ProductRepository;
 import com.ssafy.special.repository.ProductSellListRepository;
-import com.ssafy.special.repository.QueryExceptionKeywordRepository;
 import com.ssafy.special.repository.RequireKeywordRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -41,8 +38,8 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 	private final ProductRepository productRepository; 
 	private final ExceptionKeywordRepository exceptionKeywordRepository; 
 	private final RequireKeywordRepository requireKeywordRepository; 
-	private final ProductQueryRepository productQueryRepository; 
-	private final QueryExceptionKeywordRepository queryExceptionKeywordRepository; 
+//	private final ProductQueryRepository productQueryRepository; 
+//	private final QueryExceptionKeywordRepository queryExceptionKeywordRepository; 
 	private final ProductSellListRepository productSellListRepository; 
 	
 	// carrot1 + "검색어" + caroot2 + 페이지번호(1부터 시작)
@@ -50,19 +47,19 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 	private static String carrot2 = "/more/flea_market?page=";
 	private static String carrotDetail = "https://www.daangn.com";
 	
-	
+	// MainApplication에서 쓰래드 처리해 주면서 필요 없어짐 (테스트할때를 위해 당근마켓에서만 개별로 동작하는 코드 일단 남겨둠)
 //	@Scheduled(fixedDelay = 1000 * 60 * 30)//30분
-	@Override
-	public void crawlingProducts() {
-		//productQuery테이블에서 query컬럼 리스트를 가져옴
-		List<ProductQuery> productQueryList = productQueryRepository.findAll();
-	
-		for(ProductQuery productQuery : productQueryList) {
-			//크롤링결과(productDTO)를 쿼리제외키워드로 필터링함(케이스, 필름 이런거 거름)
-			List<String> queryExceptionKeywordList = queryExceptionKeywordRepository.findByQuery(productQuery).orElse(new ArrayList<QueryExceptionKeyword>()).stream().map(QueryExceptionKeyword::getKeyword).collect(Collectors.toList());
-			crawlingProduct(productQuery, queryExceptionKeywordList);
-		}			
-	}
+//	@Override
+//	public void crawlingProducts() {
+//		//productQuery테이블에서 query컬럼 리스트를 가져옴
+//		List<ProductQuery> productQueryList = productQueryRepository.findAll();
+//	
+//		for(ProductQuery productQuery : productQueryList) {
+//			//크롤링결과(productDTO)를 쿼리제외키워드로 필터링함(케이스, 필름 이런거 거름)
+//			List<String> queryExceptionKeywordList = queryExceptionKeywordRepository.findByQuery(productQuery).orElse(new ArrayList<QueryExceptionKeyword>()).stream().map(QueryExceptionKeyword::getKeyword).collect(Collectors.toList());
+//			crawlingProduct(productQuery, queryExceptionKeywordList);
+//		}			
+//	}
 	
 
 	@Override
@@ -204,17 +201,13 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 			product.setPrice(Long.parseLong(price));
 			
 			//게시글 내용
-			product.setContent(content.select(".article-content").text());
-			
+			product.setContent(content.select(".article-content").text());			
 			// 원본 게시글 링크
-			product.setLink(carrotDetail+content.select("a").attr("href"));
-			
+			product.setLink(carrotDetail+content.select("a").attr("href"));			
 			// 원본 게시글 pid
-			product.setSeq(content.select("a").attr("href").split("/")[2]);
-			
+			product.setSeq(content.select("a").attr("href").split("/")[2]);			
 			// 이미지 링크
-			product.setImg(content.select(".card-photo > img").attr("src"));
-			
+			product.setImg(content.select(".card-photo > img").attr("src"));			
 			//지역
 			product.setLocation(content.select(".article-region-name").text());
 			
