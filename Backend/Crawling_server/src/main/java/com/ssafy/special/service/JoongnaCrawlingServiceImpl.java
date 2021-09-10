@@ -23,6 +23,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,23 +69,31 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 	Calendar cal;
 	static List<ProductDTO> list = new ArrayList<ProductDTO>();
 
-	@Override
-	@Scheduled(fixedDelay = 1000 * 60 * 30)
+//	@Scheduled(fixedDelay = 1000 * 60 * 30)
+	
 	public void joongnainit() {
 		int idx = 0;
+		int start=1;
 		date_now = new Date(System.currentTimeMillis());
 		cal = Calendar.getInstance();
 		cal.setTime(date_now);
 		cal.add(Calendar.MONTH, -1);
 		List<String> queryException;
+		
 		for (ProductQuery p : productQueryRepository.findAll()) {
+//			System.out.println("====="+start+" "+p.getQuery()+"=========");
+//			start++;
 			while (true) {
 				try {
 					queryException = queryExceptionKeywordRepository.findByQuery(p)
 							.orElse(new ArrayList<QueryExceptionKeyword>()).stream()
 							.map(QueryExceptionKeyword::getKeyword).collect(Collectors.toList());
 					joongnaPostCrawling(p.getQuery(), idx++, queryException);
-
+					try {
+						Thread.sleep(1000);
+					}catch (InterruptedException e) {
+						// TODO: handle exception
+					}
 					if (idx == 5)
 						break;
 				} catch (PageEndException e) {
@@ -94,11 +103,11 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 			}
 			listClassify(p);
 		}
-//		for (ProductDTO pd : list) {
-//			if (pd.getName() != null)
-//
-//				System.out.println(pd.toString());
-//		}
+		for (ProductDTO pd : list) {
+			if (pd.getName() != null)
+
+				System.out.println(pd.toString());
+		}
 
 	}
 
