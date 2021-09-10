@@ -33,15 +33,12 @@ import com.ssafy.special.domain.ExceptionKeyword;
 import com.ssafy.special.domain.Product;
 import com.ssafy.special.domain.ProductQuery;
 import com.ssafy.special.domain.ProductSellList;
-import com.ssafy.special.domain.QueryExceptionKeyword;
 import com.ssafy.special.domain.RequireKeyword;
 import com.ssafy.special.dto.ProductDTO;
 import com.ssafy.special.exception.PageEndException;
 import com.ssafy.special.repository.ExceptionKeywordRepository;
-import com.ssafy.special.repository.ProductQueryRepository;
 import com.ssafy.special.repository.ProductRepository;
 import com.ssafy.special.repository.ProductSellListRepository;
-import com.ssafy.special.repository.QueryExceptionKeywordRepository;
 import com.ssafy.special.repository.RequireKeywordRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -52,8 +49,6 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 
-	private final QueryExceptionKeywordRepository queryExceptionKeywordRepository;
-	private final ProductQueryRepository productQueryRepository;
 	private final ProductRepository productRepository;
 	private final ExceptionKeywordRepository exceptionKeywordRepository;
 	private final RequireKeywordRepository requireKeywordRepository;
@@ -67,7 +62,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 	Calendar cal;
 
 //	@Scheduled(fixedDelay = 1000 * 60 * 30)
-
+	@Override
 	public void joongnainit(ProductQuery productQuery, List<String> exception) {
 		int page = 0;
 		date_now = new Date(System.currentTimeMillis());
@@ -121,7 +116,6 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		return map;
 	}
 
-	@Override
 	public void joongnaPostCrawling(String query, int page, List<String> exception, List<ProductDTO> list)
 			throws PageEndException {
 		// TODO Auto-generated method stub
@@ -228,7 +222,6 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		}
 	}
 
-	@Override
 	public boolean stuffexception(String title, List<String> except) {
 		String lowertitle = title.toLowerCase();
 
@@ -240,7 +233,6 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		return true;
 	}
 
-	@Override
 	public boolean stuffrequire(String title, List<String> require) {
 		StringTokenizer st;
 		boolean in;
@@ -263,7 +255,6 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		return true;
 	}
 
-	@Override
 	public boolean availablestuff(String title, HashMap<String, List<String>> inandexc) {
 		HashMap<String, Boolean> check = new HashMap<String, Boolean>();
 
@@ -319,7 +310,6 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		return false;
 	}
 
-	@Override
 	public String joongnaapp(String seq) {
 		String basicurl = "https://edge-live.joongna.com/api/product/basic/" + seq;
 
@@ -365,14 +355,11 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		return null;
 	}
 
-	@Override
 	public void listClassify(ProductQuery query, List<ProductDTO> list) {
 		// TODO Auto-generated method stub
 		for (ProductDTO pd : list) {
 			List<Product> pdlist = productRepository.findByQuery(query).orElse(new ArrayList<Product>());
-			if (pd.getTitle().contains("[866]")) {
-				System.out.println("-------");
-			}
+			
 			for (Product p : pdlist) {
 				List<String> commaexcept = exceptionKeywordRepository.findByProductIdAndMarket(p, "common")
 						.orElse(new ArrayList<ExceptionKeyword>()).stream().map(ExceptionKeyword::getKeyword)
@@ -457,7 +444,6 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		return true;
 	}
 
-	@Override
 	public String joongnacafe(String appurl) {
 		// TODO Auto-generated method stub
 		HashMap<String, String> querymap = getQueryMap(appurl);
