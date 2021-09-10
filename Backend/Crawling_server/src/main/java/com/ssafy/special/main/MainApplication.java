@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 public class MainApplication {
 	private final QueryInfoService queryInfoService;
 	private final DaangnMultiThreadCrawling daangnMultiThreadCrawling;	
+	private final JoongnaMultiThreadCrawling JoongnaMultiThreadCrawling;
 	
 	@Scheduled(fixedDelay = 1000 * 60 * 30)//30분
 	public void crawlingStart() {
@@ -24,9 +25,15 @@ public class MainApplication {
 			List<String> queryExceptionKeywordList = queryInfoService.getQueryExceptionKeywordList(query);
 			daangnMultiThreadCrawling.setProductQuery(query);
 			daangnMultiThreadCrawling.setQueryExceptionKeywordList(queryExceptionKeywordList);
-			Thread daangn = new Thread(daangnMultiThreadCrawling);
 			
+			JoongnaMultiThreadCrawling.setProductQuery(query);
+			JoongnaMultiThreadCrawling.setQueryexceptionlist(queryExceptionKeywordList);
+			
+			
+			Thread daangn = new Thread(daangnMultiThreadCrawling);
+			Thread joongna = new Thread(JoongnaMultiThreadCrawling);
 			daangn.start();
+			joongna.start();
 		}
 
 	}

@@ -23,8 +23,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,47 +65,40 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 	SimpleDateFormat yearmonthday_format = new SimpleDateFormat("yyyy-MM-dd");
 	Date date_now;
 	Calendar cal;
-	static List<ProductDTO> list = new ArrayList<ProductDTO>();
 
 //	@Scheduled(fixedDelay = 1000 * 60 * 30)
-	
-	public void joongnainit() {
-		int idx = 0;
-		int start=1;
+
+	public void joongnainit(ProductQuery productQuery, List<String> exception) {
+		int page = 0;
 		date_now = new Date(System.currentTimeMillis());
 		cal = Calendar.getInstance();
 		cal.setTime(date_now);
 		cal.add(Calendar.MONTH, -1);
-		List<String> queryException;
-		
-		for (ProductQuery p : productQueryRepository.findAll()) {
-//			System.out.println("====="+start+" "+p.getQuery()+"=========");
-//			start++;
-			while (true) {
+		List<ProductDTO> pdlist = null;
+
+		while (true) {
+			try {
+				pdlist = new ArrayList<ProductDTO>();
+				joongnaPostCrawling(productQuery.getQuery(), page++, exception, pdlist);
 				try {
-					queryException = queryExceptionKeywordRepository.findByQuery(p)
-							.orElse(new ArrayList<QueryExceptionKeyword>()).stream()
-							.map(QueryExceptionKeyword::getKeyword).collect(Collectors.toList());
-					joongnaPostCrawling(p.getQuery(), idx++, queryException);
-					try {
-						Thread.sleep(1000);
-					}catch (InterruptedException e) {
-						// TODO: handle exception
-					}
-					if (idx == 5)
-						break;
-				} catch (PageEndException e) {
-					break;
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO: handle exception
 				}
-
+				if (page == 5)
+					break;
+			} catch (PageEndException e) {
+				break;
 			}
-			listClassify(p);
-		}
-		for (ProductDTO pd : list) {
-			if (pd.getName() != null)
 
-				System.out.println(pd.toString());
 		}
+		listClassify(productQuery, pdlist);
+
+//		for (ProductDTO pd : pdlist) {
+//			if (pd.getName() != null)
+//
+//				System.out.println(pd.toString());
+//		}
 
 	}
 
@@ -131,7 +122,8 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 	}
 
 	@Override
-	public void joongnaPostCrawling(String query, int page, List<String> exception) throws PageEndException {
+	public void joongnaPostCrawling(String query, int page, List<String> exception, List<ProductDTO> list)
+			throws PageEndException {
 		// TODO Auto-generated method stub
 
 //		System.out.println("===============================");
@@ -253,7 +245,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		StringTokenizer st;
 		boolean in;
 		String lowertitle = title.toLowerCase();
-		
+
 		for (String s : require) {
 			in = false;
 			st = new StringTokenizer(s, ",");
@@ -264,7 +256,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 					break;
 				}
 			}
-			if(!in) {
+			if (!in) {
 				return false;
 			}
 		}
@@ -374,7 +366,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 	}
 
 	@Override
-	public void listClassify(ProductQuery query) {
+	public void listClassify(ProductQuery query, List<ProductDTO> list) {
 		// TODO Auto-generated method stub
 		for (ProductDTO pd : list) {
 			List<Product> pdlist = productRepository.findByQuery(query).orElse(new ArrayList<Product>());
@@ -393,12 +385,12 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 				HashMap<String, List<String>> inandexc = new HashMap<String, List<String>>();
 				inandexc.put("except", commaexcept);
 				inandexc.put("require", commarequire);
-				if(!stuffexception(pd.getTitle(), commaexcept)){
+				if (!stuffexception(pd.getTitle(), commaexcept)) {
 					continue;
 				}
-				if(stuffrequire(pd.getTitle(), commarequire)) {
+				if (stuffrequire(pd.getTitle(), commarequire)) {
 					pd.setName(p.getName());
-				}else {
+				} else {
 					// 내용기반 확인
 					if ("0".equals(pd.getSeq())) {
 						if (pd.getContent() == null) {
@@ -468,19 +460,20 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 	@Override
 	public String joongnacafe(String appurl) {
 		// TODO Auto-generated method stub
-		HashMap<String,String> querymap = getQueryMap(appurl);
-		
-		//clubid=10050146&menuid=424&boardtype=C&page=14&articleid=865510328&referrerAllArticles=false
-		String apiurl="https://apis.naver.com/cafe-web/cafe-articleapi/v2/cafes/"+querymap.get("clubid")+"/articles/"+querymap.get("articleid")+"?";
+		HashMap<String, String> querymap = getQueryMap(appurl);
+
+		// clubid=10050146&menuid=424&boardtype=C&page=14&articleid=865510328&referrerAllArticles=false
+		String apiurl = "https://apis.naver.com/cafe-web/cafe-articleapi/v2/cafes/" + querymap.get("clubid")
+				+ "/articles/" + querymap.get("articleid") + "?";
 		querymap.remove("clubid");
 		querymap.remove("articleid");
-		//menuid=424&boardtype=C&page=14&referrerAllArticles=false&useCafeId=true
+		// menuid=424&boardtype=C&page=14&referrerAllArticles=false&useCafeId=true
 		StringBuilder sb;
 //		for(String key : querymap.keySet()) {
 //			sb.append(key).append("=").append(querymap.get(key)).append("&");
 //		}
 //		sb.deleteCharAt(sb.length()-1);
-		
+
 		URL url;
 		HttpURLConnection con;
 		try {
@@ -492,7 +485,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 			con.setDoOutput(false);
 			if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
 				// Stream을 처리해줘야 하는 귀찮음이 있음.
-				sb=new StringBuilder();
+				sb = new StringBuilder();
 				BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"));
 				String line;
 				while ((line = br.readLine()) != null) {
@@ -504,26 +497,26 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 
 				Document doc = Jsoup.parse(node.get("result").get("article").get("contentHtml").toString());
 				Elements spantag = doc.select("span");
-				sb= new StringBuilder();
-				for(Element e : spantag) {
+				sb = new StringBuilder();
+				for (Element e : spantag) {
 					sb.append(e.text()).append(" ");
 				}
-				
+
 				return sb.toString();
-				
-			}else {
+
+			} else {
 				System.out.println(con.getResponseMessage());
 			}
-		}catch (UnsupportedEncodingException e) {
+		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}catch (MalformedURLException e) {
+		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}catch(IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 
 	}
