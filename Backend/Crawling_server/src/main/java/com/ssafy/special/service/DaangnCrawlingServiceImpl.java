@@ -65,13 +65,15 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		for(ProductQuery productQuery : productQueryList) {
 			productList=new ArrayList<ProductDTO>();
 			log.info("(당근)해당 검색어를 크롤링 중입니다 "+ productQuery.getQuery());
-			crawlingProduct(productQuery);
+			//크롤링결과(productDTO)를 쿼리제외키워드로 필터링함(케이스, 필름 이런거 거름)
+			List<String> queryExceptionKeywordList = queryExceptionKeywordRepository.findByQuery(productQuery).orElse(new ArrayList<QueryExceptionKeyword>()).stream().map(QueryExceptionKeyword::getKeyword).collect(Collectors.toList());
+			crawlingProduct(productQuery, queryExceptionKeywordList);
 		}			
 	}
 	
 
 	@Transactional(readOnly = true)
-	private void crawlingProduct(ProductQuery productQuery) {
+	private void crawlingProduct(ProductQuery productQuery, List<String> queryExceptionKeywordList) {
 		final String market = "daangn";
 		final String commonMarket = "common";
 		
@@ -80,14 +82,14 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		log.info("(당근)상품 목록을 크롤링 중입니다");
 		while(true) {
 			try {
-				listCrawling(productQuery, page);
+				listCrawling(productQuery, page, queryExceptionKeywordList);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			page++;
 			
-			if(page>10)//추후 크롤링 페이지를 800으로 변경해야함 - 추헌국
+			if(page>30)//추후 크롤링 페이지를 800으로 변경해야함 - 추헌국
 				break;
 		}
 		
@@ -103,7 +105,9 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 				//데이터 베이스에 productName을 검색해서 해당 제품을 찾기위한 검색 query, 제외키워드, 필수키워드들을 가져옴
 				List<String> exceptionKeyword=new ArrayList<>();
 				List<String> requireKeyword=new ArrayList<String>(); 
-				exceptionKeyword=exceptionKeywordRepository.findByProductIdAndMarket(product, market).orElse(new ArrayList<ExceptionKeyword>()).stream().map(ExceptionKeyword::getKeyword).collect(Collectors.toList());
+				exceptionKeyword=exceptionKeywordRepository.findByProductIdAndMarket(product, commonMarket).orElse(new ArrayList<ExceptionKeyword>()).stream().map(ExceptionKeyword::getKeyword).collect(Collectors.toList());
+				exceptionKeyword.addAll(exceptionKeywordRepository.findByProductIdAndMarket(product, market).orElse(new ArrayList<ExceptionKeyword>()).stream().map(ExceptionKeyword::getKeyword).collect(Collectors.toList()));
+				
 				//공통 필수 키워드
 				requireKeyword=requireKeywordRepository.findByProductIdAndMarket(product, commonMarket).orElse(new ArrayList<RequireKeyword>()).stream().map(RequireKeyword::getKeyword).collect(Collectors.toList());
 				//당근마켓 필수 키워드
@@ -157,14 +161,12 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 	
 	@Transactional(readOnly = true)
 	// 목록 크롤링을 통해 검색어에 해당하는 게시글 id를 가져옴
-	private void listCrawling(ProductQuery productQuery, int page) throws IOException {
+	private void listCrawling(ProductQuery productQuery, int page, List<String> queryExceptionKeywordList) throws IOException {
 		String url = carrot1 + productQuery.getQuery() + carrot2 + page;
 		Document doc = Jsoup.connect(url).get();
 
 		Elements contents = doc.select("article");
 		
-		//크롤링결과(productDTO)를 쿼리제외키워드로 필터링함(케이스, 필름 이런거 거름)
-		List<String> queryExceptionKeywordList = queryExceptionKeywordRepository.findByQuery(productQuery).orElse(new ArrayList<QueryExceptionKeyword>()).stream().map(QueryExceptionKeyword::getKeyword).collect(Collectors.toList());
 		
 		for (Element content : contents) {
 			// 걸러진 데이터들만 저장되게함			
@@ -175,7 +177,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 			String title=content.select(".article-title").text();
 			product.setTitle(title);
 			
-			//제목에 제외키워드가 들어가있으면 productList에 안넣음
+			//제목에 제외키워드가 들어가있으면 productList에 안넣음(케이스, 필름, 커버 이런것들)
 			if(hasExceptionKeyword(title, queryExceptionKeywordList)) {
 				continue;
 			}
