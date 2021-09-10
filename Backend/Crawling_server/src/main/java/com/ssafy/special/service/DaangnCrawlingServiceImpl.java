@@ -45,21 +45,15 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 	private final QueryExceptionKeywordRepository queryExceptionKeywordRepository; 
 	private final ProductSellListRepository productSellListRepository; 
 	
-	
-	
-	
 	// carrot1 + "검색어" + caroot2 + 페이지번호(1부터 시작)
 	private static String carrot1 = "https://www.daangn.com/search/";
 	private static String carrot2 = "/more/flea_market?page=";
 	private static String carrotDetail = "https://www.daangn.com";
 	
-	private static List<ProductDTO> productList;
-	
 	
 //	@Scheduled(fixedDelay = 1000 * 60 * 30)//30분
 	@Override
 	public void crawlingProducts() {
-		
 		//productQuery테이블에서 query컬럼 리스트를 가져옴
 		List<ProductQuery> productQueryList = productQueryRepository.findAll();
 	
@@ -67,13 +61,6 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 			//크롤링결과(productDTO)를 쿼리제외키워드로 필터링함(케이스, 필름 이런거 거름)
 			List<String> queryExceptionKeywordList = queryExceptionKeywordRepository.findByQuery(productQuery).orElse(new ArrayList<QueryExceptionKeyword>()).stream().map(QueryExceptionKeyword::getKeyword).collect(Collectors.toList());
 			crawlingProduct(productQuery, queryExceptionKeywordList);
-//			Thread t = new Thread(new Runnable() {
-//				@Override
-//				public void run() {
-//					crawlingProduct(productQuery, queryExceptionKeywordList);
-//				}
-//			});
-//			t.start();
 		}			
 	}
 	
@@ -83,26 +70,27 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		final String market = "daangn";
 		final String commonMarket = "common";
 		
-		productList=new ArrayList<ProductDTO>();
+
+		List<ProductDTO> productList=new ArrayList<ProductDTO>();
 		log.info("(당근)해당 검색어를 크롤링 중입니다 "+ productQuery.getQuery());
 		
 		//productQuery로 크롤링을 진행하여 검색결과(productDTO)를 쿼리제외키워드로 필터링함
 		int page=1;
-		int endpage=30;
-		log.info("(당근)상품 목록을 크롤링 중입니다");
+		int endpage=30;//추후 크롤링 페이지를 800으로 변경해야함 - 추헌국
+		log.info("(당근)"+ productQuery.getQuery()+" 상품 목록을 크롤링 중입니다");
 		while(true) {
 			if(page!=0 && page%5==0) {
 				log.info("(당근)"+ productQuery.getQuery()+" : " +page+"/"+endpage);
 			}
 			try {
-				listCrawling(productQuery, page, queryExceptionKeywordList);
+				listCrawling(productList, productQuery, page, queryExceptionKeywordList);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			page++;
 			
-			if(page>endpage)//추후 크롤링 페이지를 800으로 변경해야함 - 추헌국
+			if(page>endpage)
 				break;
 		}
 		List<Product> products=productRepository.findByQuery(productQuery).orElse(new ArrayList<Product>());
@@ -127,11 +115,11 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		}
 		
 		
-		log.info("(당근)부적합한 물건을 제외하는 중입니다");
+		log.info("(당근)"+ productQuery.getQuery()+" : 부적합한 물건을 제외하는 중입니다");
 		int i=0;
 		for(ProductDTO p : productList) {
 			if(i!=0 && i%100==0)
-				log.info("(당근)"+i+"번째 물건입니다");
+				log.info("(당근)"+ productQuery.getQuery()+" : "+i+"번째 물건분류중입니다");
 			i++;			
 			for(Product product:products) {			
 				//제외 키워드가지고 있으면 패스
@@ -173,21 +161,22 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 					if(result) {
 						break;
 					}else {
-						log.info("(당근)데이터 삽입에 실패 했습니다");
+						log.info("(당근)"+ productQuery.getQuery()+" : 데이터 삽입에 실패 했습니다");
 					}
 				}
 			}
 		}
-		log.info("(당근)크롤링 및 분류가 완료되었습니다");
+		log.info("(당근)"+ productQuery.getQuery()+" : 크롤링 및 분류가 완료되었습니다");
 	}
 	
 	
 	
 	// 목록 크롤링을 통해 검색어에 해당하는 게시글 id를 가져옴
-	private void listCrawling(ProductQuery productQuery, int page, List<String> queryExceptionKeywordList) throws IOException {
+	private void listCrawling(List<ProductDTO> productList, ProductQuery productQuery, int page, List<String> queryExceptionKeywordList) throws IOException {
 		String url = carrot1 + productQuery.getQuery() + carrot2 + page;
-		Document doc = Jsoup.connect(url).get();
-		
+		Document doc=null;
+		doc = Jsoup.connect(url).get();
+
 		Elements contents = doc.select("article");
 		
 		for (Element content : contents) {

@@ -16,7 +16,7 @@ public class MainApplication {
 	private final QueryInfoService queryInfoService;
 	private final DaangnMultiThreadCrawling daangnMultiThreadCrawling;	
 	
-//	@Scheduled(fixedDelay = 1000 * 60 * 30)//30분
+	@Scheduled(fixedDelay = 1000 * 60 * 30)//30분
 	public void crawlingStart() {
 		List<ProductQuery> productQuery = queryInfoService.getProductQueryList();
 
