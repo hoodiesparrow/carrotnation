@@ -12,4 +12,6 @@ public interface JoongnaCrawlingService {
 	public String joongnaapp(String seq);
 	public void joongnainit();
 	public void listClassify(ProductQuery query);
+	public boolean stuffexception(String title, List<String> except);
+	public boolean stuffrequire(String title, List<String> require);
 }

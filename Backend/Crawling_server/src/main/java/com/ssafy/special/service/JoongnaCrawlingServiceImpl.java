@@ -118,8 +118,6 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 	@Override
 	public void joongnaPostCrawling(String query, int page, List<String> exception) throws PageEndException {
 		// TODO Auto-generated method stub
-		HashMap<String, List<String>> inandexc = new HashMap<String, List<String>>();
-		inandexc.put("except", exception);
 
 //		System.out.println("===============================");
 //		System.out.println(fourteen_format.format(date_now)); // 14자리 포멧으로 출력한다
@@ -177,7 +175,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 					}
 					node.get("data").get("items").forEach(item -> {
 						// 해당 제목으로 1차 선별하여 리스트화
-						if (availablestuff(item.get("title").toString(), inandexc)) {
+						if (stuffexception(item.get("title").toString(), exception)) {
 							ProductDTO product = new ProductDTO();
 							String seq = item.get("seq").toString();
 							if ("0".equals(seq)) {
@@ -225,6 +223,41 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 	}
 
 	@Override
+	public boolean stuffexception(String title, List<String> except) {
+		String lowertitle = title.toLowerCase();
+
+		for (String s : except) {
+			if (lowertitle.contains(s))
+				return false;
+
+		}
+		return true;
+	}
+
+	@Override
+	public boolean stuffrequire(String title, List<String> require) {
+		StringTokenizer st;
+		boolean in;
+		String lowertitle = title.toLowerCase();
+		
+		for (String s : require) {
+			in = false;
+			st = new StringTokenizer(s, ",");
+			while (st.hasMoreTokens()) {
+				String stt = st.nextToken();
+				if (lowertitle.contains(stt)) {
+					in = true;
+					break;
+				}
+			}
+			if(!in) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
 	public boolean availablestuff(String title, HashMap<String, List<String>> inandexc) {
 		HashMap<String, Boolean> check = new HashMap<String, Boolean>();
 
@@ -237,11 +270,8 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 			check.put("except", true);
 			except = inandexc.get("except");
 			for (String s : except) {
-				st = new StringTokenizer(s, ",");
-				while (st.hasMoreTokens()) {
-					if (lowertitle.contains(st.nextToken()))
-						return false;
-				}
+				if (lowertitle.contains(s))
+					return false;
 
 			}
 		}
@@ -255,7 +285,8 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 				in = false;
 				st = new StringTokenizer(s, ",");
 				while (st.hasMoreTokens()) {
-					if (lowertitle.contains(st.nextToken())) {
+					String stt = st.nextToken();
+					if (lowertitle.contains(stt)) {
 						in = true;
 						break;
 					}
@@ -333,22 +364,27 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		// TODO Auto-generated method stub
 		for (ProductDTO pd : list) {
 			List<Product> pdlist = productRepository.findByQuery(query).orElse(new ArrayList<Product>());
+			if (pd.getTitle().contains("[866]")) {
+				System.out.println("-------");
+			}
 			for (Product p : pdlist) {
-				List<String> commaexcept = exceptionKeywordRepository.findByProductIdAndMarket(p, "")
+				List<String> commaexcept = exceptionKeywordRepository.findByProductIdAndMarket(p, "common")
 						.orElse(new ArrayList<ExceptionKeyword>()).stream().map(ExceptionKeyword::getKeyword)
 						.collect(Collectors.toList());
 
-				List<String> commarequire = requireKeywordRepository.findByProductIdAndMarket(p, "")
+				List<String> commarequire = requireKeywordRepository.findByProductIdAndMarket(p, "common")
 						.orElse(new ArrayList<RequireKeyword>()).stream().map(RequireKeyword::getKeyword)
 						.collect(Collectors.toList());
 
 				HashMap<String, List<String>> inandexc = new HashMap<String, List<String>>();
 				inandexc.put("except", commaexcept);
 				inandexc.put("require", commarequire);
-
-				if (availablestuff(pd.getTitle(), inandexc)) {
+				if(!stuffexception(pd.getTitle(), commaexcept)){
+					continue;
+				}
+				if(stuffrequire(pd.getTitle(), commarequire)) {
 					pd.setName(p.getName());
-				} else {
+				}else {
 					// 내용기반 확인
 					if ("0".equals(pd.getSeq())) {
 
@@ -358,7 +394,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 						}
 
 						String allContent = pd.getTitle() + pd.getContent();
-						if (availablestuff(allContent, inandexc)) {
+						if (stuffrequire(allContent, commarequire)) {
 							pd.setName(p.getName());
 						}
 					}
@@ -388,22 +424,25 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 					sellList.setLink(pd.getLink());
 					sellList.setLocation(pd.getLocation());
 					boolean result = insertProductSellList(sellList);
-					if(!result) {
+					if (!result) {
 						log.info("(중고나라)데이터 삽입에 실패 했습니다");
 					}
+					break;
 				}
 
 			}
 
 		}
 	}
+
 	@Transactional
 	private boolean insertProductSellList(ProductSellList sellList) {
 		try {
 			productSellListRepository.save(sellList);
 		} catch (Exception e) {
 			return false;
-		}		
+		}
 		return true;
 	}
+
 }

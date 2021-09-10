@@ -54,7 +54,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 	private static List<ProductDTO> productList;
 	
 	
-	@Scheduled(fixedDelay = 1000 * 60 * 30)
+//	@Scheduled(fixedDelay = 1000 * 60 * 30)
 	@Transactional
 	public void crawlingProducts() {
 		
