@@ -34,7 +34,7 @@ import lombok.extern.log4j.Log4j2;
 @Service
 @RequiredArgsConstructor
 @Log4j2
-public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
+public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 
 	private final ProductRepository productRepository; 
 	private final ExceptionKeywordRepository exceptionKeywordRepository; 
@@ -56,6 +56,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 	
 	@Scheduled(fixedDelay = 1000 * 60 * 30)
 	@Transactional
+	@Override
 	public void crawlingProducts() {
 		
 		//productQuery테이블에서 query컬럼 리스트를 가져옴
@@ -70,7 +71,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 	
 
 	@Transactional(readOnly = true)
-	public void crawlingProduct(ProductQuery productQuery) {
+	private void crawlingProduct(ProductQuery productQuery) {
 		final String market = "daangn";
 		final String commonMarket = "common";
 		
@@ -86,13 +87,17 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 			}
 			page++;
 			
-			if(page>3)
+			if(page>10)//추후 크롤링 페이지를 800으로 변경해야함 - 추헌국
 				break;
 		}
 		
 		
 		log.info("(당근)부적합한 물건을 제외하는 중입니다");
+		int i=0;
 		for(ProductDTO p : productList) {
+			if(i%100==0)
+				log.info(i+"번째 물건입니다");
+			i++;
 			List<Product> products=productRepository.findByQuery(productQuery).orElse(new ArrayList<Product>());
 			for(Product product:products) {
 				//데이터 베이스에 productName을 검색해서 해당 제품을 찾기위한 검색 query, 제외키워드, 필수키워드들을 가져옴
@@ -139,8 +144,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService {
 					sellList.setPrice(p.getPrice());
 					sellList.setCreateDate(p.getDate());
 					sellList.setLink(p.getLink());
-					sellList.setLocation(p.getLocation());				
-					System.out.println(Integer.parseInt(p.getSeq()) + "    "+sellList); // 디버깅용으로 만듬 나중에 지워야함 - 추헌국
+					sellList.setLocation(p.getLocation());
 					boolean result = insertProductSellList(sellList);
 					if(!result) {
 						log.info("(당근)데이터 삽입에 실패 했습니다");
