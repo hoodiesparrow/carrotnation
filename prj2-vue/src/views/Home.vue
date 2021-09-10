@@ -44,7 +44,7 @@ export default defineComponent({
 
     const onClickItem = function () {
       router.push({
-        name: "Item",
+        name: "Prod",
       });
     };
 

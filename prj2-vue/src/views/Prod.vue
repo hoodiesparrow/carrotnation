@@ -1,10 +1,15 @@
 <template>
   <div class="container max-w-750px">
+    <SideBar :show="show" @closeSideBar="show = !show" class="fixed top-0 z-40 h-full" />
     <div class="sticky top-0">
-      <div class="flex-column items-center bg-purple-700 py-4">
-        <span>
-          <SideBar />
-        </span>
+      <div class="flex justify-between items-center bg-purple-700 p-4">
+        <div>
+          <img
+            src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMjQgNmgtMjR2LTRoMjR2NHptMCA0aC0yNHY0aDI0di00em0wIDhoLTI0djRoMjR2LTR6Ii8+PC9zdmc+"
+            @click="show = !show"
+            class="cursor-pointer"
+          />
+        </div>
         <span class="text-4xl font-extrabold text-white">아이폰 프로 512g</span>
       </div>
       <div class="grid grid-rows-2 bg-white py-2 border-b-2 border-gray-300">
@@ -16,12 +21,8 @@
     </div>
     <div class="text-left">
       <div class="flex flex-col">
-        <ProdBox v-for="prod in ProdList" v-bind:key="prod.pid" :product="prod" />
-        <infinite-loading @infinite="infiniteHandler">
-          <template #spinner> // loading here </template>
-          <template #no-more> // text no more </template>
-          <template #no-results> // text no results </template>
-        </infinite-loading>
+        <ProdBox v-for="prod in ProdList" :key="prod.pid" :product="prod" />
+
       </div>
     </div>
     <div class="sticky bottom-0">
@@ -36,7 +37,7 @@
 import { defineComponent, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
-import InfiniteLoading from "infinite-loading-vue3-ts";
+// import InfiniteLoading from "infinite-loading-vue3-ts";
 import ProdBox from "@/components/ProdBox.vue";
 import SideBar from "@/components/SideBar.vue";
 
@@ -44,14 +45,14 @@ export default defineComponent({
   name: "Home",
   components: {
     ProdBox,
-    InfiniteLoading,
+    // InfiniteLoading,
     SideBar,
   },
 
   setup() {
     const router = useRouter();
     const store = useStore();
-
+    const show = ref(false)
     // const infiniteHandler = function ($state) {};
 
     var items = ref([]);
@@ -118,9 +119,19 @@ export default defineComponent({
     //   items[i] = ProdList[i];
     // }
 
-    return { ProdList, items };
+    return { 
+      ProdList, 
+      items,
+      show,    
+    };
   },
 });
 </script>
 
 <style></style>
+
+        // <infinite-loading @infinite="infiniteHandler">
+        //   <template #spinner> // loading here </template>
+        //   <template #no-more> // text no more </template>
+        //   <template #no-results> // text no results </template>
+        // </infinite-loading>
