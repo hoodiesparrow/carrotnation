@@ -3,7 +3,9 @@ package com.ssafy.special.service;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.jsoup.Jsoup;
@@ -54,7 +56,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 	private static List<ProductDTO> productList;
 	
 	
-	@Scheduled(fixedDelay = 1000 * 60 * 30)
+	@Scheduled(fixedDelay = 1000 * 60 * 30)//30분
 	@Transactional
 	@Override
 	public void crawlingProducts() {
@@ -79,8 +81,12 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		
 		//productQuery로 크롤링을 진행하여 검색결과(productDTO)를 쿼리제외키워드로 필터링함
 		int page=1;
+		int endpage=100;
 		log.info("(당근)상품 목록을 크롤링 중입니다");
 		while(true) {
+			if(page!=0 && page%50==0) {
+				log.info("(당근)"+page+"/"+endpage);
+			}
 			try {
 				listCrawling(productQuery, page, queryExceptionKeywordList);
 			} catch (IOException e) {
@@ -89,37 +95,45 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 			}
 			page++;
 			
-			if(page>30)//추후 크롤링 페이지를 800으로 변경해야함 - 추헌국
+			if(page>endpage)//추후 크롤링 페이지를 800으로 변경해야함 - 추헌국
 				break;
+		}
+		List<Product> products=productRepository.findByQuery(productQuery).orElse(new ArrayList<Product>());
+		Map<Long, List<String>> exceptionKeyword=new HashMap<Long, List<String>>();
+		Map<Long, List<String>> requireKeyword=new HashMap<Long, List<String>>();
+		
+		for(Product product:products) {
+			List<String> exception=new ArrayList<>();
+			List<String> require=new ArrayList<String>(); 
+			//데이터 베이스에 productName을 검색해서 해당 제품을 찾기위한 검색 query, 제외키워드, 필수키워드들을 가져옴			
+			exception=exceptionKeywordRepository.findByProductIdAndMarket(product, commonMarket).orElse(new ArrayList<ExceptionKeyword>()).stream().map(ExceptionKeyword::getKeyword).collect(Collectors.toList());
+			exception.addAll(exceptionKeywordRepository.findByProductIdAndMarket(product, market).orElse(new ArrayList<ExceptionKeyword>()).stream().map(ExceptionKeyword::getKeyword).collect(Collectors.toList()));
+			
+			exceptionKeyword.put(product.getId(), exception);
+			
+			//공통 필수 키워드
+			require=requireKeywordRepository.findByProductIdAndMarket(product, commonMarket).orElse(new ArrayList<RequireKeyword>()).stream().map(RequireKeyword::getKeyword).collect(Collectors.toList());
+			//당근마켓 필수 키워드
+			require.addAll(requireKeywordRepository.findByProductIdAndMarket(product, market).orElse(new ArrayList<RequireKeyword>()).stream().map(RequireKeyword::getKeyword).collect(Collectors.toList()));
+		
+			requireKeyword.put(product.getId(), require);
 		}
 		
 		
 		log.info("(당근)부적합한 물건을 제외하는 중입니다");
 		int i=0;
 		for(ProductDTO p : productList) {
-			if(i%100==0)
-				log.info(i+"번째 물건입니다");
-			i++;
-			List<Product> products=productRepository.findByQuery(productQuery).orElse(new ArrayList<Product>());
-			for(Product product:products) {
-				//데이터 베이스에 productName을 검색해서 해당 제품을 찾기위한 검색 query, 제외키워드, 필수키워드들을 가져옴
-				List<String> exceptionKeyword=new ArrayList<>();
-				List<String> requireKeyword=new ArrayList<String>(); 
-				exceptionKeyword=exceptionKeywordRepository.findByProductIdAndMarket(product, commonMarket).orElse(new ArrayList<ExceptionKeyword>()).stream().map(ExceptionKeyword::getKeyword).collect(Collectors.toList());
-				exceptionKeyword.addAll(exceptionKeywordRepository.findByProductIdAndMarket(product, market).orElse(new ArrayList<ExceptionKeyword>()).stream().map(ExceptionKeyword::getKeyword).collect(Collectors.toList()));
-				
-				//공통 필수 키워드
-				requireKeyword=requireKeywordRepository.findByProductIdAndMarket(product, commonMarket).orElse(new ArrayList<RequireKeyword>()).stream().map(RequireKeyword::getKeyword).collect(Collectors.toList());
-				//당근마켓 필수 키워드
-				requireKeyword.addAll(requireKeywordRepository.findByProductIdAndMarket(product, market).orElse(new ArrayList<RequireKeyword>()).stream().map(RequireKeyword::getKeyword).collect(Collectors.toList()));
-				
+			if(i!=0 && i%100==0)
+				log.info("(당근)"+i+"번째 물건입니다");
+			i++;			
+			for(Product product:products) {			
 				//제외 키워드가지고 있으면 패스
-				if(hasExceptionKeyword(p.getTitle(), exceptionKeyword)) {
+				if(hasExceptionKeyword(p.getTitle(), exceptionKeyword.get(product.getId()))) {
 					continue;
 				}
 				
 				//제목에서 필수 키워드를 가지고 있으면 품목 지정함
-				if(hasRequireKeyword(p.getTitle(),requireKeyword)) {
+				if(hasRequireKeyword(p.getTitle(),requireKeyword.get(product.getId()))) {
 					p.setName(product.getName());//품목 지정
 					try {
 						detailCrawling(p);//게시글 날짜 지정
@@ -127,7 +141,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				}else if(hasRequireKeyword(p.getContent(), requireKeyword)){//제목에서 필수 키워드가 없으면 내용에서 필수 키워드를 가지고 있는지 확인함
+				}else if(hasRequireKeyword(p.getContent(), requireKeyword.get(product.getId()))){//제목에서 필수 키워드가 없으면 내용에서 필수 키워드를 가지고 있는지 확인함
 					p.setName(product.getName());//품목 지정
 					try {
 						detailCrawling(p);//게시글 날짜 지정
@@ -138,8 +152,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 				}
 				
 				//name이 지정되었으면 ProductSellList테이블에 삽입
-				if(p.getName()!=null) {
-					
+				if(p.getName()!=null) {					
 					ProductSellList sellList=new ProductSellList();
 					sellList.setId(Integer.parseInt(p.getSeq()));
 					sellList.setMarket(market);
@@ -150,7 +163,9 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 					sellList.setLink(p.getLink());
 					sellList.setLocation(p.getLocation());
 					boolean result = insertProductSellList(sellList);
-					if(!result) {
+					if(result) {
+						break;
+					}else {
 						log.info("(당근)데이터 삽입에 실패 했습니다");
 					}
 				}
