@@ -1,8 +1,10 @@
 package com.ssafy.special.service;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -17,6 +19,10 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,7 +69,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 	static List<ProductDTO> list = new ArrayList<ProductDTO>();
 
 	@Override
-	@Scheduled(fixedRate = 1000000)
+	@Scheduled(fixedDelay = 1000 * 60 * 30)
 	public void joongnainit() {
 		int idx = 0;
 		date_now = new Date(System.currentTimeMillis());
@@ -158,7 +164,6 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 			StringBuilder sb = new StringBuilder();
 			if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
 				// Stream을 처리해줘야 하는 귀찮음이 있음.
-				System.out.println("==========" + page + "============");
 				BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"));
 				String line;
 				while ((line = br.readLine()) != null) {
@@ -387,7 +392,13 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 				}else {
 					// 내용기반 확인
 					if ("0".equals(pd.getSeq())) {
-
+						if (pd.getContent() == null) {
+							pd.setContent(joongnacafe(pd.getLink()));
+						}
+						String allContent = pd.getTitle() + pd.getContent();
+						if (stuffrequire(allContent, commarequire)) {
+							pd.setName(p.getName());
+						}
 					} else {
 						if (pd.getContent() == null) {
 							pd.setContent(joongnaapp(pd.getSeq()));
@@ -443,6 +454,69 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public String joongnacafe(String appurl) {
+		// TODO Auto-generated method stub
+		HashMap<String,String> querymap = getQueryMap(appurl);
+		
+		//clubid=10050146&menuid=424&boardtype=C&page=14&articleid=865510328&referrerAllArticles=false
+		String apiurl="https://apis.naver.com/cafe-web/cafe-articleapi/v2/cafes/"+querymap.get("clubid")+"/articles/"+querymap.get("articleid")+"?";
+		querymap.remove("clubid");
+		querymap.remove("articleid");
+		//menuid=424&boardtype=C&page=14&referrerAllArticles=false&useCafeId=true
+		StringBuilder sb;
+//		for(String key : querymap.keySet()) {
+//			sb.append(key).append("=").append(querymap.get(key)).append("&");
+//		}
+//		sb.deleteCharAt(sb.length()-1);
+		
+		URL url;
+		HttpURLConnection con;
+		try {
+			url = new URL(apiurl);
+			con = (HttpURLConnection) url.openConnection();
+			con.setConnectTimeout(5000); // 서버에 연결되는 Timeout 시간 설정
+			con.setReadTimeout(5000); // InputStream 읽어 오는 Timeout 시간 설정
+			con.setRequestMethod("GET");
+			con.setDoOutput(false);
+			if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
+				// Stream을 처리해줘야 하는 귀찮음이 있음.
+				sb=new StringBuilder();
+				BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"));
+				String line;
+				while ((line = br.readLine()) != null) {
+					sb.append(line).append("\n");
+				}
+				br.close();
+				ObjectMapper mapper = new ObjectMapper();
+				JsonNode node = mapper.readTree(sb.toString());
+
+				Document doc = Jsoup.parse(node.get("result").get("article").get("contentHtml").toString());
+				Elements spantag = doc.select("span");
+				sb= new StringBuilder();
+				for(Element e : spantag) {
+					sb.append(e.text()).append(" ");
+				}
+				
+				return sb.toString();
+				
+			}else {
+				System.out.println(con.getResponseMessage());
+			}
+		}catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+
 	}
 
 }

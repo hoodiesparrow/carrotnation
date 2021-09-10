@@ -14,4 +14,5 @@ public interface JoongnaCrawlingService {
 	public void listClassify(ProductQuery query);
 	public boolean stuffexception(String title, List<String> except);
 	public boolean stuffrequire(String title, List<String> require);
+	public String joongnacafe(String url);
 }
