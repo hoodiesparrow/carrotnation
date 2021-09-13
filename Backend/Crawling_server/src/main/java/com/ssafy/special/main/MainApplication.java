@@ -16,6 +16,7 @@ public class MainApplication {
 	private final QueryInfoService queryInfoService;
 	private final DaangnMultiThreadCrawling daangnMultiThreadCrawling;	
 	private final JoongnaMultiThreadCrawling JoongnaMultiThreadCrawling;
+	private final ThunderMultiThreadCrawling thunderMultiThreadCrawling;
 	
 	@Scheduled(fixedDelay = 1000 * 60 * 30)//30분
 	public void crawlingStart() {
@@ -29,11 +30,15 @@ public class MainApplication {
 			JoongnaMultiThreadCrawling.setProductQuery(query);
 			JoongnaMultiThreadCrawling.setQueryexceptionlist(queryExceptionKeywordList);
 			
+			thunderMultiThreadCrawling.setProductQuery(query);
+			thunderMultiThreadCrawling.setQueryExceptionKeywordList(queryExceptionKeywordList);
 			
 			Thread daangn = new Thread(daangnMultiThreadCrawling);
 			Thread joongna = new Thread(JoongnaMultiThreadCrawling);
-			daangn.start();
-			joongna.start();
+			Thread thunder = new Thread(thunderMultiThreadCrawling);
+//			daangn.start();
+//			joongna.start();
+			thunder.start();
 		}
 
 	}

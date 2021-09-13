@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.ssafy.special.main.MainApplication;
 import com.ssafy.special.service.DaangnCrawlingService;
 import com.ssafy.special.service.JoongnaCrawlingService;
+import com.ssafy.special.service.ThunderCrawlingService;
 
 @SpringBootTest
 class CrawlingServerApplicationTests {
@@ -16,13 +17,15 @@ class CrawlingServerApplicationTests {
 	@Autowired
 	JoongnaCrawlingService joongnaCrawlingService;
 	@Autowired
+	ThunderCrawlingService thunderCrawlingService;
+	@Autowired
 	MainApplication mainApplication;
 	
 	@Test
 	void contextLoads() {
 //		daangnCrawlingService.crawlingProducts();
 //		joongnaCrawlingService.joongnainit();
-		mainApplication.crawlingStart();
+//		mainApplication.crawlingStart();
 	}
 
 }
