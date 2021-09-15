@@ -77,7 +77,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		boolean isOldDate=false;// 1달 넘어가는 데이터면 탈출시켜
 		log.info("(당근)"+ productQuery.getQuery()+" 상품 목록을 크롤링 중입니다");
 		while(true) {
-			if(page!=0 && page%5==0) {
+			if(page!=0 && page%100==0) {
 				log.info("(당근)"+ productQuery.getQuery()+" : " +page+"/"+endpage);
 			}
 			try {
@@ -119,7 +119,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		int i=0;
 		for(ProductDTO p : productList) {
 			isOldDate=false;// 1달 넘어가는 데이터면 탈출시켜
-			if(i!=0 && i%100==0)
+			if(i!=0 && i%1000==0)
 				log.info("(당근)"+ productQuery.getQuery()+" : "+i+"번째 물건분류중입니다");
 			i++;			
 			for(Product product:products) {	
@@ -133,7 +133,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 				if(hasRequireKeyword(p.getTitle(),requireKeyword.get(product.getId()))) {
 					p.setName(product.getName());//품목 지정
 					try {
-						if(p.getDate()!=null)
+						if(p.getDate()==null)
 							isOldDate=detailCrawling(p);//게시글 날짜 지정
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -142,7 +142,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 				}else if(hasRequireKeyword(p.getContent(), requireKeyword.get(product.getId()))){//제목에서 필수 키워드가 없으면 내용에서 필수 키워드를 가지고 있는지 확인함
 					p.setName(product.getName());//품목 지정
 					try {
-						if(p.getDate()!=null)
+						if(p.getDate()==null)
 							isOldDate=detailCrawling(p);//게시글 날짜 지정
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -163,6 +163,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 					sellList.setPrice(p.getPrice());
 					sellList.setCreateDate(p.getDate());
 					sellList.setLink(p.getLink());
+					sellList.setImg(p.getImg());
 					sellList.setLocation(p.getLocation());
 					boolean result = insertProductSellList(sellList);
 					if(result) {
