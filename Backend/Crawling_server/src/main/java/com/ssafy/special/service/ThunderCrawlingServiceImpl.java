@@ -2,6 +2,7 @@ package com.ssafy.special.service;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -63,20 +64,23 @@ public class ThunderCrawlingServiceImpl implements ThunderCrawlingService {
 
 		//productQuery로 크롤링을 진행하여 검색결과(productDTO)를 쿼리제외키워드로 필터링함
 		int page=1;
-		int endpage=46;
+		int endpage=200;
+		boolean isOldDate=false;// 1달 넘어가는 데이터면 탈출시켜
 		log.info("(번개)상품 목록을 크롤링 중입니다");
 		while(true) {
 			try {
-				listCrawling(productList, productQuery, page, queryExceptionKeywordList);
+				isOldDate=listCrawling(productList, productQuery, page, queryExceptionKeywordList);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			if(isOldDate)
+				break;
 			page++;
 			if(page>endpage)
 				break;
 		}
-		System.out.println("productList : "+productList);
+//		System.out.println("productList : "+productList);
 		
 		List<Product> products=productRepository.findByQuery(productQuery).orElse(new ArrayList<Product>());
 		Map<Long, List<String>> exceptionKeyword=new HashMap<Long, List<String>>();
@@ -137,7 +141,7 @@ public class ThunderCrawlingServiceImpl implements ThunderCrawlingService {
 	
 	@Transactional(readOnly = true)
 	// 목록 크롤링을 통해 검색어에 해당하는 게시글 id를 가져옴
-	private List<ProductDTO> listCrawling(List<ProductDTO> productList, ProductQuery productQuery, int page, List<String> queryExceptionKeywordList) throws IOException {
+	private boolean listCrawling(List<ProductDTO> productList, ProductQuery productQuery, int page, List<String> queryExceptionKeywordList) throws IOException {
 		String url = thunder1 + productQuery.getQuery() + thunder2 + page;
 		
 //		https://api.bunjang.co.kr/api/1/find_v2.json?q=아이폰12&page=0
@@ -181,21 +185,6 @@ public class ThunderCrawlingServiceImpl implements ThunderCrawlingService {
 					continue;
 				product.setPrice(Long.parseLong(price));
 				
-				//디테일 url
-				//https://api.bunjang.co.kr/api/1/product/164042247/detail_info.json?version=4
-				// pid = "164042247"
-				
-				//원본 게시글 링크 
-				product.setLink(thunderDetail + (String)productObject.get("pid") + "/detail_info.json?version=4");
-				//내용 뽑아내기
-				String detailUrl = product.getLink();
-				String jsonDetailInfo = Jsoup.connect(detailUrl).ignoreContentType(true).execute().body();
-				JSONObject jsonDetailObject = (JSONObject) jsonParser.parse(jsonDetailInfo);
-				JSONObject item_info = (JSONObject) jsonDetailObject.get("item_info");
-				
-				//게시글 내용
-				product.setContent((String) item_info.get("description_for_detail"));
-				
 				//원본 게시글 pid
 				product.setSeq((String)productObject.get("pid"));
 				
@@ -215,15 +204,37 @@ public class ThunderCrawlingServiceImpl implements ThunderCrawlingService {
 				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 				dateTime = LocalDateTime.parse(dateStr,formatter);
 				//2019-07-17 13:07:19
+				LocalDateTime preOneMonth=LocalDateTime.now().minusMonths(1);
 				
+				//한달 넘은 게시글인 경우 크롤링 중단
+				if(preOneMonth.isAfter(dateTime)) {
+					return true;
+				}
 				product.setDate(dateTime);
+				
+				
+				//디테일 url
+				//https://api.bunjang.co.kr/api/1/product/164042247/detail_info.json?version=4
+				// pid = "164042247"
+				
+				//원본 게시글 링크 
+				product.setLink(thunderDetail + (String)productObject.get("pid") + "/detail_info.json?version=4");
+				//내용 뽑아내기
+				String detailUrl = product.getLink();
+				String jsonDetailInfo = Jsoup.connect(detailUrl).ignoreContentType(true).execute().body();
+				JSONObject jsonDetailObject = (JSONObject) jsonParser.parse(jsonDetailInfo);
+				JSONObject item_info = (JSONObject) jsonDetailObject.get("item_info");
+				
+				//게시글 내용
+				product.setContent((String) item_info.get("description_for_detail"));
+				
 				productList.add(product);
 			}
 
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-		return productList;
+		return false;
 	}
 	//제외키워드 포함하고 있는지 확인
 	private boolean hasExceptionKeyword(String str, List<String> exceptionKeyword) {
