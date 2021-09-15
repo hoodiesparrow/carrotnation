@@ -63,7 +63,7 @@ public class ThunderCrawlingServiceImpl implements ThunderCrawlingService {
 
 		//productQuery로 크롤링을 진행하여 검색결과(productDTO)를 쿼리제외키워드로 필터링함
 		int page=1;
-		int endpage=3;
+		int endpage=126;
 		log.info("(번개)상품 목록을 크롤링 중입니다");
 		while(true) {
 			try {
