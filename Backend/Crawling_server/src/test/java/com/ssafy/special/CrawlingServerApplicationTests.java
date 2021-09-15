@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.ssafy.special.main.MainApplication;
-import com.ssafy.special.service.DaangnCrawlingService;
+import com.ssafy.special.service.DaangnCrawlingServiceImpl;
 import com.ssafy.special.service.JoongnaCrawlingService;
 import com.ssafy.special.service.ThunderCrawlingService;
 
@@ -13,7 +13,7 @@ import com.ssafy.special.service.ThunderCrawlingService;
 class CrawlingServerApplicationTests {
 
 	@Autowired
-	DaangnCrawlingService daangnCrawlingService;
+	DaangnCrawlingServiceImpl daangnCrawlingService;
 	@Autowired
 	JoongnaCrawlingService joongnaCrawlingService;
 	@Autowired
@@ -23,7 +23,7 @@ class CrawlingServerApplicationTests {
 	
 	@Test
 	void contextLoads() {
-//		daangnCrawlingService.crawlingProducts();
+		daangnCrawlingService.crawlingProducts();
 //		joongnaCrawlingService.joongnainit();
 //		mainApplication.crawlingStart();
 	}

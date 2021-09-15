@@ -73,18 +73,21 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		
 		//productQuery로 크롤링을 진행하여 검색결과(productDTO)를 쿼리제외키워드로 필터링함
 		int page=1;
-		int endpage=30;//추후 크롤링 페이지를 800으로 변경해야함 - 추헌국
+		int endpage=800;
+		boolean isOldDate=false;// 1달 넘어가는 데이터면 탈출시켜
 		log.info("(당근)"+ productQuery.getQuery()+" 상품 목록을 크롤링 중입니다");
 		while(true) {
 			if(page!=0 && page%5==0) {
 				log.info("(당근)"+ productQuery.getQuery()+" : " +page+"/"+endpage);
 			}
 			try {
-				listCrawling(productList, productQuery, page, queryExceptionKeywordList);
+				isOldDate=listCrawling(productList, productQuery, page, queryExceptionKeywordList);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			if(isOldDate)
+				break;
 			page++;
 			
 			if(page>endpage)
@@ -115,10 +118,12 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		log.info("(당근)"+ productQuery.getQuery()+" : 부적합한 물건을 제외하는 중입니다");
 		int i=0;
 		for(ProductDTO p : productList) {
+			isOldDate=false;// 1달 넘어가는 데이터면 탈출시켜
 			if(i!=0 && i%100==0)
 				log.info("(당근)"+ productQuery.getQuery()+" : "+i+"번째 물건분류중입니다");
 			i++;			
-			for(Product product:products) {			
+			for(Product product:products) {	
+				
 				//제외 키워드가지고 있으면 패스
 				if(hasExceptionKeyword(p.getTitle(), exceptionKeyword.get(product.getId()))) {
 					continue;
@@ -128,7 +133,8 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 				if(hasRequireKeyword(p.getTitle(),requireKeyword.get(product.getId()))) {
 					p.setName(product.getName());//품목 지정
 					try {
-						detailCrawling(p);//게시글 날짜 지정
+						if(p.getDate()!=null)
+							isOldDate=detailCrawling(p);//게시글 날짜 지정
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -136,12 +142,16 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 				}else if(hasRequireKeyword(p.getContent(), requireKeyword.get(product.getId()))){//제목에서 필수 키워드가 없으면 내용에서 필수 키워드를 가지고 있는지 확인함
 					p.setName(product.getName());//품목 지정
 					try {
-						detailCrawling(p);//게시글 날짜 지정
+						if(p.getDate()!=null)
+							isOldDate=detailCrawling(p);//게시글 날짜 지정
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}				
 				}
+				if(isOldDate)
+					break;
+				
 				
 				//name이 지정되었으면 ProductSellList테이블에 삽입
 				if(p.getName()!=null) {					
@@ -162,6 +172,9 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 					}
 				}
 			}
+			if(isOldDate)
+				break;
+			
 		}
 		log.info("(당근)"+ productQuery.getQuery()+" : 크롤링 및 분류가 완료되었습니다");
 	}
@@ -169,7 +182,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 	
 	
 	// 목록 크롤링을 통해 검색어에 해당하는 게시글 id를 가져옴
-	private void listCrawling(List<ProductDTO> productList, ProductQuery productQuery, int page, List<String> queryExceptionKeywordList) throws IOException {
+	private boolean listCrawling(List<ProductDTO> productList, ProductQuery productQuery, int page, List<String> queryExceptionKeywordList) throws IOException {
 		String url = carrot1 + productQuery.getQuery() + carrot2 + page;
 		Document doc=null;
 		doc = Jsoup.connect(url).get();
@@ -211,13 +224,24 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 			//지역
 			product.setLocation(content.select(".article-region-name").text());
 			
+			
+			//시간정보는 상세 게시글에 나와있음	
+			//50페이지마다 디테일 크롤링해서 1달 넘어가면 크롤링 멈추게 함
+			
+			boolean isOldDate=false;// 1달 넘어가는 데이터면 탈출시켜
+			
+			if(page!=0 && page%50==0)
+				isOldDate=detailCrawling(product);
+			
+			if(isOldDate)
+				return true;
+			
 			productList.add(product);
-			//시간정보는 상세 게시글에 나와있음			
 		}
-		return;
+		return false;
 	}
 	
-	private void detailCrawling(ProductDTO product)throws IOException{		
+	private boolean detailCrawling(ProductDTO product)throws IOException{		
 		// 게시글 상세보기 크롤링
 		Document doc = Jsoup.connect(product.getLink()).get();
 
@@ -233,8 +257,10 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		
 		if(time.contains("년")) {
 			dateTime=LocalDateTime.now().minusYears(Long.parseLong(time.replace("년", "")));
+			return true;
 		}else if(time.contains("달")) {
 			dateTime=LocalDateTime.now().minusMonths(Long.parseLong(time.replace("달", "")));
+			return true;
 		}else if(time.contains("일")) {
 			dateTime=LocalDateTime.now().minusDays(Long.parseLong(time.replace("일", "")));
 		}else if(time.contains("시간")) {
@@ -248,7 +274,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		product.setTime(time.replace("끌올", ""));
 		product.setDate(dateTime);
 		
-		return;	
+		return false;	
 	}
 	
 	//제외키워드 포함하고 있는지 확인
