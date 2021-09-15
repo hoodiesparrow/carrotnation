@@ -37,8 +37,8 @@ public class MainApplication {
 			Thread joongna = new Thread(JoongnaMultiThreadCrawling);
 			Thread thunder = new Thread(thunderMultiThreadCrawling);
 //			daangn.start();
-//			joongna.start();
-			thunder.start();
+			joongna.start();
+//			thunder.start();
 		}
 
 	}
