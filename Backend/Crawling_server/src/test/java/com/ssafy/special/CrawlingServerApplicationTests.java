@@ -23,7 +23,7 @@ class CrawlingServerApplicationTests {
 	
 	@Test
 	void contextLoads() {
-		daangnCrawlingService.crawlingProducts();
+//		daangnCrawlingService.crawlingProducts();
 //		joongnaCrawlingService.joongnainit();
 //		mainApplication.crawlingStart();
 	}

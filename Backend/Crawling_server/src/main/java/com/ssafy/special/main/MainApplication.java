@@ -21,7 +21,8 @@ public class MainApplication {
 	@Scheduled(fixedDelay = 1000 * 60 * 30)//30분
 	public void crawlingStart() {
 		List<ProductQuery> productQuery = queryInfoService.getProductQueryList();
-
+		queryInfoService.truncateProductSellList();
+		
 		for (ProductQuery query : productQuery) {
 			List<String> queryExceptionKeywordList = queryInfoService.getQueryExceptionKeywordList(query);
 			daangnMultiThreadCrawling.setProductQuery(query);
@@ -36,8 +37,8 @@ public class MainApplication {
 			Thread daangn = new Thread(daangnMultiThreadCrawling);
 			Thread joongna = new Thread(JoongnaMultiThreadCrawling);
 			Thread thunder = new Thread(thunderMultiThreadCrawling);
-//			daangn.start();
-//			joongna.start();
+			daangn.start();
+			joongna.start();
 			thunder.start();
 		}
 
