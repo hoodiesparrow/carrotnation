@@ -77,7 +77,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		boolean isOldDate=false;// 1달 넘어가는 데이터면 탈출시켜
 		log.info("(당근)"+ productQuery.getQuery()+" 상품 목록을 크롤링 중입니다");
 		while(true) {
-			if(page!=0 && page%100==0) {
+			if(page!=0 && page%200==0) {
 				log.info("(당근)"+ productQuery.getQuery()+" : " +page+"/"+endpage);
 			}
 			try {
@@ -92,6 +92,12 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 			
 			if(page>endpage)
 				break;
+			
+//			try{
+//			    Thread.sleep(10);//0.01초 쉬게함
+//			}catch(InterruptedException e){
+//			    e.printStackTrace();
+//			}
 		}
 		List<Product> products=productRepository.findByQuery(productQuery).orElse(new ArrayList<Product>());
 		Map<Long, List<String>> exceptionKeyword=new HashMap<Long, List<String>>();
@@ -116,12 +122,12 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		
 		
 		log.info("(당근)"+ productQuery.getQuery()+" : 부적합한 물건을 제외하는 중입니다");
-		int i=0;
+//		int i=0;
 		for(ProductDTO p : productList) {
 			isOldDate=false;// 1달 넘어가는 데이터면 탈출시켜
-			if(i!=0 && i%1000==0)
-				log.info("(당근)"+ productQuery.getQuery()+" : "+i+"번째 물건분류중입니다");
-			i++;			
+//			if(i!=0 && i%2000==0)
+//				log.info("(당근)"+ productQuery.getQuery()+" : "+i+"번째 물건분류중입니다");
+//			i++;			
 			for(Product product:products) {	
 				
 				//제외 키워드가지고 있으면 패스
@@ -156,7 +162,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 				//name이 지정되었으면 ProductSellList테이블에 삽입
 				if(p.getName()!=null) {					
 					ProductSellList sellList=new ProductSellList();
-					sellList.setId(Integer.parseInt(p.getSeq()));
+					sellList.setId(Long.parseLong(p.getSeq()));
 					sellList.setMarket(market);
 					sellList.setProductId(product);
 					sellList.setTitle(p.getTitle());
@@ -186,8 +192,12 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 	private boolean listCrawling(List<ProductDTO> productList, ProductQuery productQuery, int page, List<String> queryExceptionKeywordList) throws IOException {
 		String url = carrot1 + productQuery.getQuery() + carrot2 + page;
 		Document doc=null;
-		doc = Jsoup.connect(url).get();
-
+		try {
+			doc = Jsoup.connect(url).get();
+		}catch (Exception e) {
+			log.info("해당 URL을 크롤링하던중 에러가 발생하였습니다 "+ url);
+			return false;
+		}
 		Elements contents = doc.select("article");
 		
 		for (Element content : contents) {
@@ -244,8 +254,15 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 	
 	private boolean detailCrawling(ProductDTO product)throws IOException{		
 		// 게시글 상세보기 크롤링
-		Document doc = Jsoup.connect(product.getLink()).get();
+		Document doc;
 
+		try {
+			doc = Jsoup.connect(product.getLink()).get();
+		}catch (Exception e) {
+			log.info("해당 URL을 상세 크롤링하던중 에러가 발생하였습니다 "+ product.getLink());
+			return false;
+		}
+		
 		Element content = doc.selectFirst("#content > #article-description");
 
 		// 날짜, 몇시간 전인지
