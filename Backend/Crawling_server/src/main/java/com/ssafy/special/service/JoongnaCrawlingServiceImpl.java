@@ -80,8 +80,8 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 				} catch (InterruptedException e) {
 					// TODO: handle exception
 				}
-				if (page == 5)
-					break;
+//				if (page == 5)
+//					break;
 			} catch (PageEndException e) {
 				break;
 			}
