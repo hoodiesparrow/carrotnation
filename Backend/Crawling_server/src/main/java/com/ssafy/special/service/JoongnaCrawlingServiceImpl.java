@@ -16,6 +16,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
@@ -357,17 +358,31 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 
 	public void listClassify(ProductQuery query, List<ProductDTO> list) {
 		// TODO Auto-generated method stub
+		List<Product> pdlist = productRepository.findByQuery(query).orElse(new ArrayList<Product>());
+		Map<Long, List<String>> exceptionKeyword=new HashMap<Long, List<String>>();
+		Map<Long, List<String>> requireKeyword=new HashMap<Long, List<String>>();
+		
+		
+		for (Product p : pdlist) {
+			List<String> commaexcept = exceptionKeywordRepository.findByProductIdAndMarket(p, "common")
+			.orElse(new ArrayList<ExceptionKeyword>()).stream().map(ExceptionKeyword::getKeyword)
+			.collect(Collectors.toList());
+
+			List<String> commarequire = requireKeywordRepository.findByProductIdAndMarket(p, "common")
+			.orElse(new ArrayList<RequireKeyword>()).stream().map(RequireKeyword::getKeyword)
+			.collect(Collectors.toList());
+			
+			exceptionKeyword.put(p.getId(), commaexcept);
+			requireKeyword.put(p.getId(), commarequire);
+			
+			
+		}
 		for (ProductDTO pd : list) {
-			List<Product> pdlist = productRepository.findByQuery(query).orElse(new ArrayList<Product>());
 			
 			for (Product p : pdlist) {
-				List<String> commaexcept = exceptionKeywordRepository.findByProductIdAndMarket(p, "common")
-						.orElse(new ArrayList<ExceptionKeyword>()).stream().map(ExceptionKeyword::getKeyword)
-						.collect(Collectors.toList());
+				List<String> commaexcept = exceptionKeyword.get(p.getId());
 
-				List<String> commarequire = requireKeywordRepository.findByProductIdAndMarket(p, "common")
-						.orElse(new ArrayList<RequireKeyword>()).stream().map(RequireKeyword::getKeyword)
-						.collect(Collectors.toList());
+				List<String> commarequire = requireKeyword.get(p.getId());
 
 				HashMap<String, List<String>> inandexc = new HashMap<String, List<String>>();
 				inandexc.put("except", commaexcept);
