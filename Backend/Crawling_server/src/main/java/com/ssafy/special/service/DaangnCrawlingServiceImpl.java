@@ -60,19 +60,17 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 //		}			
 //	}
 	
-	@Transactional(readOnly = true)
 	@Override
-	public void crawlingProduct(ProductQuery productQuery, List<String> queryExceptionKeywordList) {
+	public void crawlingProduct(ProductQuery productQuery, List<String> queryExceptionKeywordList) {		
 		final String market = "daangn";
 		final String commonMarket = "common";
 		
-
 		List<ProductDTO> productList=new ArrayList<ProductDTO>();
 		log.info("(당근)해당 검색어를 크롤링 중입니다 "+ productQuery.getQuery());
 		
 		//productQuery로 크롤링을 진행하여 검색결과(productDTO)를 쿼리제외키워드로 필터링함
 		int page=1;
-		int endpage=400;
+		int endpage=800;
 		boolean isOldDate=false;// 1달 넘어가는 데이터면 탈출시켜
 		while(true) {
 			if(page!=0 && page%200==0 && page!=endpage) {
@@ -97,29 +95,14 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 //			    e.printStackTrace();
 //			}
 		}
-		List<Product> products=productRepository.findByQuery(productQuery).orElse(new ArrayList<Product>());
+		List<Product> products= new ArrayList<Product>();
 		Map<Long, List<String>> exceptionKeyword=new HashMap<Long, List<String>>();
 		Map<Long, List<String>> requireKeyword=new HashMap<Long, List<String>>();
-		
-		for(Product product:products) {
-			List<String> exception=new ArrayList<>();
-			List<String> require=new ArrayList<String>(); 
-			//데이터 베이스에 productName을 검색해서 해당 제품을 찾기위한 검색 query, 제외키워드, 필수키워드들을 가져옴			
-			exception=exceptionKeywordRepository.findByProductIdAndMarket(product, commonMarket).orElse(new ArrayList<ExceptionKeyword>()).stream().map(ExceptionKeyword::getKeyword).collect(Collectors.toList());
-			exception.addAll(exceptionKeywordRepository.findByProductIdAndMarket(product, market).orElse(new ArrayList<ExceptionKeyword>()).stream().map(ExceptionKeyword::getKeyword).collect(Collectors.toList()));
-			
-			exceptionKeyword.put(product.getId(), exception);
-			
-			//공통 필수 키워드
-			require=requireKeywordRepository.findByProductIdAndMarket(product, commonMarket).orElse(new ArrayList<RequireKeyword>()).stream().map(RequireKeyword::getKeyword).collect(Collectors.toList());
-			//당근마켓 필수 키워드
-			require.addAll(requireKeywordRepository.findByProductIdAndMarket(product, market).orElse(new ArrayList<RequireKeyword>()).stream().map(RequireKeyword::getKeyword).collect(Collectors.toList()));
-		
-			requireKeyword.put(product.getId(), require);
-		}
-		
+
+		getKeyword(productQuery, products, exceptionKeyword, requireKeyword);		
 		
 		log.info("(당근)"+ productQuery.getQuery()+" : 부적합한 물건을 제외하는 중입니다");
+		
 //		int i=0;
 		for(ProductDTO p : productList) {
 			isOldDate=false;// 1달 넘어가는 데이터면 탈출시켜
@@ -200,6 +183,11 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 			log.info("해당 URL을 크롤링하던중 에러가 발생하였습니다 "+ url);
 			return false;
 		}
+		//s21처럼 검색결과가 아얘 없는경우
+		if(contents.size()==0) {
+			return true;
+		}
+	
 		
 		for (Element content : contents) {
 			// 걸러진 데이터들만 저장되게함			
@@ -342,5 +330,30 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 			return false;
 		}
 		return true;
+	}
+	
+	@Transactional(readOnly = true)
+	private void getKeyword(ProductQuery productQuery, List<Product> products, Map<Long, List<String>> exceptionKeyword, Map<Long, List<String>> requireKeyword) {
+		final String market = "daangn";
+		final String commonMarket = "common";
+		
+        products.addAll(productRepository.findByQuery(productQuery).orElse(new ArrayList<Product>()));
+        
+		for(Product product:products) {
+			List<String> exception=new ArrayList<>();
+			List<String> require=new ArrayList<String>(); 
+			//데이터 베이스에 productName을 검색해서 해당 제품을 찾기위한 검색 query, 제외키워드, 필수키워드들을 가져옴			
+			exception=exceptionKeywordRepository.findByProductIdAndMarket(product, commonMarket).orElse(new ArrayList<ExceptionKeyword>()).stream().map(ExceptionKeyword::getKeyword).collect(Collectors.toList());
+			exception.addAll(exceptionKeywordRepository.findByProductIdAndMarket(product, market).orElse(new ArrayList<ExceptionKeyword>()).stream().map(ExceptionKeyword::getKeyword).collect(Collectors.toList()));
+			
+			exceptionKeyword.put(product.getId(), exception);
+			
+			//공통 필수 키워드
+			require=requireKeywordRepository.findByProductIdAndMarket(product, commonMarket).orElse(new ArrayList<RequireKeyword>()).stream().map(RequireKeyword::getKeyword).collect(Collectors.toList());
+			//당근마켓 필수 키워드
+			require.addAll(requireKeywordRepository.findByProductIdAndMarket(product, market).orElse(new ArrayList<RequireKeyword>()).stream().map(RequireKeyword::getKeyword).collect(Collectors.toList()));
+		
+			requireKeyword.put(product.getId(), require);
+		}
 	}
 }
