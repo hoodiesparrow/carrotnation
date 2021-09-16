@@ -60,7 +60,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 //		}			
 //	}
 	
-	@Transactional
+	@Transactional(readOnly = true)
 	@Override
 	public void crawlingProduct(ProductQuery productQuery, List<String> queryExceptionKeywordList) {
 		final String market = "daangn";
@@ -72,11 +72,10 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		
 		//productQuery로 크롤링을 진행하여 검색결과(productDTO)를 쿼리제외키워드로 필터링함
 		int page=1;
-		int endpage=800;
+		int endpage=400;
 		boolean isOldDate=false;// 1달 넘어가는 데이터면 탈출시켜
-		log.info("(당근)"+ productQuery.getQuery()+" 상품 목록을 크롤링 중입니다");
 		while(true) {
-			if(page!=0 && page%200==0) {
+			if(page!=0 && page%200==0 && page!=endpage) {
 				log.info("(당근)"+ productQuery.getQuery()+" : " +page+"/"+endpage);
 			}
 			try {
@@ -170,6 +169,8 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 					sellList.setLink(p.getLink());
 					sellList.setImg(p.getImg());
 					sellList.setLocation(p.getLocation());
+					if(sellList.getCreateDate()==null)
+						continue;
 					boolean result = insertProductSellList(sellList);
 					if(result) {
 						break;
@@ -191,13 +192,14 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 	private boolean listCrawling(List<ProductDTO> productList, ProductQuery productQuery, int page, List<String> queryExceptionKeywordList) throws IOException {
 		String url = carrot1 + productQuery.getQuery() + carrot2 + page;
 		Document doc=null;
+		Elements contents=null;
 		try {
 			doc = Jsoup.connect(url).get();
+			contents = doc.select("article");
 		}catch (Exception e) {
 			log.info("해당 URL을 크롤링하던중 에러가 발생하였습니다 "+ url);
 			return false;
 		}
-		Elements contents = doc.select("article");
 		
 		for (Element content : contents) {
 			// 걸러진 데이터들만 저장되게함			
@@ -254,19 +256,18 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 	private boolean detailCrawling(ProductDTO product)throws IOException{		
 		// 게시글 상세보기 크롤링
 		Document doc;
-
+		Element content;
+		String time;
 		try {
 			doc = Jsoup.connect(product.getLink()).get();
+			content = doc.selectFirst("#content > #article-description");
+			time=content.select("#article-category time").text();
 		}catch (Exception e) {
 			log.info("해당 URL을 상세 크롤링하던중 에러가 발생하였습니다 "+ product.getLink());
 			return false;
 		}
-		
-		Element content = doc.selectFirst("#content > #article-description");
 
 		// 날짜, 몇시간 전인지
-		String time=content.select("#article-category time").text();
-
 		String[] tmp= time.split(" ");
 		time= tmp[tmp.length-2];
 		
@@ -285,7 +286,11 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		}else if(time.contains("분")) {
 			dateTime=LocalDateTime.now().minusMinutes(Long.parseLong(time.replace("분", "")));
 		}else {
-			dateTime=LocalDateTime.now().minusSeconds(Long.parseLong(time.replace("초", "")));
+			try {
+				dateTime=LocalDateTime.now().minusSeconds(Long.parseLong(time.replace("초", "")));
+			} catch (Exception e) {
+				dateTime=null;
+			}			
 		}
 		
 		product.setTime(time.replace("끌올", ""));
