@@ -16,6 +16,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
@@ -60,7 +61,8 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 	SimpleDateFormat yearmonthday_format = new SimpleDateFormat("yyyy-MM-dd");
 	Date date_now;
 	Calendar cal;
-
+	String APPLE = "1151";
+	String SAMSUNG = "1150";
 //	@Scheduled(fixedDelay = 1000 * 60 * 30)
 	@Override
 	public void joongnainit(ProductQuery productQuery, List<String> exception) {
@@ -69,31 +71,25 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		cal = Calendar.getInstance();
 		cal.setTime(date_now);
 		cal.add(Calendar.MONTH, -1);
-		List<ProductDTO> pdlist = null;
-
+		List<ProductDTO> pdlist = new ArrayList<ProductDTO>();
+		log.info("(중고나라)"+ productQuery.getQuery()+" 상품 목록을 크롤링 중입니다");
 		while (true) {
 			try {
-				pdlist = new ArrayList<ProductDTO>();
 				joongnaPostCrawling(productQuery.getQuery(), page++, exception, pdlist);
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO: handle exception
-				}
-				if (page == 5)
-					break;
+//				try {
+//					Thread.sleep(1000);
+//				} catch (InterruptedException e) {
+//					// TODO: handle exception
+//				}
+//				if (page == 5)
+//					break;
 			} catch (PageEndException e) {
 				break;
 			}
 
 		}
 		listClassify(productQuery, pdlist);
-
-//		for (ProductDTO pd : pdlist) {
-//			if (pd.getName() != null)
-//
-//				System.out.println(pd.toString());
-//		}
+		log.info("[end] (중고나라)"+ productQuery.getQuery()+" 상품 목록을 크롤링 끝났습니다.");
 
 	}
 
@@ -120,12 +116,15 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 			throws PageEndException {
 		// TODO Auto-generated method stub
 
-//		System.out.println("===============================");
-//		System.out.println(fourteen_format.format(date_now)); // 14자리 포멧으로 출력한다
-//		System.out.println(yearmonthday_format.format(cal.getTime()));
-
+		String categorySeq;
+		if(query.contains("아이폰")) {
+			categorySeq=APPLE;
+		}else {
+			categorySeq=SAMSUNG;
+		}
+		
 		String payload = "{\r\n" + "    \"filter\": {\r\n" + "        \"categoryDepth\": 3,\r\n"
-				+ "        \"categorySeq\": 1151,\r\n" + "        \"dateFilterParameter\": {\r\n"
+				+ "        \"categorySeq\": "+categorySeq+",\r\n" + "        \"dateFilterParameter\": {\r\n"
 				+ "            \"sortEndDate\": \"" + yearmonthday_format.format(date_now) + "\",\r\n"
 				+ "            \"sortStartDate\": \"" + yearmonthday_format.format(cal.getTime()) + "\"\r\n"
 				+ "        },\r\n" + "        \"productCondition\": -1,\r\n" + "        \"flawedYn\": 0,\r\n"
@@ -357,17 +356,31 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 
 	public void listClassify(ProductQuery query, List<ProductDTO> list) {
 		// TODO Auto-generated method stub
+		List<Product> pdlist = productRepository.findByQuery(query).orElse(new ArrayList<Product>());
+		Map<Long, List<String>> exceptionKeyword=new HashMap<Long, List<String>>();
+		Map<Long, List<String>> requireKeyword=new HashMap<Long, List<String>>();
+		
+		
+		for (Product p : pdlist) {
+			List<String> commaexcept = exceptionKeywordRepository.findByProductIdAndMarket(p, "common")
+			.orElse(new ArrayList<ExceptionKeyword>()).stream().map(ExceptionKeyword::getKeyword)
+			.collect(Collectors.toList());
+
+			List<String> commarequire = requireKeywordRepository.findByProductIdAndMarket(p, "common")
+			.orElse(new ArrayList<RequireKeyword>()).stream().map(RequireKeyword::getKeyword)
+			.collect(Collectors.toList());
+			
+			exceptionKeyword.put(p.getId(), commaexcept);
+			requireKeyword.put(p.getId(), commarequire);
+			
+			
+		}
 		for (ProductDTO pd : list) {
-			List<Product> pdlist = productRepository.findByQuery(query).orElse(new ArrayList<Product>());
 			
 			for (Product p : pdlist) {
-				List<String> commaexcept = exceptionKeywordRepository.findByProductIdAndMarket(p, "common")
-						.orElse(new ArrayList<ExceptionKeyword>()).stream().map(ExceptionKeyword::getKeyword)
-						.collect(Collectors.toList());
+				List<String> commaexcept = exceptionKeyword.get(p.getId());
 
-				List<String> commarequire = requireKeywordRepository.findByProductIdAndMarket(p, "common")
-						.orElse(new ArrayList<RequireKeyword>()).stream().map(RequireKeyword::getKeyword)
-						.collect(Collectors.toList());
+				List<String> commarequire = requireKeyword.get(p.getId());
 
 				HashMap<String, List<String>> inandexc = new HashMap<String, List<String>>();
 				inandexc.put("except", commaexcept);
@@ -411,17 +424,19 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-
+						sellList.setMarket("joonnaCafe");
 					} else {
 						sellList.setId(Integer.parseInt(pd.getSeq()));
+						sellList.setMarket("joonnaApp");
 					}
-					sellList.setMarket("joonna");
+					
 					sellList.setProductId(p);
 					sellList.setTitle(pd.getTitle());
 					sellList.setPrice(pd.getPrice());
 					sellList.setCreateDate(pd.getDate());
 					sellList.setLink(pd.getLink());
 					sellList.setLocation(pd.getLocation());
+					sellList.setImg(pd.getImg());
 					boolean result = insertProductSellList(sellList);
 					if (!result) {
 						log.info("(중고나라)데이터 삽입에 실패 했습니다");
