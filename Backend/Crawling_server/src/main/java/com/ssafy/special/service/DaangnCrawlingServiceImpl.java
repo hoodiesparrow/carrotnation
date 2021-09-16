@@ -31,7 +31,6 @@ import lombok.extern.log4j.Log4j2;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 @Log4j2
 public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 
@@ -61,7 +60,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 //		}			
 //	}
 	
-
+	@Transactional
 	@Override
 	public void crawlingProduct(ProductQuery productQuery, List<String> queryExceptionKeywordList) {
 		final String market = "daangn";
@@ -334,9 +333,9 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 	private boolean insertProductSellList(ProductSellList sellList) {
 		try {
 			productSellListRepository.save(sellList);
-		} catch (Exception e) {
+		}catch (Exception e ) {
 			return false;
-		}		
+		}
 		return true;
 	}
 }
