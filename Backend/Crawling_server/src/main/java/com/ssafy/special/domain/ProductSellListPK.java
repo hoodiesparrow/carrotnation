@@ -1,6 +1,7 @@
 package com.ssafy.special.domain;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,15 +16,7 @@ public class ProductSellListPK implements Serializable {
 	private String market;
 	@Override
 	public int hashCode() {
-		int h=0;
-		if("daangn".equals(this.market))
-			h=(int)this.id *10 +1;
-		else if("thunder".equals(this.market))
-			h=(int)this.id *10 +2;
-		else 
-			h=(int)this.id *10 +3;
-		
-		return h;
+		return Objects.hash(this.id,this.market);
 	}
 	@Override
 	public boolean equals(Object obj) {
