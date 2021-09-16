@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ssafy.special.controller.SSHUtils;
 import com.ssafy.special.domain.ProductSellList;
 import com.ssafy.special.main.MainApplication;
 import com.ssafy.special.repository.ProductSellListRepository;
@@ -25,9 +26,11 @@ class CrawlingServerApplicationTests {
 	@Autowired
 	MainApplication mainApplication;
 	@Autowired
-	ProductSellListRepository productSellListRepository; 
+	ProductSellListRepository productSellListRepository;
+	@Autowired
+	SSHUtils ssh;
 	
-	@Test
+//	@Test
 //	@Transactional
 	void contextLoads() {
 //		daangnCrawlingService.crawlingProducts();
@@ -65,7 +68,7 @@ class CrawlingServerApplicationTests {
 	}
 
 	
-	@Transactional
+//	@Transactional
 	private boolean insertProductSellList(ProductSellList sellList) {
 		try {
 			productSellListRepository.save(sellList);
@@ -75,5 +78,10 @@ class CrawlingServerApplicationTests {
 			return false;
 		}
 		return true;
+	}
+	@Test
+	public void TestSSH() {
+		String cmd ="ls -lrt";
+		System.out.println(ssh.getSSHResponse(cmd));
 	}
 }
