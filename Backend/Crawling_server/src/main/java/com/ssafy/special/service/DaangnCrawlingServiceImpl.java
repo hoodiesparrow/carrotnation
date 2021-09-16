@@ -297,7 +297,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 	//제외키워드 포함하고 있는지 확인
 	private boolean hasExceptionKeyword(String str, List<String> exceptionKeyword) {
 		for(String keyword : exceptionKeyword) {
-			if(str.toLowerCase().contains(keyword)) {
+			if(str.toLowerCase().contains(keyword.toLowerCase())) {
 				//제외 키워드를 포함하고 있으면 버려야함
 				return true;
 			}
@@ -316,7 +316,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 			boolean isContain=false;//or연산이기 때문에 하나라도 포함하면 됨
 			for(String keyword: orKeyword.split(",")) {
 				//제목 소문자로 변환시키고 비교하도록함
-				if(str.toLowerCase().contains(keyword)) {
+				if(str.toLowerCase().contains(keyword.toLowerCase())) {
 					isContain=true;
 					break;
 				}
