@@ -12,8 +12,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,20 +55,19 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 
 	static String giga;
 	static String strUrl = "https://search-api.joongna.com/v25/search/product";
-	SimpleDateFormat fourteen_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	SimpleDateFormat yearmonthday_format = new SimpleDateFormat("yyyy-MM-dd");
-	Date date_now;
-	Calendar cal;
+//	SimpleDateFormat fourteen_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//	SimpleDateFormat yearmonthday_format = new SimpleDateFormat("yyyy-MM-dd");
+	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	LocalDateTime date_now;
+	LocalDateTime cal;
 	String APPLE = "1151";
 	String SAMSUNG = "1150";
 //	@Scheduled(fixedDelay = 1000 * 60 * 30)
 	@Override
 	public void joongnainit(ProductQuery productQuery, List<String> exception) {
 		int page = 0;
-		date_now = new Date(System.currentTimeMillis());
-		cal = Calendar.getInstance();
-		cal.setTime(date_now);
-		cal.add(Calendar.MONTH, -1);
+		date_now = LocalDateTime.now();
+		cal = date_now.minusMonths(1);
 		List<ProductDTO> pdlist = new ArrayList<ProductDTO>();
 		log.info("(중고나라)"+ productQuery.getQuery()+" 상품 목록을 크롤링 중입니다");
 		while (true) {
@@ -125,8 +122,8 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		
 		String payload = "{\r\n" + "    \"filter\": {\r\n" + "        \"categoryDepth\": 3,\r\n"
 				+ "        \"categorySeq\": "+categorySeq+",\r\n" + "        \"dateFilterParameter\": {\r\n"
-				+ "            \"sortEndDate\": \"" + yearmonthday_format.format(date_now) + "\",\r\n"
-				+ "            \"sortStartDate\": \"" + yearmonthday_format.format(cal.getTime()) + "\"\r\n"
+				+ "            \"sortEndDate\": \"" + date_now.toLocalDate() + "\",\r\n"
+				+ "            \"sortStartDate\": \"" + cal.toLocalDate() + "\"\r\n"
 				+ "        },\r\n" + "        \"productCondition\": -1,\r\n" + "        \"flawedYn\": 0,\r\n"
 				+ "        \"fullPackageYn\": 0,\r\n" + "        \"limitedEditionYn\": 0,\r\n"
 				+ "        \"maxPrice\": 2000000000,\r\n" + "        \"minPrice\": 0,\r\n"
@@ -136,7 +133,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 				+ "    \"quantity\": 10,\r\n" + "    \"searchQuantity\": 10,\r\n" + "    \"osType\": 2,\r\n"
 				+ "    \"searchWord\": \"" + query + "\",\r\n" + "    \"sort\": \"RECENT_SORT\",\r\n"
 				+ "    \"startIndex\": " + page + ",\r\n" + "    \"searchStartTime\": \""
-				+ fourteen_format.format(date_now) + "\"\r\n" + "}";
+				+ date_now.format(formatter) + "\"\r\n" + "}";
 		try {
 			URL url = new URL(strUrl);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -189,7 +186,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 									"https://img2.joongna.com" + item.get("url").toString().replaceAll("\"", ""));
 							product.setPrice(Long.parseLong(item.get("price").toString()));
 
-							DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+							
 							LocalDateTime date = LocalDateTime
 									.parse(item.get("articleRegDate").toString().replaceAll("\"", ""), formatter);
 							product.setDate(date);
@@ -411,8 +408,8 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 						}
 					}
 				}
-				if (pd.getName() != null) {
-
+				
+				if (pd.getName() != null && !cal.isBefore(pd.getDate())) {
 					ProductSellList sellList = new ProductSellList();
 					if ("0".equals(pd.getSeq())) {
 
@@ -425,13 +422,20 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 							e.printStackTrace();
 						}
 						sellList.setMarket("joonnaCafe");
+						if (pd.getContent() == null) {
+							pd.setContent(joongnacafe(pd.getLink()));
+						}
 					} else {
 						sellList.setId(Integer.parseInt(pd.getSeq()));
 						sellList.setMarket("joonnaApp");
+						if (pd.getContent() == null) {
+							pd.setContent(joongnaapp(pd.getSeq()));
+						}
 					}
 					
 					sellList.setProductId(p);
 					sellList.setTitle(pd.getTitle());
+					sellList.setContent(pd.getContent());
 					sellList.setPrice(pd.getPrice());
 					sellList.setCreateDate(pd.getDate());
 					sellList.setLink(pd.getLink());

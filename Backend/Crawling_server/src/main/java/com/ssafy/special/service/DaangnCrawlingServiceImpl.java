@@ -60,13 +60,9 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 //		}			
 //	}
 	
-	@Transactional
 	@Override
-	public void crawlingProduct(ProductQuery productQuery, List<String> queryExceptionKeywordList) {
-		final String market = "daangn";
-		final String commonMarket = "common";
+	public void crawlingProduct(ProductQuery productQuery, List<String> queryExceptionKeywordList) {		
 		
-
 		List<ProductDTO> productList=new ArrayList<ProductDTO>();
 		log.info("(당근)해당 검색어를 크롤링 중입니다 "+ productQuery.getQuery());
 		
@@ -74,9 +70,8 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		int page=1;
 		int endpage=800;
 		boolean isOldDate=false;// 1달 넘어가는 데이터면 탈출시켜
-		log.info("(당근)"+ productQuery.getQuery()+" 상품 목록을 크롤링 중입니다");
 		while(true) {
-			if(page!=0 && page%200==0) {
+			if(page!=0 && page%200==0 && page!=endpage) {
 				log.info("(당근)"+ productQuery.getQuery()+" : " +page+"/"+endpage);
 			}
 			try {
@@ -98,29 +93,14 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 //			    e.printStackTrace();
 //			}
 		}
-		List<Product> products=productRepository.findByQuery(productQuery).orElse(new ArrayList<Product>());
+		List<Product> products= new ArrayList<Product>();
 		Map<Long, List<String>> exceptionKeyword=new HashMap<Long, List<String>>();
 		Map<Long, List<String>> requireKeyword=new HashMap<Long, List<String>>();
-		
-		for(Product product:products) {
-			List<String> exception=new ArrayList<>();
-			List<String> require=new ArrayList<String>(); 
-			//데이터 베이스에 productName을 검색해서 해당 제품을 찾기위한 검색 query, 제외키워드, 필수키워드들을 가져옴			
-			exception=exceptionKeywordRepository.findByProductIdAndMarket(product, commonMarket).orElse(new ArrayList<ExceptionKeyword>()).stream().map(ExceptionKeyword::getKeyword).collect(Collectors.toList());
-			exception.addAll(exceptionKeywordRepository.findByProductIdAndMarket(product, market).orElse(new ArrayList<ExceptionKeyword>()).stream().map(ExceptionKeyword::getKeyword).collect(Collectors.toList()));
-			
-			exceptionKeyword.put(product.getId(), exception);
-			
-			//공통 필수 키워드
-			require=requireKeywordRepository.findByProductIdAndMarket(product, commonMarket).orElse(new ArrayList<RequireKeyword>()).stream().map(RequireKeyword::getKeyword).collect(Collectors.toList());
-			//당근마켓 필수 키워드
-			require.addAll(requireKeywordRepository.findByProductIdAndMarket(product, market).orElse(new ArrayList<RequireKeyword>()).stream().map(RequireKeyword::getKeyword).collect(Collectors.toList()));
-		
-			requireKeyword.put(product.getId(), require);
-		}
-		
+
+		getKeyword(productQuery, products, exceptionKeyword, requireKeyword);		
 		
 		log.info("(당근)"+ productQuery.getQuery()+" : 부적합한 물건을 제외하는 중입니다");
+		
 //		int i=0;
 		for(ProductDTO p : productList) {
 			isOldDate=false;// 1달 넘어가는 데이터면 탈출시켜
@@ -162,14 +142,17 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 				if(p.getName()!=null) {					
 					ProductSellList sellList=new ProductSellList();
 					sellList.setId(Long.parseLong(p.getSeq()));
-					sellList.setMarket(market);
+					sellList.setMarket("daangn");
 					sellList.setProductId(product);
 					sellList.setTitle(p.getTitle());
+					sellList.setContent(p.getContent());					
 					sellList.setPrice(p.getPrice());
 					sellList.setCreateDate(p.getDate());
 					sellList.setLink(p.getLink());
 					sellList.setImg(p.getImg());
 					sellList.setLocation(p.getLocation());
+					if(sellList.getCreateDate()==null)
+						continue;
 					boolean result = insertProductSellList(sellList);
 					if(result) {
 						break;
@@ -191,13 +174,19 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 	private boolean listCrawling(List<ProductDTO> productList, ProductQuery productQuery, int page, List<String> queryExceptionKeywordList) throws IOException {
 		String url = carrot1 + productQuery.getQuery() + carrot2 + page;
 		Document doc=null;
+		Elements contents=null;
 		try {
 			doc = Jsoup.connect(url).get();
+			contents = doc.select("article");
 		}catch (Exception e) {
 			log.info("해당 URL을 크롤링하던중 에러가 발생하였습니다 "+ url);
 			return false;
 		}
-		Elements contents = doc.select("article");
+		//s21처럼 검색결과가 아얘 없는경우
+		if(contents.size()==0) {
+			return true;
+		}
+	
 		
 		for (Element content : contents) {
 			// 걸러진 데이터들만 저장되게함			
@@ -254,19 +243,18 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 	private boolean detailCrawling(ProductDTO product)throws IOException{		
 		// 게시글 상세보기 크롤링
 		Document doc;
-
+		Element content;
+		String time;
 		try {
 			doc = Jsoup.connect(product.getLink()).get();
+			content = doc.selectFirst("#content > #article-description");
+			time=content.select("#article-category time").text();
 		}catch (Exception e) {
 			log.info("해당 URL을 상세 크롤링하던중 에러가 발생하였습니다 "+ product.getLink());
 			return false;
 		}
-		
-		Element content = doc.selectFirst("#content > #article-description");
 
 		// 날짜, 몇시간 전인지
-		String time=content.select("#article-category time").text();
-
 		String[] tmp= time.split(" ");
 		time= tmp[tmp.length-2];
 		
@@ -285,7 +273,11 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		}else if(time.contains("분")) {
 			dateTime=LocalDateTime.now().minusMinutes(Long.parseLong(time.replace("분", "")));
 		}else {
-			dateTime=LocalDateTime.now().minusSeconds(Long.parseLong(time.replace("초", "")));
+			try {
+				dateTime=LocalDateTime.now().minusSeconds(Long.parseLong(time.replace("초", "")));
+			} catch (Exception e) {
+				dateTime=null;
+			}			
 		}
 		
 		product.setTime(time.replace("끌올", ""));
@@ -297,7 +289,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 	//제외키워드 포함하고 있는지 확인
 	private boolean hasExceptionKeyword(String str, List<String> exceptionKeyword) {
 		for(String keyword : exceptionKeyword) {
-			if(str.toLowerCase().contains(keyword)) {
+			if(str.toLowerCase().contains(keyword.toLowerCase())) {
 				//제외 키워드를 포함하고 있으면 버려야함
 				return true;
 			}
@@ -316,7 +308,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 			boolean isContain=false;//or연산이기 때문에 하나라도 포함하면 됨
 			for(String keyword: orKeyword.split(",")) {
 				//제목 소문자로 변환시키고 비교하도록함
-				if(str.toLowerCase().contains(keyword)) {
+				if(str.toLowerCase().contains(keyword.toLowerCase())) {
 					isContain=true;
 					break;
 				}
@@ -337,5 +329,30 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 			return false;
 		}
 		return true;
+	}
+	
+	@Transactional(readOnly = true)
+	private void getKeyword(ProductQuery productQuery, List<Product> products, Map<Long, List<String>> exceptionKeyword, Map<Long, List<String>> requireKeyword) {
+		final String market = "daangn";
+		final String commonMarket = "common";
+		
+        products.addAll(productRepository.findByQuery(productQuery).orElse(new ArrayList<Product>()));
+        
+		for(Product product:products) {
+			List<String> exception=new ArrayList<>();
+			List<String> require=new ArrayList<String>(); 
+			//데이터 베이스에 productName을 검색해서 해당 제품을 찾기위한 검색 query, 제외키워드, 필수키워드들을 가져옴			
+			exception=exceptionKeywordRepository.findByProductIdAndMarket(product, commonMarket).orElse(new ArrayList<ExceptionKeyword>()).stream().map(ExceptionKeyword::getKeyword).collect(Collectors.toList());
+			exception.addAll(exceptionKeywordRepository.findByProductIdAndMarket(product, market).orElse(new ArrayList<ExceptionKeyword>()).stream().map(ExceptionKeyword::getKeyword).collect(Collectors.toList()));
+			
+			exceptionKeyword.put(product.getId(), exception);
+			
+			//공통 필수 키워드
+			require=requireKeywordRepository.findByProductIdAndMarket(product, commonMarket).orElse(new ArrayList<RequireKeyword>()).stream().map(RequireKeyword::getKeyword).collect(Collectors.toList());
+			//당근마켓 필수 키워드
+			require.addAll(requireKeywordRepository.findByProductIdAndMarket(product, market).orElse(new ArrayList<RequireKeyword>()).stream().map(RequireKeyword::getKeyword).collect(Collectors.toList()));
+		
+			requireKeyword.put(product.getId(), require);
+		}
 	}
 }
