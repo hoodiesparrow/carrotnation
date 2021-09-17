@@ -147,6 +147,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 					sellList.setMarket(market);
 					sellList.setProductId(product);
 					sellList.setTitle(p.getTitle());
+					sellList.setContent(p.getContent());					
 					sellList.setPrice(p.getPrice());
 					sellList.setCreateDate(p.getDate());
 					sellList.setLink(p.getLink());
