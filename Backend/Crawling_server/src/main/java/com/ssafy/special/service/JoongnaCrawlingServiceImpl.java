@@ -423,13 +423,20 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 							e.printStackTrace();
 						}
 						sellList.setMarket("joonnaCafe");
+						if (pd.getContent() == null) {
+							pd.setContent(joongnacafe(pd.getLink()));
+						}
 					} else {
 						sellList.setId(Integer.parseInt(pd.getSeq()));
 						sellList.setMarket("joonnaApp");
+						if (pd.getContent() == null) {
+							pd.setContent(joongnaapp(pd.getSeq()));
+						}
 					}
 					
 					sellList.setProductId(p);
 					sellList.setTitle(pd.getTitle());
+					sellList.setContent(pd.getContent());
 					sellList.setPrice(pd.getPrice());
 					sellList.setCreateDate(pd.getDate());
 					sellList.setLink(pd.getLink());
