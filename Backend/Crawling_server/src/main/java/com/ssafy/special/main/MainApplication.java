@@ -39,17 +39,17 @@ public class MainApplication {
 			thunderMultiThreadCrawling.setProductQuery(query);
 			thunderMultiThreadCrawling.setQueryExceptionKeywordList(queryExceptionKeywordList);
 			
-			Thread daangn = new Thread(daangnMultiThreadCrawling);
+//			Thread daangn = new Thread(daangnMultiThreadCrawling);
 			Thread joongna = new Thread(JoongnaMultiThreadCrawling);
-			Thread thunder = new Thread(thunderMultiThreadCrawling);
+//			Thread thunder = new Thread(thunderMultiThreadCrawling);
 			
-			daangn.start();
-//			joongna.start();
-			thunder.start();
+//			daangn.start();
+			joongna.start();
+//			thunder.start();
 			
-			threadList.add(daangn);
-//			threadList.add(joongna);
-			threadList.add(thunder);
+//			threadList.add(daangn);
+			threadList.add(joongna);
+//			threadList.add(thunder);
 		}
 		
 		int threadcnt=threadList.size();

@@ -12,8 +12,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,8 +55,9 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 
 	static String giga;
 	static String strUrl = "https://search-api.joongna.com/v25/search/product";
-	SimpleDateFormat fourteen_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	SimpleDateFormat yearmonthday_format = new SimpleDateFormat("yyyy-MM-dd");
+//	SimpleDateFormat fourteen_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//	SimpleDateFormat yearmonthday_format = new SimpleDateFormat("yyyy-MM-dd");
+	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	LocalDateTime date_now;
 	LocalDateTime cal;
 	String APPLE = "1151";
@@ -123,8 +122,8 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		
 		String payload = "{\r\n" + "    \"filter\": {\r\n" + "        \"categoryDepth\": 3,\r\n"
 				+ "        \"categorySeq\": "+categorySeq+",\r\n" + "        \"dateFilterParameter\": {\r\n"
-				+ "            \"sortEndDate\": \"" + yearmonthday_format.format(date_now) + "\",\r\n"
-				+ "            \"sortStartDate\": \"" + yearmonthday_format.format(cal) + "\"\r\n"
+				+ "            \"sortEndDate\": \"" + date_now.toLocalDate() + "\",\r\n"
+				+ "            \"sortStartDate\": \"" + cal.toLocalDate() + "\"\r\n"
 				+ "        },\r\n" + "        \"productCondition\": -1,\r\n" + "        \"flawedYn\": 0,\r\n"
 				+ "        \"fullPackageYn\": 0,\r\n" + "        \"limitedEditionYn\": 0,\r\n"
 				+ "        \"maxPrice\": 2000000000,\r\n" + "        \"minPrice\": 0,\r\n"
@@ -134,7 +133,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 				+ "    \"quantity\": 10,\r\n" + "    \"searchQuantity\": 10,\r\n" + "    \"osType\": 2,\r\n"
 				+ "    \"searchWord\": \"" + query + "\",\r\n" + "    \"sort\": \"RECENT_SORT\",\r\n"
 				+ "    \"startIndex\": " + page + ",\r\n" + "    \"searchStartTime\": \""
-				+ fourteen_format.format(date_now) + "\"\r\n" + "}";
+				+ date_now.format(formatter) + "\"\r\n" + "}";
 		try {
 			URL url = new URL(strUrl);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -187,7 +186,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 									"https://img2.joongna.com" + item.get("url").toString().replaceAll("\"", ""));
 							product.setPrice(Long.parseLong(item.get("price").toString()));
 
-							DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+							
 							LocalDateTime date = LocalDateTime
 									.parse(item.get("articleRegDate").toString().replaceAll("\"", ""), formatter);
 							product.setDate(date);
