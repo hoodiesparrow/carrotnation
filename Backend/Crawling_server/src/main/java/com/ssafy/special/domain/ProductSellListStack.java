@@ -20,7 +20,7 @@ import lombok.Setter;
 @AllArgsConstructor
 //@ToString
 @IdClass(ProductSellListPK.class)
-public class ProductSellList {
+public class ProductSellListStack {
 
 	@Id
 	private long id;//게시글 pid
