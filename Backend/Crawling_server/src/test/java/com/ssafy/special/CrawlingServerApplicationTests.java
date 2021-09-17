@@ -12,9 +12,13 @@ import com.ssafy.special.main.MainApplication;
 import com.ssafy.special.repository.ProductSellListRepository;
 import com.ssafy.special.service.DaangnCrawlingServiceImpl;
 import com.ssafy.special.service.JoongnaCrawlingService;
+import com.ssafy.special.service.JoongnaCrawlingServiceImpl;
 import com.ssafy.special.service.ThunderCrawlingService;
 
+import lombok.extern.log4j.Log4j2;
+
 @SpringBootTest
+@Log4j2
 class CrawlingServerApplicationTests {
 
 	@Autowired
@@ -79,9 +83,18 @@ class CrawlingServerApplicationTests {
 		}
 		return true;
 	}
-	@Test
-	public void TestSSH() {
+//	@Test
+	public void TestSSH() throws Exception {
 		String cmd ="ls -lrt";
-		System.out.println(ssh.getSSHResponse(cmd));
+		ssh.connectSSH();
+		String sendFilePath = "C:\\SSAFY\\aws\\test\\sellList.txt";
+//		String sendFilePath = "/home/ubuntu/mysqltablefile/sellList.txt";
+		String receiveFilePath = "/home/j5d205/receive/";
+		ssh.sendFileToOtherServer(sendFilePath,receiveFilePath,"sellList.txt");
+		System.out.println(ssh.getSSHResponse("cat "+receiveFilePath+"sellList.txt"));
+	}
+	@Test
+	public void writedb() {
+		log.info(productSellListRepository.txtProductSellList());
 	}
 }
