@@ -2,6 +2,7 @@ package com.ssafy.special.domain;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -36,6 +37,9 @@ public class ProductSellList {
 	private Product productId;//품명
 	
 	private String title;//제목
+	
+	@Column(length = 1024)
+	private String content;//내용
 	
 	private long price;//가격
 	
