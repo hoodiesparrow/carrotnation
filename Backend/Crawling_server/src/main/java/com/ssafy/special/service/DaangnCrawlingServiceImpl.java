@@ -62,8 +62,6 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 	
 	@Override
 	public void crawlingProduct(ProductQuery productQuery, List<String> queryExceptionKeywordList) {		
-		final String market = "daangn";
-		final String commonMarket = "common";
 		
 		List<ProductDTO> productList=new ArrayList<ProductDTO>();
 		log.info("(당근)해당 검색어를 크롤링 중입니다 "+ productQuery.getQuery());
@@ -144,7 +142,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 				if(p.getName()!=null) {					
 					ProductSellList sellList=new ProductSellList();
 					sellList.setId(Long.parseLong(p.getSeq()));
-					sellList.setMarket(market);
+					sellList.setMarket("daangn");
 					sellList.setProductId(product);
 					sellList.setTitle(p.getTitle());
 					sellList.setContent(p.getContent());					
