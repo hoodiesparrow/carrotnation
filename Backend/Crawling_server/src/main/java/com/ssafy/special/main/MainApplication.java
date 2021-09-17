@@ -18,7 +18,7 @@ public class MainApplication {
 	private final JoongnaMultiThreadCrawling JoongnaMultiThreadCrawling;
 	private final ThunderMultiThreadCrawling thunderMultiThreadCrawling;
 	
-	@Scheduled(fixedDelay = 1000 * 60 * 30)//30분
+	@Scheduled(fixedDelay = 1000 * 60 * 60)//1시간
 	public void crawlingStart() {
 		List<ProductQuery> productQuery = queryInfoService.getProductQueryList();
 		queryInfoService.truncateProductSellList();
