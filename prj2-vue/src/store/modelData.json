@@ -1,0 +1,195 @@
+{
+  "type": {
+    "name": "분류",
+    "phone": {
+      "name": "휴대폰",
+      "company": {
+        "name": "회사",
+        "iphone": {
+          "name": "아이폰",
+          "series": {
+            "name": "기종",
+            "12": {
+              "name": "12",
+              "12mini" : {
+                "name" : "12 mini",
+                "storage" : {
+                  "64GB": "pid1", "128GB": "pid2", "256GB": "pid3"
+                }
+              },
+              "12" : {
+                "name" : "12",
+                "storage" : ["64", "128", "256"]
+              },
+              "12pro" : {
+                "name" : "12 Pro",
+                "storage" : ["128", "256", "512"]
+              },
+              "12promax" : {
+                "name" : "12 Pro Max",
+                "storage" : ["128", "256", "512"]
+              }
+            },
+            "se" : {
+              "name" : "SE",
+              "storage" : ["64", "128", "256"]
+            },
+            "11" : {
+              "name" : "11",
+              "storage" : ["64", "128", "256"]
+            },
+            "11pro" : {
+              "name" : "11 Pro",
+              "storage" : ["64" , "256" , "512"]
+            },
+            "11promax" : {
+              "name" : "11 Pro max",
+              "storage" : ["64", "256", "512"]
+            },
+            "xs" : {
+              "name" : "XS",
+              "storage" : ["64", "256", "512"]
+            },
+            "xsmax": {
+              "name" : "XS Pro",
+              "storage" : ["64", "256", "512"]
+            },
+            "xr": {
+              "name" : "XR",
+              "storage" : ["64", "128", "256"]
+            },
+            "8" : {
+              "name" : "8",
+              "storage" : ["64", "128", "256"]
+            },
+            "8+" : {
+              "name" : "8+",
+              "storage" : ["64", "128", "256"]
+            },
+            "X" : {
+              "name": "X",
+              "storage" : ["64", "128", "256"]
+            }
+          }
+        },
+        "galaxy": {
+          "name" : "갤럭시",
+          "series" : {
+            "zfold3" : {
+              "name": "Z Fold 3",
+              "storage" : ["256", "512"]
+            },
+            "zflip3" : {
+              "name": "Z Flip 3",
+              "storage" : ["256"]
+            },
+            "zfold2" : {
+              "name": "Z Fold 2",
+              "storage" : ["256"]
+            },
+            "zfold1" : {
+              "name": "Z Fold",
+              "storage" : ["256"]
+            },
+            "zflip2" : {
+              "name": "Z Flip 2",
+              "storage" : ["256"]
+            },
+            "zflip1" : {
+              "name": "Z Flip",
+              "storage" : ["256"]
+            },
+            "s21" : {
+              "name" : "S21",
+              "storage" : ["256"]
+            },
+            "s21+" : {
+              "name" : "S21+",
+              "storage" : ["256"]
+            },
+            "s21ultra" : {
+              "name" : "S21 Ultra",
+              "storage" : ["512", "256"]
+            },
+            "s20" : {
+              "name" : "S20",
+              "storage" : ["128"]
+            },
+            "s20+" : {
+              "name" : "S20+",
+              "storage" : ["256"]
+            },
+            "s20ultra" : {
+              "name" : "S20 Ultra",
+              "storage" : ["256", "512"]
+            },
+            "s10" : {
+              "name" : "S10",
+              "storage" : ["128", "512"]
+            },
+            "s10e" : {
+              "name" : "S10e",
+              "storage" : ["128"]
+            },
+            "s10+" : {
+              "name" : "S10+",
+              "storage" : ["128", "512"]
+            },
+            "note20ultra" : {
+              "name" : "Note20 Ultra",
+              "storage" : ["256"]
+            },
+            "note20" : {
+              "name" : "Note20",
+              "storage" : ["256"]
+            },
+            "note10+" : {
+              "name" : "Note10+",
+              "storage" : ["256, 512"]
+            },
+            "note10" : {
+              "name" : "Note10",
+              "storage" : ["256", "512"]
+            },
+            "note10lite" : {
+              "name" : "Note10 Lite",
+              "storge" : ["128"]
+            },
+            "note9" : {
+              "name" : "Note9",
+              "storage" : ["128", "512"]
+            },
+            "note8" : {
+              "name" : "Note8",
+              "storage" : ["64" , "128"]
+            },
+            "a82" : {
+              "name" : "A82",
+              "storage" : ["128"]
+            },
+            "a72" : {
+              "name" : "A72",
+              "storage" : ["128", "256"]
+            },
+            "a52s" : {
+              "name" : "A52s",
+              "storage" : ["128"]
+            },
+            "a52" : {
+              "name" : "A52",
+              "storage" : ["128","256"]
+            },
+            "a42" : {
+              "name" : "A42",
+              "storage" : ["128"]
+            },
+            "a32" : {
+              "name" : "A32",
+              "storage" : ["128"]
+            }
+          }
+        }
+      }
+    } 
+  }
+}

@@ -1,36 +1,45 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import Home from "../views/Home.vue";
-import ItemPage from "../views/ItemPage.vue";
-import Chart from "../views/Chart.vue";
-import Prod from "../views/Prod.vue";
-import Select from "@/views/Select.vue";
+
+function importComp(view: string) {
+  return () => import(/* webpackChunkName: "view-[request]" */ `@/views/${view}.vue`)
+}
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: "/",
-    name: "Home",
-    component: Home,
+    path: '/',
+    name: 'Home',
+    component: importComp('Home'),
+  },
+  // {
+  //   path: '/chart',
+  //   name: 'Chart',
+  //   component: Chart,
+  // },
+  {
+    path: '/prod',
+    name: 'Prod',
+    component: importComp('Prod'),
   },
   {
-    path: "/item",
-    name: "Item",
-    component: ItemPage,
+    path: '/sel',
+    name: 'Select',
+    component: importComp('Select'),
   },
   {
-    path: "/chart",
-    name: "Chart",
-    component: Chart,
+    path: '/test',
+    name: 'Test',
+    component: importComp('Test'),
   },
   {
-    path: "/prod",
-    name: "Prod",
-    component: Prod,
+    path: '/test2',
+    name: 'Test2',
+    component: importComp('Test2'),
   },
   {
-    path: "/sel",
-    name: "Select",
-    component: Select,
-  }
+    path: '/bridge',
+    name: 'BridgeTest',
+    component: importComp('BridgeTest'),
+  },
 ]
 
 const router = createRouter({

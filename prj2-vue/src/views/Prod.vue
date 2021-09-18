@@ -1,6 +1,6 @@
 <template>
   <div class="container max-w-750px">
-    <SideBar :show="show" @closeSideBar="show = !show" class="fixed top-0 z-40 h-full" />
+    <SideBar :show="show" @closeSideBar="show = false" class="fixed top-0 z-40 h-full" />
     <div class="sticky top-0">
       <div class="flex justify-between items-center bg-purple-700 p-4">
         <div>
@@ -13,15 +13,19 @@
         <span class="text-4xl font-extrabold text-white">아이폰 프로 512g</span>
       </div>
       <div class="grid grid-rows-2 bg-white py-2 border-b-2 border-gray-300">
-        <div class="col-span-2 text-right">평균 가격 : N 원</div>
-        <div class="col-span-2 text-left">
-          <p>총 {{ ProdList.length }}건</p>
+        <div class="col-span-2 text-right">
+          <span class="col-span-2 pr-4">평균 가격 : N 원</span>
+          <span class="pr-4">총 {{ ProdList.length }}건</span>
         </div>
       </div>
     </div>
     <div class="text-left">
       <div class="flex flex-col">
-        <ProdBox v-for="prod in ProdList" :key="prod.pid" :product="prod" />
+        <ProdBox 
+          v-for="prod in ProdList" 
+          :key="prod.pid" 
+          :product="prod"
+        />
 
       </div>
     </div>
@@ -38,7 +42,7 @@ import { defineComponent, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 // import InfiniteLoading from "infinite-loading-vue3-ts";
-import ProdBox from "@/components/ProdBox.vue";
+import ProdBox from "@/components/ProdItem.vue";
 import SideBar from "@/components/SideBar.vue";
 
 export default defineComponent({
@@ -59,59 +63,39 @@ export default defineComponent({
     var ProdList = ref([
       {
         pid: "1",
-        title: "아이폰 팝니다잉",
-        price: "300000원",
-        createdate: "2021-09-09",
-        img: "@/assets/image/iphone12pro.jfif",
-      },
-      {
-        pid: "2",
-        title: "아이폰 프로 팝니다잉",
+        title: "당근당근당근당근당근당근당근당근당근당근당근당근",
+        market: "daangn",
         price: "300000",
         createdate: "2021-09-09",
         img: "@/assets/image/iphone12pro.jfif",
-      },
-      {
-        pid: "3",
-        title: "아이폰 노란거 팝니다잉",
-        price: "300000",
-        createdate: "2021-09-09",
-        img: "@/assets/image/iphone12pro.jfif",
-      },
-      {
-        pid: "4",
-        title: "아이폰 PRO 팝니다잉",
-        price: "300000",
-        createdate: "2015",
-        img: "@/assets/image/iphone12pro.jfif",
+        url: "https://www.daangn.com/articles/279930062"
       },
       {
         pid: "1",
-        title: "아이폰 팝니다잉",
-        price: "300000원",
-        createdate: "2021-09-09",
-        img: "@/assets/image/iphone12pro.jfif",
-      },
-      {
-        pid: "2",
-        title: "아이폰 프로 팝니다잉",
+        title: "중고나라앱앱앱앱중고나라앱앱앱앱중고나라앱앱앱앱",
+        market: "joonnaApp",
         price: "300000",
         createdate: "2021-09-09",
         img: "@/assets/image/iphone12pro.jfif",
+        url: "https://m.joongna.com/product-detail/27889203"
       },
       {
-        pid: "3",
-        title: "아이폰 노란거 팝니다잉",
+        pid: "1",
+        title: "중고나라카페카페중고나라카페카페중고나라카페카페중고나라카페카페",
+        market: "joonnaCafe",
         price: "300000",
         createdate: "2021-09-09",
         img: "@/assets/image/iphone12pro.jfif",
+        url: "clubid=10050146&menuid=424&boardtype=C&page=12&articleid=866763290&referrerAllArticles=false"
       },
       {
-        pid: "4",
-        title: "아이폰 PRO 팝니다잉",
+        pid: "1",
+        title: "번개장터번개장터번개장터번개장터",
+        market: "thunder",
         price: "300000",
-        createdate: "2015",
+        createdate: "2021-09-09",
         img: "@/assets/image/iphone12pro.jfif",
+        url: "https://api.bunjang.co.kr/api/1/product/163817849/detail_info.json?version=4"
       },
     ]);
 
@@ -135,3 +119,4 @@ export default defineComponent({
         //   <template #no-more> // text no more </template>
         //   <template #no-results> // text no results </template>
         // </infinite-loading>
+
