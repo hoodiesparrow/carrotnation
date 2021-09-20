@@ -1,5 +1,6 @@
 package com.ssafy.special.repository;
 
+import org.apache.logging.log4j.message.Message;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,4 +15,11 @@ public interface ProductSellListRepository extends JpaRepository<ProductSellList
             nativeQuery = true
     )
     void truncateProductSellList();
+    
+    @Query(value = "SELECT * INTO OUTFILE 'C:/SSAFY/aws/test/sellList.txt'" + 
+    		"FIELDS TERMINATED BY ','" + 
+    		"LINES TERMINATED BY '\\n'" + 
+    		"FROM product;",
+    		nativeQuery = true)
+    Message txtProductSellList();
 }
