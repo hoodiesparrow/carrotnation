@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import com.ssafy.special.domain.ProductSellList;
 import com.ssafy.special.domain.ProductSellListPK;
 
-public interface ProductSellListRepository extends JpaRepository<ProductSellList, ProductSellListPK> {
+public interface ProductSellListRepository extends JpaRepository<ProductSellList, ProductSellListPK>, ProductSellListRepositoryCustom {
     @Modifying
     @Query(
             value = "truncate table product_sell_list",
