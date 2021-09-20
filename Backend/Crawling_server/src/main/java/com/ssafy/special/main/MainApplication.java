@@ -7,7 +7,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.ssafy.special.domain.ProductQuery;
-import com.ssafy.special.service.QueryInfoService;
+import com.ssafy.special.service.KeywordInfoService;
+import com.ssafy.special.service.ProductSellListInfoService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -16,7 +17,9 @@ import lombok.extern.log4j.Log4j2;
 @RequiredArgsConstructor
 @Log4j2
 public class MainApplication {
-	private final QueryInfoService queryInfoService;
+	private final KeywordInfoService queryInfoService;
+private final ProductSellListInfoService productSellListInfoService;
+
 	private final DaangnMultiThreadCrawling daangnMultiThreadCrawling;	
 	private final JoongnaMultiThreadCrawling JoongnaMultiThreadCrawling;
 	private final ThunderMultiThreadCrawling thunderMultiThreadCrawling;
@@ -24,7 +27,7 @@ public class MainApplication {
 	@Scheduled(fixedDelay = 1000 * 60 * 60)//1시간
 	public void crawlingStart() {
 		List<ProductQuery> productQuery = queryInfoService.getProductQueryList();
-		queryInfoService.truncateProductSellList();
+		productSellListInfoService.truncateProductSellList();
 		
 		List<Thread> threadList=new ArrayList<Thread>();
 		
@@ -39,17 +42,17 @@ public class MainApplication {
 			thunderMultiThreadCrawling.setProductQuery(query);
 			thunderMultiThreadCrawling.setQueryExceptionKeywordList(queryExceptionKeywordList);
 			
-//			Thread daangn = new Thread(daangnMultiThreadCrawling);
+			Thread daangn = new Thread(daangnMultiThreadCrawling);
 			Thread joongna = new Thread(JoongnaMultiThreadCrawling);
-//			Thread thunder = new Thread(thunderMultiThreadCrawling);
+			Thread thunder = new Thread(thunderMultiThreadCrawling);
 			
-//			daangn.start();
+			daangn.start();
 			joongna.start();
-//			thunder.start();
+			thunder.start();
 			
-//			threadList.add(daangn);
+			threadList.add(daangn);
 			threadList.add(joongna);
-//			threadList.add(thunder);
+			threadList.add(thunder);
 		}
 		
 		int threadcnt=threadList.size();
@@ -77,5 +80,8 @@ public class MainApplication {
 			}else
 				log.info("현재 "+ (threadcnt-cnt) + "개의 크롤링이 진행중입니다");
 		}
+		
+		//크롤링 끝낫으니까 ProductSellList의 데이터를 ProductSellListStack테이블에 반영되도록 수정
+		productSellListInfoService.updateProductSellListStack();
 	}
 }
