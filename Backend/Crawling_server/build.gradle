@@ -8,6 +8,8 @@ group = 'com.ssafy.special'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
+def querydslVersion = '4.3.1'
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -28,8 +30,22 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation 'org.jsoup:jsoup:1.14.2'
 	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+
+	//QueryDSL
+	implementation group: 'com.querydsl', name: 'querydsl-jpa', version: querydslVersion
+	implementation group: 'com.querydsl', name: 'querydsl-apt', version: querydslVersion
+	implementation group: 'com.querydsl', name: 'querydsl-core', version: querydslVersion
+	annotationProcessor group: 'com.querydsl', name: 'querydsl-apt', version: querydslVersion
+	annotationProcessor group: 'com.querydsl', name: 'querydsl-apt', version: querydslVersion, classifier: 'jpa'
+	annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+	annotationProcessor("jakarta.annotation:jakarta.annotation-api")
+
 }
 
 test {
 	useJUnitPlatform()
 }
+
+//clean {
+//    delete file('src/main/generated') // 인텔리제이 Annotation processor 생성물 생성위치
+//}
