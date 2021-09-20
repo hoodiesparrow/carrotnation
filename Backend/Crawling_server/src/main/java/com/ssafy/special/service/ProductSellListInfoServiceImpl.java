@@ -12,10 +12,12 @@ import com.ssafy.special.repository.ProductSellListRepository;
 import com.ssafy.special.repository.ProductSellListStackRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Log4j2
 public class ProductSellListInfoServiceImpl implements ProductSellListInfoService {
 
 	private final ProductSellListRepository productSellListRepository; 
@@ -32,6 +34,7 @@ public class ProductSellListInfoServiceImpl implements ProductSellListInfoServic
 	@Override
 	public void updateProductSellListStack() {
 		List<ProductSellListStack> productSellListStack = productSellListRepository.getProductSellListByProductSellListStack().orElse(new ArrayList<ProductSellListStack>());
+		log.info(productSellListStack.size()+"개의 데이터를 삽입중입니다");
 		productSellListStackRepository.saveAll(productSellListStack);
 	}
 }

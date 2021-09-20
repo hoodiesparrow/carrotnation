@@ -34,7 +34,7 @@ public class ProductSellListStack {
 	
 	private String title;//제목
 	
-	@Column(length = 1024)
+	@Column(length = 8192)
 	private String content;//내용
 	
 	private long price;//가격

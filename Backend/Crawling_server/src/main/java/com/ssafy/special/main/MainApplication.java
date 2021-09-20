@@ -83,5 +83,6 @@ private final ProductSellListInfoService productSellListInfoService;
 		
 		//크롤링 끝낫으니까 ProductSellList의 데이터를 ProductSellListStack테이블에 반영되도록 수정
 		productSellListInfoService.updateProductSellListStack();
+		log.info("크롤링 데이터들이 누적 테이블로 삽입이 완료되었습니다");
 	}
 }
