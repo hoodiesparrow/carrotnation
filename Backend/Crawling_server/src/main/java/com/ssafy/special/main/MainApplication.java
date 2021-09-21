@@ -23,7 +23,7 @@ public class MainApplication {
 	private final JoongnaMultiThreadCrawling JoongnaMultiThreadCrawling;
 	private final ThunderMultiThreadCrawling thunderMultiThreadCrawling;
 	
-	@Scheduled(fixedDelay = 1000 * 60 * 60)//1시간
+	@Scheduled(fixedRate = 1000 * 60 * 60)//1시간
 	public void crawlingStart() {
 		List<ProductQuery> productQuery = queryInfoService.getProductQueryList();
 		
