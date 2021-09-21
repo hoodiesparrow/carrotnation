@@ -18,7 +18,6 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class MainApplication {
 	private final KeywordInfoService queryInfoService;
-private final ProductSellListInfoService productSellListInfoService;
 
 	private final DaangnMultiThreadCrawling daangnMultiThreadCrawling;	
 	private final JoongnaMultiThreadCrawling JoongnaMultiThreadCrawling;
@@ -27,7 +26,6 @@ private final ProductSellListInfoService productSellListInfoService;
 	@Scheduled(fixedDelay = 1000 * 60 * 60)//1시간
 	public void crawlingStart() {
 		List<ProductQuery> productQuery = queryInfoService.getProductQueryList();
-		productSellListInfoService.truncateProductSellList();
 		
 		List<Thread> threadList=new ArrayList<Thread>();
 		
@@ -81,8 +79,6 @@ private final ProductSellListInfoService productSellListInfoService;
 				log.info("현재 "+ (threadcnt-cnt) + "개의 크롤링이 진행중입니다");
 		}
 		
-		//크롤링 끝낫으니까 ProductSellList의 데이터를 ProductSellListStack테이블에 반영되도록 수정
-		productSellListInfoService.updateProductSellListStack();
-		log.info("크롤링 데이터들이 누적 테이블로 삽입이 완료되었습니다");
+		
 	}
 }
