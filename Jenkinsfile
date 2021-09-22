@@ -6,7 +6,7 @@ stages {
     stage('Docker build') {
         agent any
         steps {
-            sh 'docker build -t peopoolbe:latest "/var/jenkins_home/workspace/j5d205/backend/Crawling_server"'
+            sh 'docker build -t peopoolbe:latest "/var/jenkins_home/workspace/j5d205/S05P21D205/Backend/Crawling_server"'
         }
     }
     stage('Docker run') {
