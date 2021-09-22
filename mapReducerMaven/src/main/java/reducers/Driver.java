@@ -8,6 +8,8 @@ public class Driver {
         ProgramDriver pgd = new ProgramDriver();
         try {
             pgd.addClass("getmax", GetMax.class, "Usage : Get max value of product");
+            pgd.addClass("getmin", GetMin.class, "Usage : Get min value of product");
+            //pgd.addClass("setjoin",SetSimJoin.class, "A map/reduce program that perform the set similarity self-join using the inverted index for a single input file.");
             //pgd.addClass("wordcount", Wordcount.class, "A map/reduce program that performs word counting.");
             //pgd.addClass("wordcount1char", WordCount1char.class, "A map/reduce programthat counts the 1st character of words in the input files.");
             //pgd.addClass("wordcountsort", Wordcountsort.class, "A map/reduce program.  lees 'a'");

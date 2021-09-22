@@ -1,7 +1,9 @@
 reducers\GetMin$TokenizerMapper$MinReducer.class
 reducers\GetMax$TokenizerMapper.class
 reducers\GetMax.class
+reducers\SetSimJoin.class
 reducers\Driver.class
 reducers\GetMax$TokenizerMapper$MaxReducer.class
 reducers\GetMin$TokenizerMapper.class
 reducers\GetMin.class
+reducers\SetSimJoin$TokenizerMapper.class
