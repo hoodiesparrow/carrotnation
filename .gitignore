@@ -175,9 +175,6 @@ fabric.properties
 .idea/codestream.xml
 
 ### Java ###
-# Compiled class file
-*.class
-
 # Log file
 *.log
 
