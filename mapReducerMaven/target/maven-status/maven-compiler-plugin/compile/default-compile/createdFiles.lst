@@ -1,4 +1,7 @@
-reducers\Driver.class
-reducers\GetMax$TokenizerMapper$MaxReducer.class
+reducers\GetMin$TokenizerMapper$MinReducer.class
 reducers\GetMax$TokenizerMapper.class
 reducers\GetMax.class
+reducers\Driver.class
+reducers\GetMax$TokenizerMapper$MaxReducer.class
+reducers\GetMin$TokenizerMapper.class
+reducers\GetMin.class
