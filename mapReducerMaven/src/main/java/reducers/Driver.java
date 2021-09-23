@@ -14,6 +14,7 @@ public class Driver {
             //pgd.addClass("wordcount1char", WordCount1char.class, "A map/reduce programthat counts the 1st character of words in the input files.");
             //pgd.addClass("wordcountsort", Wordcountsort.class, "A map/reduce program.  lees 'a'");
             //pgd.addClass("invertedindex", InvertedIndex.class, "A map/reduce program. output with filepath.");
+            pgd.addClass("sellpricecount",Sellpricecount.class,"count product price");
 
             pgd.driver(args);
             exitCode = 0;
