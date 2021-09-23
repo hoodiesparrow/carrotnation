@@ -97,17 +97,18 @@ class CrawlingServerApplicationTests {
 		ssh.sendFileToOtherServer(sendFilePath,receiveFilePath,"sellList.txt");
 		System.out.println(ssh.getSSHResponse("cat "+receiveFilePath+"sellList.txt"));
 	}
-	@Test
+//	@Test
 	public void writedb() {
-		log.info(productSellListRepository.txtProductSellList());
+		String s = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHH"));
+		log.info(productSellListRepository.txtProductSellList(s));
 	}
 
 	@Test
 	void test() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime date_now=LocalDateTime.now();
-		System.out.println(date_now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-		System.out.println(date_now.format(formatter));
+		System.out.println(date_now.format(DateTimeFormatter.ofPattern("yyMMddHH")));
+//		System.out.println(date_now.format(formatter));
 //		2021-09-17 21:00:38
 
 	}
