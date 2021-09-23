@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.special.domain.ProductSellList;
@@ -24,9 +25,9 @@ public class ProductSellListInfoServiceImpl implements ProductSellListInfoServic
 	
 	//현재 사이클 이상인 데이터만 가져옴
 	@Override
-	public List<ProductSellList> getProductSellLists(){
+	public List<ProductSellList> getProductSellLists(int page){
 		LocalDateTime now = LocalDateTime.now().minusHours(1);
 		Long cycle = Long.parseLong(now.format(DateTimeFormatter.ofPattern("yyMMddkk")));
-		return productSellListRepository.getRecentProductSellList(cycle).orElse(new ArrayList<ProductSellList>());
+		return productSellListRepository.getRecentProductSellList(cycle,PageRequest.of(page, 20)).orElse(new ArrayList<ProductSellList>());
 	}
 }
