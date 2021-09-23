@@ -122,7 +122,7 @@ public class ThunderCrawlingServiceImpl implements ThunderCrawlingService {
 					sellList.setMarket(market);
 					sellList.setProductId(product);
 					sellList.setTitle(p.getTitle());
-					sellList.setContent(p.getContent());					
+					sellList.setContent(p.getContent().replaceAll("\n", " "));					
 					sellList.setImg(p.getImg());
 					sellList.setPrice(p.getPrice());
 					sellList.setCreateDate(p.getDate());
