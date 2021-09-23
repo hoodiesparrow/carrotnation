@@ -50,7 +50,7 @@ class CrawlingServerApplicationTests {
 		ssh.sendFileToOtherServer(sendFilePath,receiveFilePath,"sellList.txt");
 		System.out.println(ssh.getSSHResponse("cat "+receiveFilePath+"sellList.txt"));
 	}
-	@Test
+//	@Test
 
 	public void writedb() {
 		LocalDateTime time = LocalDateTime.now().minusHours(1);
