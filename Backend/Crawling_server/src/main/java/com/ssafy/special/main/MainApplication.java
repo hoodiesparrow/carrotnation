@@ -128,7 +128,6 @@ public class MainApplication {
 		String s = time.format(DateTimeFormatter.ofPattern("yyMMddHH"));
 		StringBuilder sb = new StringBuilder();
 		String fileName = "/home/ubuntu/mysqltablefile/sellList.txt";
-		int idx = 0;
 		Product p;
 		for (ProductSellList psl : productSellListRepository.txtProductSellList(Long.parseLong(s))) {
 			p = psl.getProductId();
@@ -136,7 +135,6 @@ public class MainApplication {
 					.append(psl.getCreateDate()).append("|").append(psl.getCycle()).append("|")
 					.append(psl.getLocation()).append("|").append(psl.getPrice()).append("|").append(psl.getTitle())
 					.append("|").append(p.getName()).append("\n");
-			if (idx++ == 10)
 				break;
 		}
 		try {
