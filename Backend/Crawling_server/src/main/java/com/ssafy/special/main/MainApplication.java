@@ -51,7 +51,7 @@ public class MainApplication {
 		try {
 			ssh.connectSSH();
 //			System.out.println(ssh.getSSHResponse("ls -al"));
-//			productSellListRepository.txtProductSellList(Long.parseLong(s));
+			productSellListRepository.txtProductSellList(Long.parseLong(s));
 			log.info("********DB sellList txt변환했습니다.*******");
 			log.info("********전송시작*******");
 			ssh.sendFileToOtherServer(sendFilePath,receiveFilePath,"sellList.txt");
