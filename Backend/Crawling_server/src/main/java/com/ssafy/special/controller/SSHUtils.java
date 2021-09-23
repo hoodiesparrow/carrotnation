@@ -21,8 +21,8 @@ public class SSHUtils {
 	private final String username = "j5d205";
 	private final String host = "cluster2.p.ssafy.io";
 	private final int port = 22;
-//	private final String pwdPath = "/home/ubuntu/pemkey/J5D205T.pem";
-	private final String pwdPath = "C:\\SSAFY\\aws\\J5D205T.pem";
+	private final String pwdPath = "/home/ubuntu/pemkey/J5D205T.pem";
+//	private final String pwdPath = "C:\\SSAFY\\aws\\J5D205T.pem";
 //	private final String sendFilePath = "C:\\SSAFY\\aws\\check.txt";
 //	private final String receiveFilePath = "/home/j5d205/receive/test.txt";
 	private static Session session;
