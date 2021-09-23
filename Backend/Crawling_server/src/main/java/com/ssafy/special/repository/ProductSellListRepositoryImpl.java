@@ -18,9 +18,9 @@ import lombok.RequiredArgsConstructor;
 public class ProductSellListRepositoryImpl implements ProductSellListRepositoryCustom{
 	private final JPAQueryFactory queryFactory;	
 	
-	//현재 사이클 이상인 데이터만 가져옴
+	//현재 사이클 이상인 데이터만 가져옴(페이징, 프론트 뿌리는용)
 	@Override
-	public Optional<List<ProductSellList>> getRecentProductSellList(Long cycle,Pageable page){
+	public Optional<List<ProductSellList>> getRecentProductSellListWithPaging(Long cycle,Pageable page){
 		QProductSellList qpsl= QProductSellList.productSellList;
 		
 		List<ProductSellList> result= queryFactory.selectFrom(qpsl)
@@ -28,6 +28,19 @@ public class ProductSellListRepositoryImpl implements ProductSellListRepositoryC
 										.orderBy(qpsl.createDate.asc())
 										.offset(page.getOffset())
 										.limit(page.getPageSize())										
+										.fetch();
+		
+		return Optional.ofNullable(result);
+	}
+	
+	//현재 사이클 이상인 데이터만 가져옴(페이징 없음, 분석용 hdfs에 보내는용도)
+	@Override
+	public Optional<List<ProductSellList>> getRecentProductSellList(Long cycle){
+		QProductSellList qpsl= QProductSellList.productSellList;
+		
+		List<ProductSellList> result= queryFactory.selectFrom(qpsl)
+										.where(qpsl.cycle.goe(cycle))
+										.orderBy(qpsl.createDate.asc())									
 										.fetch();
 		
 		return Optional.ofNullable(result);

@@ -28,6 +28,6 @@ public class ProductSellListInfoServiceImpl implements ProductSellListInfoServic
 	public List<ProductSellList> getProductSellLists(int page){
 		LocalDateTime now = LocalDateTime.now().minusHours(1);
 		Long cycle = Long.parseLong(now.format(DateTimeFormatter.ofPattern("yyMMddkk")));
-		return productSellListRepository.getRecentProductSellList(cycle,PageRequest.of(page, 20)).orElse(new ArrayList<ProductSellList>());
+		return productSellListRepository.getRecentProductSellListWithPaging(cycle,PageRequest.of(page, 20)).orElse(new ArrayList<ProductSellList>());
 	}
 }

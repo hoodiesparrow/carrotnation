@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import com.ssafy.special.domain.ProductSellList;
 
 public interface ProductSellListRepositoryCustom {
-	//현재 사이클 이상인 데이터만 가져옴
-	Optional<List<ProductSellList>> getRecentProductSellList(Long cycle,Pageable page);
+	//현재 사이클 이상인 데이터만 가져옴(페이징, 프론트 뿌리는용)
+	Optional<List<ProductSellList>> getRecentProductSellListWithPaging(Long cycle,Pageable page);
+	//현재 사이클 이상인 데이터만 가져옴(페이징 없음, 분석용 hdfs에 보내는용도)
+	Optional<List<ProductSellList>> getRecentProductSellList(Long cycle);
 }
