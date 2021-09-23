@@ -88,7 +88,7 @@ public class MainApplication {
 				log.info("크롤링이 모두 끝났습니다");
 				String s = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHH"));
 				try {
-					productSellListRepository.txtProductSellList(s);
+					productSellListRepository.txtProductSellList(Long.parseLong(s));
 					log.info("********DB sellList txt변환했습니다.*******");
 					log.info("********전송시작*******");
 					ssh.connectSSH();

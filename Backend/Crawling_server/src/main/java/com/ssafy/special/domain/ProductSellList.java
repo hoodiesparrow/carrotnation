@@ -53,32 +53,10 @@ public class ProductSellList {
 	 * 예시: 프론트에서 판매글 리스트 요청하면 현재 날짜, 시간 확인해서 (현재시간 - 1) 의 주기컬럼 이상인 데이터들을 뿌려줌
 	 * (ex. 21년 9월 20일 11시라면 21092010 보다 큰 값을가지는 데이터들을 뿌려주면됨) 
 	 */
-	private String cycle;//크롤링 주기 파악을 위해 만듬
-	
-	
-	
+	private Long cycle;//크롤링 주기 파악을 위해 만듬
 
 	public ProductSellList() {
 		LocalDateTime now= LocalDateTime.now();
-		this.cycle=now.format(DateTimeFormatter.ofPattern("yyMMddkk"));//21년 9월 20일 13시 -> 21092013 
+		this.cycle=Long.parseLong(now.format(DateTimeFormatter.ofPattern("yyMMddkk")));//21년 9월 20일 13시 -> 21092013 
 	}	
-	
-//	public ProductSellList(long id, String market, Product productId, String title, String content, long price,
-//			LocalDateTime createDate, String link, String img, String location) {
-//		super();
-//		this.id = id;
-//		this.market = market;
-//		this.productId = productId;
-//		this.title = title;
-//		this.content = content;
-//		this.price = price;
-//		this.createDate = createDate;
-//		this.link = link;
-//		this.img = img;
-//		this.location = location;
-//		
-//		LocalDateTime now= LocalDateTime.now();
-//		this.cycle=now.format(DateTimeFormatter.ofPattern("yyMMddkk"));//21년 9월 20일 13시 -> 21092013 
-////		this.cycle = cycle;
-//	}
 }

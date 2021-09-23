@@ -25,8 +25,8 @@ public interface ProductSellListRepository extends JpaRepository<ProductSellList
     		"FIELDS TERMINATED BY '|'" + 
     		"LINES TERMINATED BY '\\n'" + 
     		"FROM product_sell_list"+
-    		"where cycle=:date" ,
+    		"where cycle>=:date" ,
     		nativeQuery = true)
-    Message txtProductSellList(@Param("date")String date);
+    void txtProductSellList(@Param("date")Long date);
 
 }
