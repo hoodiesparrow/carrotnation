@@ -1,5 +1,7 @@
 package com.ssafy.special;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -14,10 +16,12 @@ import com.ssafy.special.service.DaangnCrawlingServiceImpl;
 import com.ssafy.special.service.JoongnaCrawlingService;
 import com.ssafy.special.service.ThunderCrawlingService;
 
+import lombok.extern.log4j.Log4j2;
+
 
 
 @SpringBootTest
-//@Log4j2
+@Log4j2
 class CrawlingServerApplicationTests {
 
 	@Autowired
@@ -52,16 +56,19 @@ class CrawlingServerApplicationTests {
 		System.out.println(ssh.getSSHResponse("cat "+receiveFilePath+"sellList.txt"));
 	}
 //	@Test
-//	public void writedb() {
-//		log.info(productSellListRepository.txtProductSellList());
-//	}
+
+	public void writedb() {
+		String s = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHH"));
+		log.info(productSellListRepository.txtProductSellList(s));
+	}
+
 
 	@Test
 	void test() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		LocalDateTime date_now=LocalDateTime.now();
-		System.out.println(date_now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-		System.out.println(date_now.format(formatter));
+		System.out.println(date_now.format(DateTimeFormatter.ofPattern("yyMMddHH")));
+//		System.out.println(date_now.format(formatter));
 //		2021-09-17 21:00:38
 
 	}
