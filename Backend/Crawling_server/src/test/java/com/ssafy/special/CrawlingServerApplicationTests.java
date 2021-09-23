@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.ssafy.special.controller.SSHUtils;
+import com.ssafy.special.domain.ProductSellList;
 import com.ssafy.special.main.MainApplication;
 import com.ssafy.special.repository.ProductSellListRepository;
 import com.ssafy.special.service.DaangnCrawlingServiceImpl;
@@ -50,13 +51,15 @@ class CrawlingServerApplicationTests {
 		ssh.sendFileToOtherServer(sendFilePath,receiveFilePath,"sellList.txt");
 		System.out.println(ssh.getSSHResponse("cat "+receiveFilePath+"sellList.txt"));
 	}
-//	@Test
-
+	//@Test
 	public void writedb() {
 		LocalDateTime time = LocalDateTime.now().minusHours(1);
 		String s = time.format(DateTimeFormatter.ofPattern("yyMMddHH"));
-		
-		productSellListRepository.txtProductSellList(Long.parseLong(s));
+		int idx=10;
+		for(ProductSellList psl:productSellListRepository.txtProductSellList(Long.parseLong(s))) {
+			System.out.println(psl);
+			if(idx++==10) break;
+		}
 	}
 
 

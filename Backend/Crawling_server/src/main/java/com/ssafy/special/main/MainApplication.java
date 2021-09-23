@@ -1,14 +1,20 @@
 package com.ssafy.special.main;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.jcraft.jsch.JSchException;
 import com.ssafy.special.controller.SSHUtils;
+import com.ssafy.special.domain.Product;
+import com.ssafy.special.domain.ProductQuery;
+import com.ssafy.special.domain.ProductSellList;
 import com.ssafy.special.repository.ProductRepository;
 import com.ssafy.special.repository.ProductSellListRepository;
 import com.ssafy.special.service.KeywordInfoService;
@@ -34,29 +40,24 @@ public class MainApplication {
 
 	@Scheduled(fixedRate = 1000 * 60 * 60) // 1시간
 	public void crawlingStart() {
-		LocalDateTime time = LocalDateTime.now().minusHours(1);
-		String s = time.format(DateTimeFormatter.ofPattern("yyMMddHH"));
+		File file = new File("/home/ubuntu/mysqltablefile/sellList.txt");
+		if (file.exists()) {
+			if (file.delete()) {
+				log.info("파일삭제 성공");
+				writedb();
+			} else {
+				log.info("파일삭제 실패");
+			}
+		} else {
+			log.info("파일이 존재하지 않습니다.");
+			writedb();
+		}
 		
-		
-//		File file = new File("/home/ubuntu/mysqltablefile/sellList.txt");
-//		if (file.exists()) {
-//			if (file.delete()) {
-//				log.info("파일삭제 성공");
-//			} else {
-//				log.info("파일삭제 실패");
-//			}
-//		} else {
-//			log.info("파일이 존재하지 않습니다.");
-//		}
-		productSellListRepository.txtProductSellList(Long.parseLong(s));
 		try {
 			ssh.connectSSH();
-//			System.out.println(ssh.getSSHResponse("ls -al"));
-			
-			log.info("********DB sellList txt변환했습니다.*******");
 			log.info("********전송시작*******");
-			ssh.sendFileToOtherServer(sendFilePath,receiveFilePath,"sellList.txt");
-			System.out.println(ssh.getSSHResponse("sudo cat "+receiveFilePath+"sellList.txt"));
+			ssh.sendFileToOtherServer(sendFilePath, receiveFilePath, "sellList.txt");
+			System.out.println(ssh.getSSHResponse("sudo cat " + receiveFilePath + "sellList.txt"));
 			log.info("********전송끝 *******");
 		} catch (JSchException e) {
 			// TODO Auto-generated catch block
@@ -66,54 +67,64 @@ public class MainApplication {
 			e.printStackTrace();
 		}
 //		List<ProductQuery> productQuery = queryInfoService.getProductQueryList();
-//		
-//		List<Thread> threadList=new ArrayList<Thread>();
-//		
+//
+//		List<Thread> threadList = new ArrayList<Thread>();
+//
 //		for (ProductQuery query : productQuery) {
 //			List<String> queryExceptionKeywordList = queryInfoService.getQueryExceptionKeywordList(query);
 //			daangnMultiThreadCrawling.setProductQuery(query);
 //			daangnMultiThreadCrawling.setQueryExceptionKeywordList(queryExceptionKeywordList);
-//			
+//
 //			JoongnaMultiThreadCrawling.setProductQuery(query);
 //			JoongnaMultiThreadCrawling.setQueryexceptionlist(queryExceptionKeywordList);
-//			
+//
 //			thunderMultiThreadCrawling.setProductQuery(query);
 //			thunderMultiThreadCrawling.setQueryExceptionKeywordList(queryExceptionKeywordList);
-//			
+//
 //			Thread daangn = new Thread(daangnMultiThreadCrawling);
 //			Thread joongna = new Thread(JoongnaMultiThreadCrawling);
 //			Thread thunder = new Thread(thunderMultiThreadCrawling);
-//			
+//
 //			daangn.start();
 //			joongna.start();
 //			thunder.start();
-//			
+//
 //			threadList.add(daangn);
 //			threadList.add(joongna);
 //			threadList.add(thunder);
 //		}
-//		
-//		int threadcnt=threadList.size();
-//		while(true) {
-//			int cnt=0;
+//
+//		int threadcnt = threadList.size();
+//		while (true) {
+//			int cnt = 0;
 //			try {
 //				Thread.sleep(1000 * 60);
 //			} catch (Exception e) {
 //				// TODO: handle exception
 //			}
-//			for(int i=0;i<threadList.size();i++) {
-//				Thread thread=threadList.get(i);
-//				if(thread==null) {
+//			for (int i = 0; i < threadList.size(); i++) {
+//				Thread thread = threadList.get(i);
+//				if (thread == null) {
 //					cnt++;
 //					continue;
 //				}
-//				if(thread.getState() == Thread.State.TERMINATED) {
+//				if (thread.getState() == Thread.State.TERMINATED) {
 //					threadList.set(i, null);
 //					cnt++;
 //				}
 //			}
-//			if(cnt == threadcnt) {
+//			if (cnt == threadcnt) {
 //				log.info("크롤링이 모두 끝났습니다");
+//				File file = new File("/home/ubuntu/mysqltablefile/sellList.txt");
+//				if (file.exists()) {
+//					if (file.delete()) {
+//						log.info("파일삭제 성공");
+//					} else {
+//						log.info("파일삭제 실패");
+//					}
+//				} else {
+//					log.info("파일이 존재하지 않습니다.");
+//				}
 //				LocalDateTime time = LocalDateTime.now().minusHours(1);
 //				String s = time.format(DateTimeFormatter.ofPattern("yyMMddHH"));
 //				try {
@@ -122,20 +133,59 @@ public class MainApplication {
 //					productSellListRepository.txtProductSellList(Long.parseLong(s));
 //					log.info("********DB sellList txt변환했습니다.*******");
 //					log.info("********전송시작*******");
-//					ssh.sendFileToOtherServer(sendFilePath,receiveFilePath,"sellList.txt");
-//					System.out.println(ssh.getSSHResponse("sudo cat "+receiveFilePath+"sellList.txt"));
+//					ssh.sendFileToOtherServer(sendFilePath, receiveFilePath, "sellList.txt");
+//					System.out.println(ssh.getSSHResponse("sudo cat " + receiveFilePath + "sellList.txt"));
 //					log.info("********전송끝 *******");
 //				} catch (JSchException e) {
 //					// TODO Auto-generated catch block
 //					e.printStackTrace();
-//				}catch (Exception e) {
+//				} catch (Exception e) {
 //					// TODO Auto-generated catch block
 //					e.printStackTrace();
 //				}
 //				break;
-//			}else
-//				log.info("현재 "+ (threadcnt-cnt) + "개의 크롤링이 진행중입니다");
+//			} else
+//				log.info("현재 " + (threadcnt - cnt) + "개의 크롤링이 진행중입니다");
 //		}
+//
+	}
+
+	public void writedb() {
+		LocalDateTime time = LocalDateTime.now().minusHours(1);
+		String s = time.format(DateTimeFormatter.ofPattern("yyMMddHH"));
+		StringBuilder sb = new StringBuilder();
+		String fileName = "/home/ubuntu/mysqltablefile/sellList.txt";
+		int idx = 0;
+		Product p;
+		for (ProductSellList psl : productSellListRepository.txtProductSellList(Long.parseLong("21092314"))) {
+			p = psl.getProductId();
+			sb.append(psl.getId()).append("|").append(psl.getMarket()).append("|").append(psl.getContent()).append("|")
+					.append(psl.getCreateDate()).append("|").append(psl.getCycle()).append("|")
+					.append(psl.getLocation()).append("|").append(psl.getPrice()).append("|").append(psl.getTitle())
+					.append("|").append(p.getName()).append("\n");
+			if (idx++ == 10)
+				break;
+		}
+//	         System.out.println(sb.toString());
+		try {
+
+			// 파일 객체 생성
+			File file = new File(fileName);
+
+			// true 지정시 파일의 기존 내용에 이어서 작성
+			FileWriter fw = new FileWriter(file, true);
+
+			// 파일안에 문자열 쓰기
+			fw.write(sb.toString());
+			fw.flush();
+
+			// 객체 닫기
+			fw.close();
+			log.info("*******파일쓰기 완료*********");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 }

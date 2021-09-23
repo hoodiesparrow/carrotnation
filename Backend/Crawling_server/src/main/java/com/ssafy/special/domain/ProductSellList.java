@@ -13,11 +13,12 @@ import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter @Setter
 @AllArgsConstructor
-//@ToString
+@ToString
 @IdClass(ProductSellListPK.class)
 public class ProductSellList {
 

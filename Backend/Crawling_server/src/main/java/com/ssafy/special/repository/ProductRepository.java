@@ -12,7 +12,4 @@ import com.ssafy.special.domain.ProductQuery;
 
 public interface ProductRepository extends JpaRepository<Product, Long>{
 	Optional<List<Product>> findByQuery(ProductQuery productQuery);
-	
-	 @Query(value = "select * from product where name like :title", nativeQuery = true)
-	    List<Product> test(@Param("title") String title);
 }

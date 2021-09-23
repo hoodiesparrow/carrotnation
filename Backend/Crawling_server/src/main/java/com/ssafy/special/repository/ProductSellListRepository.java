@@ -18,7 +18,7 @@ public interface ProductSellListRepository extends JpaRepository<ProductSellList
 //    		"FROM product_sell_list "+
 //    		"where cycle >= :date" ,
 //    		nativeQuery = true)
-  @Query(value = "SELECT * INTO OUTFILE '/home/ubuntu/mysqltablefile/sellList.txt' FROM product_sell_list where cycle >= :date",
+  @Query(value = "SELECT *  FROM product_sell_list where cycle >= :date",
 	nativeQuery = true)
     List<ProductSellList> txtProductSellList(@Param("date")Long date);
     
