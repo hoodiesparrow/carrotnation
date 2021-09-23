@@ -9,12 +9,6 @@ import com.ssafy.special.domain.ProductSellListPK;
 
 
 public interface ProductSellListRepository extends JpaRepository<ProductSellList, ProductSellListPK>, ProductSellListRepositoryCustom {
-//    @Modifying
-//    @Query(
-//            value = "truncate table product_sell_list",
-//            nativeQuery = true
-//    )
-//    void truncateProductSellList();
 
     @Query(value = "SELECT * INTO OUTFILE '/home/ubuntu/mysqltablefile/sellList.txt' FIELDS TERMINATED BY '|' " + 
     		"LINES TERMINATED BY '\\n' " + 

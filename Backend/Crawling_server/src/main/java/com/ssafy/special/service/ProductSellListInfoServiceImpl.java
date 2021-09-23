@@ -1,9 +1,15 @@
 package com.ssafy.special.service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import com.ssafy.special.domain.ProductSellList;
 import com.ssafy.special.repository.ProductSellListRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -14,13 +20,13 @@ import lombok.extern.log4j.Log4j2;
 @Transactional
 @Log4j2
 public class ProductSellListInfoServiceImpl implements ProductSellListInfoService {
-
 	private final ProductSellListRepository productSellListRepository; 
 	
-
-//	//ProductSellList테이블 비우기
-//	@Override
-//	public void truncateProductSellList() {
-//		productSellListRepository.truncateProductSellList();
-//	}
+	//현재 사이클 이상인 데이터만 가져옴
+	@Override
+	public List<ProductSellList> getProductSellLists(){
+		LocalDateTime now = LocalDateTime.now().minusHours(1);
+		Long cycle = Long.parseLong(now.format(DateTimeFormatter.ofPattern("yyMMddkk")));
+		return productSellListRepository.getRecentProductSellList(cycle).orElse(new ArrayList<ProductSellList>());
+	}
 }
