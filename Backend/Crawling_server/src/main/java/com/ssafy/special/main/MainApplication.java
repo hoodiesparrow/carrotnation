@@ -37,21 +37,22 @@ public class MainApplication {
 		LocalDateTime time = LocalDateTime.now().minusHours(1);
 		String s = time.format(DateTimeFormatter.ofPattern("yyMMddHH"));
 		
-		File file = new File("/home/ubuntu/mysqltablefile/sellList.txt");
-		if (file.exists()) {
-			if (file.delete()) {
-				log.info("파일삭제 성공");
-			} else {
-				log.info("파일삭제 실패");
-			}
-		} else {
-			log.info("파일이 존재하지 않습니다.");
-		}
-
+		
+//		File file = new File("/home/ubuntu/mysqltablefile/sellList.txt");
+//		if (file.exists()) {
+//			if (file.delete()) {
+//				log.info("파일삭제 성공");
+//			} else {
+//				log.info("파일삭제 실패");
+//			}
+//		} else {
+//			log.info("파일이 존재하지 않습니다.");
+//		}
+		productSellListRepository.txtProductSellList(Long.parseLong(s));
 		try {
 			ssh.connectSSH();
 //			System.out.println(ssh.getSSHResponse("ls -al"));
-			productSellListRepository.txtProductSellList(Long.parseLong(s));
+			
 			log.info("********DB sellList txt변환했습니다.*******");
 			log.info("********전송시작*******");
 			ssh.sendFileToOtherServer(sendFilePath,receiveFilePath,"sellList.txt");

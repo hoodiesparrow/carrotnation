@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.special.domain.ProductSellList;
+//import com.ssafy.special.domain.QProductSellList;
 import com.ssafy.special.domain.QProductSellList;
 
 import lombok.RequiredArgsConstructor;
