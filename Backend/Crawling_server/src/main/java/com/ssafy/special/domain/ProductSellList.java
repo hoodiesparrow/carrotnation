@@ -58,6 +58,6 @@ public class ProductSellList {
 
 	public ProductSellList() {
 		LocalDateTime now= LocalDateTime.now();
-		this.cycle=Long.parseLong(now.format(DateTimeFormatter.ofPattern("yyMMddkk")));//21년 9월 20일 13시 -> 21092013 
+		this.cycle=Long.parseLong(now.format(DateTimeFormatter.ofPattern("yyMMddHH")));//21년 9월 20일 13시 -> 21092013 
 	}	
 }
