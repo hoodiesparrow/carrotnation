@@ -1,17 +1,14 @@
 package com.ssafy.special.main;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.jcraft.jsch.JSchException;
 import com.ssafy.special.controller.SSHUtils;
-import com.ssafy.special.domain.ProductQuery;
 import com.ssafy.special.repository.ProductRepository;
 import com.ssafy.special.repository.ProductSellListRepository;
 import com.ssafy.special.service.KeywordInfoService;
@@ -25,23 +22,35 @@ import lombok.extern.log4j.Log4j2;
 public class MainApplication {
 	private final KeywordInfoService queryInfoService;
 
-	private final DaangnMultiThreadCrawling daangnMultiThreadCrawling;	
+	private final DaangnMultiThreadCrawling daangnMultiThreadCrawling;
 	private final JoongnaMultiThreadCrawling JoongnaMultiThreadCrawling;
 	private final ThunderMultiThreadCrawling thunderMultiThreadCrawling;
 	private final ProductRepository productRepository;
 	private final SSHUtils ssh;
 	private final ProductSellListRepository productSellListRepository;
-	
+
 	private final String sendFilePath = "/home/ubuntu/mysqltablefile/sellList.txt";
 	private final String receiveFilePath = "/home/j5d205/receive/";
-	@Scheduled(fixedRate = 1000 * 60 * 60)//1시간
+
+	@Scheduled(fixedRate = 1000 * 60 * 60) // 1시간
 	public void crawlingStart() {
 		LocalDateTime time = LocalDateTime.now().minusHours(1);
 		String s = time.format(DateTimeFormatter.ofPattern("yyMMddHH"));
+		
+		File file = new File("/home/ubuntu/mysqltablefile/sellList.txt");
+		if (file.exists()) {
+			if (file.delete()) {
+				log.info("파일삭제 성공");
+			} else {
+				log.info("파일삭제 실패");
+			}
+		} else {
+			log.info("파일이 존재하지 않습니다.");
+		}
+
 		try {
 			ssh.connectSSH();
-			System.out.println(ssh.getSSHResponse("ls -al"));
-//			ssh.getSSHResponse("sudo rm sellList.txt");
+//			System.out.println(ssh.getSSHResponse("ls -al"));
 //			productSellListRepository.txtProductSellList(Long.parseLong(s));
 			log.info("********DB sellList txt변환했습니다.*******");
 			log.info("********전송시작*******");
@@ -51,7 +60,7 @@ public class MainApplication {
 		} catch (JSchException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}catch (Exception e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -126,8 +135,6 @@ public class MainApplication {
 //			}else
 //				log.info("현재 "+ (threadcnt-cnt) + "개의 크롤링이 진행중입니다");
 //		}
-		
-		
+
 	}
 }
-
