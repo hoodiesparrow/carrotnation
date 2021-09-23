@@ -135,7 +135,6 @@ public class MainApplication {
 					.append(psl.getCreateDate()).append("|").append(psl.getCycle()).append("|")
 					.append(psl.getLocation()).append("|").append(psl.getPrice()).append("|").append(psl.getTitle())
 					.append("|").append(p.getName()).append("\n");
-				break;
 		}
 		try {
 
