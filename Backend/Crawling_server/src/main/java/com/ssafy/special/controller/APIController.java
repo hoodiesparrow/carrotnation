@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.special.domain.ProductSellList;
@@ -22,8 +23,8 @@ public class APIController {
 
 	//ProductSellList 뿌려줌(최신사이클만)
 	@GetMapping("/productselllist")
-	public ResponseEntity<List<ProductSellList>> getProductSellList() {
-			List<ProductSellList> productSellLists = productSellListInfoService.getProductSellLists();
+	public ResponseEntity<List<ProductSellList>> getProductSellList(@RequestParam(defaultValue = "0") int page) {
+			List<ProductSellList> productSellLists = productSellListInfoService.getProductSellLists(page);
 			
 			if(productSellLists==null) {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -33,6 +34,4 @@ public class APIController {
 			
 			return ResponseEntity.status(HttpStatus.OK).body(productSellLists);
 	}
-	
-	
 }
