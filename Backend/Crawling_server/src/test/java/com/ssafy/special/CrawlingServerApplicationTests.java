@@ -1,7 +1,4 @@
 package com.ssafy.special;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -16,12 +13,10 @@ import com.ssafy.special.service.DaangnCrawlingServiceImpl;
 import com.ssafy.special.service.JoongnaCrawlingService;
 import com.ssafy.special.service.ThunderCrawlingService;
 
-import lombok.extern.log4j.Log4j2;
-
-
+//import lombok.extern.log4j.Log4j2;
 
 @SpringBootTest
-@Log4j2
+//@Log4j2
 class CrawlingServerApplicationTests {
 
 	@Autowired
@@ -59,7 +54,7 @@ class CrawlingServerApplicationTests {
 
 	public void writedb() {
 		String s = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHH"));
-		log.info(productSellListRepository.txtProductSellList(s));
+//		log.info(productSellListRepository.txtProductSellList(s));
 	}
 
 
