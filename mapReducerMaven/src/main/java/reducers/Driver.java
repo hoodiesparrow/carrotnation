@@ -15,6 +15,7 @@ public class Driver {
             //pgd.addClass("wordcountsort", Wordcountsort.class, "A map/reduce program.  lees 'a'");
             //pgd.addClass("invertedindex", InvertedIndex.class, "A map/reduce program. output with filepath.");
             pgd.addClass("sellpricecount",Sellpricecount.class,"count product price");
+            pgd.addClass("setjoin",SetSimJoin.class,"A map/reduce program that preform the se similarity self-join using the inverted index for a single input file.");
 
             pgd.driver(args);
             exitCode = 0;
