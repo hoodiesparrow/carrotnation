@@ -219,9 +219,9 @@ public class ThunderCrawlingServiceImpl implements ThunderCrawlingService {
 				// pid = "164042247"
 				
 				//원본 게시글 링크 
-				product.setLink(thunderDetail + (String)productObject.get("pid") + "/detail_info.json?version=4");
+				product.setLink("https://m.bunjang.co.kr/products/" + (String)productObject.get("pid"));
 				//내용 뽑아내기
-				String detailUrl = product.getLink();
+				String detailUrl = thunderDetail + (String)productObject.get("pid") + "/detail_info.json?version=4";
 				String jsonDetailInfo = Jsoup.connect(detailUrl).ignoreContentType(true).execute().body();
 				JSONObject jsonDetailObject = (JSONObject) jsonParser.parse(jsonDetailInfo);
 				JSONObject item_info = (JSONObject) jsonDetailObject.get("item_info");
