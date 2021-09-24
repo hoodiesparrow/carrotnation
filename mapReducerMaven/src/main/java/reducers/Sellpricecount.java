@@ -1,4 +1,4 @@
-package ssafy;
+package reducers;
 
 import java.io.IOException;
 import java.util.StringTokenizer;
@@ -86,7 +86,7 @@ public class Sellpricecount {
 			System.exit(2);
 		}
 		Job job = new Job(conf,"word count");
-		job.setJarByClass(Wordcount.class);
+		job.setJarByClass(Sellpricecount.class);
 
 		// let hadoop know my map and reduce classes
 		job.setMapperClass(TokenizerMapper.class);
