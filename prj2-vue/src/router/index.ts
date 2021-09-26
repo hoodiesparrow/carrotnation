@@ -2,6 +2,8 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
 import ItemPage from "../views/ItemPage.vue";
 import Chart from "../views/Chart.vue";
+import Prod from "../views/Prod.vue";
+import Select from "@/views/Select.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -19,6 +21,16 @@ const routes: Array<RouteRecordRaw> = [
     name: "Chart",
     component: Chart,
   },
+  {
+    path: "/prod",
+    name: "Prod",
+    component: Prod,
+  },
+  {
+    path: "/sel",
+    name: "Select",
+    component: Select,
+  }
 ]
 
 const router = createRouter({
