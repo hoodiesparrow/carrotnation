@@ -92,8 +92,8 @@ public class SetSimJoin {
                         }
                         pair.set(str);
                         //count.set(1);
-                        System.out.println("SimMapper pair "+pair.toString());
-                        System.out.println("SimMapper count "+count.get());
+                        //System.out.println("SimMapper pair "+pair.toString());
+                        //System.out.println("SimMapper count "+count.get());
                         
                         context.write(pair, count);                        
 		}
@@ -114,14 +114,14 @@ public class SetSimJoin {
 			String[] aarr=strarr[0].split(",");
 			String a=aarr[0];
 			int alength=Integer.parseInt(aarr[1]);
-			System.out.println("SimReducer a "+a);
-			System.out.println("SimReducer alength "+alength);
+			//System.out.println("SimReducer a "+a);
+			//System.out.println("SimReducer alength "+alength);
 			
 			String[] barr=strarr[1].split(",");
 			String b=barr[0];
 			int blength=Integer.parseInt(barr[1]);
-			System.out.println("SimReducer b "+b);
-			System.out.println("SimReducer blength "+blength);
+			//System.out.println("SimReducer b "+b);
+			//System.out.println("SimReducer blength "+blength);
 			
 		
 			int count=0;
@@ -132,13 +132,13 @@ public class SetSimJoin {
                        
                        double alpha = sigma/(1+sigma) * (alength+blength); 
                        
-                       System.out.println("SimReducer count "+count);
-                       System.out.println("SimReducer alpha "+alpha);
+                       //System.out.println("SimReducer count "+count);
+                       //System.out.println("SimReducer alpha "+alpha);
 			if(count< alpha){
 				return;				
 			}
 			Text sim = new Text(a+"\t"+b);
-			System.out.println("SimReducer sim "+sim);
+			//System.out.println("SimReducer sim "+sim);
 			
 			
 			context.write(sim,new IntWritable(count));
@@ -167,7 +167,7 @@ public class SetSimJoin {
 		job1.setReducerClass(InvertedListReducer.class);
 		job1.setOutputKeyClass(Text.class);
 		job1.setOutputValueClass(Text.class);
-		job1.setNumReduceTasks(2);
+		job1.setNumReduceTasks(40);
 		FileInputFormat.addInputPath(job1, new Path(otherArgs[1]));
 		Path pathtmp = new Path( "setSimJoinTmp" );
 		FileOutputFormat.setOutputPath(job1, pathtmp );
@@ -181,7 +181,7 @@ public class SetSimJoin {
 		job2.setReducerClass(SimReducer.class);
 		job2.setOutputKeyClass(Text.class);
 		job2.setOutputValueClass(IntWritable.class);
-		job2.setNumReduceTasks(2);
+		job2.setNumReduceTasks(40);
 		FileInputFormat.addInputPath(job2, pathtmp);
 		FileOutputFormat.setOutputPath(job2, output );
 		if ( fs.exists( output ) ) fs.delete( output );
