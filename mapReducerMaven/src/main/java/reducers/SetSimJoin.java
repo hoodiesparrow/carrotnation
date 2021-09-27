@@ -130,18 +130,19 @@ public class SetSimJoin {
 				count+= val.get();
 			}
                        
-                       double alpha = sigma/(1+sigma) * (alength+blength); 
-                       
-                       //System.out.println("SimReducer count "+count);
-                       //System.out.println("SimReducer alpha "+alpha);
-			if(count< alpha){
-				return;				
-			}
+                       double similarlity = count / (alength + blength);
+
+			if(similarlity < sigma)
+				return;
+			int percenttmp = (int)(similarlity * 1000) % 10;
+			int retval = (int)(similarlity * 100);
+			if(percenttmp>=5)
+				retval+=1;				
+		
 			Text sim = new Text(a+"\t"+b);
 			//System.out.println("SimReducer sim "+sim);
 			
-			
-			context.write(sim,new IntWritable(count));
+			context.write(sim,new IntWritable(retval));
 		}
 	}
 
