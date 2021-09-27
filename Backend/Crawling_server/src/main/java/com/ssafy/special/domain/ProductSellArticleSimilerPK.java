@@ -3,11 +3,6 @@ package com.ssafy.special.domain;
 import java.io.Serializable;
 import java.util.Objects;
 
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,9 +14,9 @@ import lombok.Setter;
 public class ProductSellArticleSimilerPK implements Serializable {
 
 
-	private ProductSellList articleA;//게시글
+	private ProductSellListPK articleA;//게시글
 	
-	private ProductSellList articleB;//게시글
+	private ProductSellListPK articleB;//게시글
 	
 	@Override
 	public int hashCode() {
