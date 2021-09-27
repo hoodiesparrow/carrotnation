@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.special.domain.Product;
 import com.ssafy.special.dto.ProductSellListResponseDTO;
 import com.ssafy.special.service.ProductSellListInfoService;
+import com.ssafy.special.service.ProductService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +26,8 @@ import lombok.RequiredArgsConstructor;
 public class APIController {
 
 	private final ProductSellListInfoService productSellListInfoService;
+	private final ProductService productService;
+	
 
 	//ProductSellList 뿌려줌(최신사이클만)
 	@GetMapping("/productselllist")
@@ -36,7 +40,7 @@ public class APIController {
 			if(productSellLists==null) {
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 			}else if(productSellLists.size()==0) {
-				ret.put("msg", "페이지, 제품번호를 다시 확인해 주세요");
+				ret.put("msg", "페이지, 게시글번호를 다시 확인해 주세요");
 				return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ret);
 			}
 			long totalpage= count/20;
@@ -55,7 +59,7 @@ public class APIController {
 			Map<String, Object> ret = new HashMap<String, Object>();
 			
 			if(productSellDetail==null) {
-				ret.put("msg", "페이지, 제품번호를 다시 확인해 주세요");
+				ret.put("msg", "페이지, 게시글번호를 다시 확인해 주세요");
 				return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ret);
 			}
 		
@@ -64,4 +68,17 @@ public class APIController {
 			return ResponseEntity.status(HttpStatus.OK).body(ret);
 	}
 	
+	@GetMapping("/product")
+	public ResponseEntity<Map<String, Object>> getProductPrice(@RequestParam long pid) {
+			Map<String, Object> ret = new HashMap<String, Object>();
+			
+			Product product = productService.getProduct(pid);
+			if(product==null) {
+				ret.put("msg", "제품번호를 다시 확인해 주세요");
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ret);
+			}
+			ret.put("product", product);
+			
+			return ResponseEntity.status(HttpStatus.OK).body(ret);
+	}
 }
