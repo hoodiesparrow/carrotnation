@@ -239,6 +239,7 @@ export default {
       console.log(tree2.value)
       if (Object.keys(tree2.value).indexOf('tag') === -1) {
         console.log('end of the tree, router push required')
+        console.log()
       } else {
         console.log('button animation called')
         tranFlag1.value = false
