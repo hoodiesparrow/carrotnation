@@ -30,7 +30,7 @@
       <div class="w-full">
         <HomeSelectButton />
       <br>
-      <HomeChart />
+      <!-- <HomeChart /> -->
       </div>
     </div>
   </div>
@@ -51,7 +51,7 @@ const HomeSelectButton = defineAsyncComponent(() =>
 export default defineComponent({
   name: "Home",
   components: {
-    HomeChart,
+    // HomeChart,
     HomeSelectButton,
   },
 
