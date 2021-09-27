@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.special.dto.ProductSellArticleSimilerResponseDTO;
 import com.ssafy.special.dto.ProductSellListResponseDTO;
+import com.ssafy.special.repository.ProductSellArticleSimilerRepositoryImpl;
 import com.ssafy.special.service.ProductSellListInfoService;
+import com.ssafy.special.service.SimilarityService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class APIController {
 
 	private final ProductSellListInfoService productSellListInfoService;
-
+	private final SimilarityService similarityService;
 	//ProductSellList 뿌려줌(최신사이클만)
 	@GetMapping("/productselllist")
 	public ResponseEntity<Map<String, Object>> getProductSellList(@RequestParam(defaultValue = "0") int page, @RequestParam long pid) {
@@ -51,7 +54,7 @@ public class APIController {
 	@GetMapping("/productselldetail")
 	public ResponseEntity<Map<String, Object>> getProductSellDetail(@RequestParam String market, @RequestParam long pid) {
 			ProductSellListResponseDTO productSellDetail = productSellListInfoService.getProductSellDetail(market, pid);
-			
+			List<ProductSellArticleSimilerResponseDTO> similerlist = similarityService.returnSimilarity(pid,market);
 			Map<String, Object> ret = new HashMap<String, Object>();
 			
 			if(productSellDetail==null) {
@@ -60,7 +63,7 @@ public class APIController {
 			}
 		
 			ret.put("articleDeatil", productSellDetail);			
-			
+			ret.put("similerProduct", similerlist);
 			return ResponseEntity.status(HttpStatus.OK).body(ret);
 	}
 	
