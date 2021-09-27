@@ -148,12 +148,11 @@ public class SimilarityServiceImpl implements SimilarityService {
 					ss = new StringTokenizer(st.nextToken(),"\t");
 					psas = new ProductSellArticleSimiler();
 					tempst = new StringTokenizer(ss.nextToken(),"|");
-					psas.setIdA(Long.parseLong(tempst.nextToken()));
-					psas.setMarketA(tempst.nextToken());
+					psas.setArticleA(new ProductSellList(Long.parseLong(tempst.nextToken()),tempst.nextToken()));
+
 					
 					tempst = new StringTokenizer(ss.nextToken(),"|");
-					psas.setIdB(Long.parseLong(tempst.nextToken()));
-					psas.setMarketB(tempst.nextToken());
+					psas.setArticleB(new ProductSellList(Long.parseLong(tempst.nextToken()), tempst.nextToken()));
 					
 					psas.setSimilarity(Double.parseDouble(ss.nextToken()));
 					insertProductSellArticleSimiler(psas);

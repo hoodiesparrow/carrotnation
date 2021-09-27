@@ -176,12 +176,11 @@ class CrawlingServerApplicationTests {
 			ss = new StringTokenizer(st.nextToken(),"\t");
 			ProductSellArticleSimiler p = new ProductSellArticleSimiler();
 			temp = new StringTokenizer(ss.nextToken(),"|");
-			p.setIdA(Long.parseLong(temp.nextToken()));
-			p.setMarketA(temp.nextToken());
+			p.setArticleA(new ProductSellList(Long.parseLong(temp.nextToken()),temp.nextToken()));
+
 			
 			temp = new StringTokenizer(ss.nextToken(),"|");
-			p.setIdB(Long.parseLong(temp.nextToken()));
-			p.setMarketB(temp.nextToken());
+			p.setArticleB(new ProductSellList(Long.parseLong(temp.nextToken()), temp.nextToken()));
 			
 			p.setSimilarity(Double.parseDouble(ss.nextToken()));
 			insertProductSellArticleSimiler(p);
