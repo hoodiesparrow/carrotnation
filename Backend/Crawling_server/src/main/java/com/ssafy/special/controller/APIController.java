@@ -56,9 +56,9 @@ public class APIController {
 	}
 	
 	@GetMapping("/productselldetail")
-	public ResponseEntity<Map<String, Object>> getProductSellDetail(@RequestParam String market, @RequestParam long pid) {
-			ProductSellListResponseDTO productSellDetail = productSellListInfoService.getProductSellDetail(market, pid);
-			List<ProductSellArticleSimilerResponseDTO> similerlist = similarityService.returnSimilarity(pid,market);
+	public ResponseEntity<Map<String, Object>> getProductSellDetail(@RequestParam String market, @RequestParam long id) {
+			ProductSellListResponseDTO productSellDetail = productSellListInfoService.getProductSellDetail(market, id);
+			List<ProductSellArticleSimilerResponseDTO> similerlist = similarityService.returnSimilarity(id,market);
 			Map<String, Object> ret = new HashMap<String, Object>();
 			
 			if(productSellDetail==null) {
