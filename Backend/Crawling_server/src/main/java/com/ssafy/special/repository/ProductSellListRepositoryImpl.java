@@ -56,11 +56,11 @@ public class ProductSellListRepositoryImpl implements ProductSellListRepositoryC
 	
 	//현재 사이클 이상인 데이터만 가져옴(페이징 없음, 분석용 hdfs에 보내는용도)
 	@Override
-	public Optional<List<ProductSellList>> getRecentProductSellList(Long cycle){
+	public Optional<List<ProductSellList>> getRecentProductSellList(Long cycle, long id){
 		QProductSellList qpsl= QProductSellList.productSellList;
 		
 		List<ProductSellList> result= queryFactory.selectFrom(qpsl)
-										.where(qpsl.cycle.goe(cycle))
+										.where(qpsl.cycle.goe(cycle).and(qpsl.productId.id.eq(id)))
 										.orderBy(qpsl.createDate.asc())									
 										.fetch();
 		

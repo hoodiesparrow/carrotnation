@@ -45,4 +45,12 @@ public class APIController {
 			
 			return ResponseEntity.status(HttpStatus.OK).body(ret);
 	}
+	
+	//물품 상세페이지 넘어가기 전 물품 유사도 및 물품 정보
+	@GetMapping("/product")
+	public ResponseEntity<Map<String,Object>> getSimilarity(@RequestParam long pid, @RequestParam String market){
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		return ResponseEntity.status(HttpStatus.OK).body(map);
+	}
 }

@@ -14,6 +14,7 @@ import lombok.ToString;
 
 @Entity
 @Getter @Setter
+@ToString
 public class Product {
 
 	@Id
