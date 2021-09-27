@@ -59,9 +59,11 @@ public class SetSimJoin {
 			Text ridpair =null;
 			for(int i=0;i<str.size();i++){
 				for(int j=0;j<str.size();j++){
+					
 					//set (pair,overlab) to gloal hash table
 					ridpair = new Text(str.get(i)+"\t"+str.get(j));
 					context.write(ridpair,one);
+					//System.out.println("i, j "+i+ " "+j);
 					//System.out.println("ridpair "+ridpair.toString());
 				}			
 			}
@@ -129,18 +131,50 @@ public class SetSimJoin {
 			for ( IntWritable val : values ) {
 				count+= val.get();
 			}
-                       
-                       double similarlity = count / (alength + blength);
+                       //System.out.println("SimReducer count "+count);
+                       double similarlity = (double)count / (alength + blength-count);
 
 			if(similarlity < sigma)
 				return;
 			int percenttmp = (int)(similarlity * 1000) % 10;
 			int retval = (int)(similarlity * 100);
+			
 			if(percenttmp>=5)
-				retval+=1;				
-		
+				retval+=1;
+					
+			String[] atmp =a.split("\\|");			
+			long apid = Long.parseLong(atmp[0]);
+			String amarket = atmp[1];
+			if(amarket.equals("daangn"))
+				apid+=10000000000L;
+			else if(amarket.equals("joonnaApp"))
+				apid+=20000000000L;
+			else if(amarket.equals("joonnaCafe"))
+				apid+=30000000000L;
+			else if(amarket.equals("thunder"))
+				apid+=40000000000L;
+				
+			
+			String[] btmp =b.split("\\|");			
+			long bpid = Long.parseLong(btmp[0]);
+			String bmarket = btmp[1];
+			if(bmarket.equals("daangn"))
+				bpid+=10000000000L;
+			else if(bmarket.equals("joonnaApp"))
+				bpid+=20000000000L;
+			else if(bmarket.equals("joonnaCafe"))
+				bpid+=30000000000L;
+			else if(bmarket.equals("thunder"))
+				bpid+=40000000000L;
+							
+			if(apid >= bpid)
+				return;
+			
+			
+			
 			Text sim = new Text(a+"\t"+b);
 			//System.out.println("SimReducer sim "+sim);
+			//System.out.println("SimReducer retval "+retval);
 			
 			context.write(sim,new IntWritable(retval));
 		}
