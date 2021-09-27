@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-
 function importComp(view: string) {
   return () => import(/* webpackChunkName: "view-[request]" */ `@/views/${view}.vue`)
 }
+const Prod = () => import(/* webpackChunkName: "prod" */ '@/views/Prod.vue');
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -18,7 +18,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/prod',
     name: 'Prod',
-    component: importComp('Prod'),
+    component: Prod,
   },
   {
     path: '/sel',

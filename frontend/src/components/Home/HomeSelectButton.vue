@@ -153,6 +153,7 @@
 
 <script>
 import get from 'lodash/get'
+import { useRouter } from 'vue-router'
 import { computed, reactive, ref } from 'vue'
 import { useStore } from 'vuex'
 import {
@@ -196,6 +197,7 @@ export default {
 
   setup() {
     const store = useStore()
+    const router = useRouter()
     const selected = ref(plans[0])
     const currentTran = ref(1)
     const tranFlag1 = ref(true)
@@ -230,30 +232,42 @@ export default {
     // v-for에서 key를 임의idx로 잡아놓고 @click에서 인자로 넘기면 될듯
 
     const onClickT1 = (idx) => {
-      
-      // treeDepth수정
       tree1Depth.value.push(tree1Content.value[idx])
       tree2Depth.value.push(tree1Content.value[idx])
-      // tag가 있으면?
       tree2.value = get(store.getters['getCategoryData'], tree2Depth.value)
       console.log(tree2.value)
+      // tag가 없으면? >>> router push
       if (Object.keys(tree2.value).indexOf('tag') === -1) {
         console.log('end of the tree, router push required')
-        console.log()
+        console.log(tree2.value.pid)
+        router.push({
+          name: 'Prod',
+          query: {
+            pid: tree2.value.pid
+          }
+        })
       } else {
         console.log('button animation called')
         tranFlag1.value = false
       }
+      
+
     }
     const onClickT2 = (idx) => {
-      // treeDepth수정
       tree1Depth.value.push(tree2Content.value[idx])
       tree2Depth.value.push(tree2Content.value[idx])
-      // tag가 있으면?
       tree1.value = get(store.getters['getCategoryData'], tree1Depth.value)
       console.log(tree1.value)
+      // tag가 없으면? >>> router push
       if (Object.keys(tree1.value).indexOf('tag') === -1) {
         console.log('end of the tree, router push required')
+        console.log(tree1.value.pid)
+        router.push({
+          name: 'Prod',
+          query: {
+            pid: tree1.value.pid
+          }
+        })
       } else {
         console.log('button animation called')
         tranFlag2.value = false
@@ -275,6 +289,7 @@ export default {
       tree2Depth,
       tree2Content,
       treeTag,
+      router,
     }
   },
 }
