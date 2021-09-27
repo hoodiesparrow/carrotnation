@@ -18,6 +18,7 @@ import com.ssafy.special.controller.SSHUtils;
 import com.ssafy.special.domain.Product;
 import com.ssafy.special.domain.ProductSellArticleSimiler;
 import com.ssafy.special.domain.ProductSellList;
+import com.ssafy.special.dto.ProductSellArticleSimilerResponseDTO;
 import com.ssafy.special.repository.ProductRepository;
 import com.ssafy.special.repository.ProductSellArticleSimilerRepository;
 import com.ssafy.special.repository.ProductSellListRepository;
@@ -45,13 +46,7 @@ public class SimilarityServiceImpl implements SimilarityService {
 //	private String sendFilePath = "C:\\SSAFY\\sshtest\\";
 	private String receiveFilePath = "/home/j5d205/receive/";
 	private String hadoopdefault = "/usr/local/hadoop/bin/";
-	@Override
-	public ProductSellList findProduct(long id, String market) {
-//		Optional<ProductSellList> product =productSellListRepository.findByIdAndMarket(id,market);
 
-//		return product.get();
-		return null;
-	}
 
 	@Override
 	public void similarityProduct() {
@@ -175,6 +170,12 @@ public class SimilarityServiceImpl implements SimilarityService {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public List<ProductSellArticleSimilerResponseDTO> returnSimilarity(long pid, String market) {
+		
+		return productSellArticleSimilerRepository.getProductSellArticleSimiler(pid,market).orElse(new ArrayList<ProductSellArticleSimilerResponseDTO>());
 	}
 
 
