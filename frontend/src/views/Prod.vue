@@ -21,12 +21,7 @@
     </div>
     <div class="text-left">
       <div class="flex flex-col">
-        <ProdBox 
-          v-for="prod in ProdList" 
-          :key="prod.pid" 
-          :product="prod"
-        />
-
+        <ProdBox v-for="prod in ProdList" :key="prod.pid" :product="prod" />
       </div>
     </div>
     <div class="sticky bottom-0">
@@ -56,7 +51,7 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const store = useStore();
-    const show = ref(false)
+    const show = ref(false);
     // const infiniteHandler = function ($state) {};
 
     var items = ref([]);
@@ -68,7 +63,7 @@ export default defineComponent({
         price: "300000",
         createdate: "2021-09-09",
         img: "@/assets/image/iphone12pro.jfif",
-        url: "https://www.daangn.com/articles/279930062"
+        url: "https://www.daangn.com/articles/279930062",
       },
       {
         pid: "1",
@@ -77,7 +72,7 @@ export default defineComponent({
         price: "300000",
         createdate: "2021-09-09",
         img: "@/assets/image/iphone12pro.jfif",
-        url: "https://m.joongna.com/product-detail/27889203"
+        url: "https://m.joongna.com/product-detail/27889203",
       },
       {
         pid: "1",
@@ -86,7 +81,7 @@ export default defineComponent({
         price: "300000",
         createdate: "2021-09-09",
         img: "@/assets/image/iphone12pro.jfif",
-        url: "clubid=10050146&menuid=424&boardtype=C&page=12&articleid=866763290&referrerAllArticles=false"
+        url: "clubid=10050146&menuid=424&boardtype=C&page=12&articleid=866763290&referrerAllArticles=false",
       },
       {
         pid: "1",
@@ -95,7 +90,7 @@ export default defineComponent({
         price: "300000",
         createdate: "2021-09-09",
         img: "@/assets/image/iphone12pro.jfif",
-        url: "https://api.bunjang.co.kr/api/1/product/163817849/detail_info.json?version=4"
+        url: "https://api.bunjang.co.kr/api/1/product/163817849/detail_info.json?version=4",
       },
     ]);
 
@@ -103,10 +98,10 @@ export default defineComponent({
     //   items[i] = ProdList[i];
     // }
 
-    return { 
-      ProdList, 
+    return {
+      ProdList,
       items,
-      show,    
+      show,
     };
   },
 });
@@ -114,9 +109,9 @@ export default defineComponent({
 
 <style></style>
 
-        // <infinite-loading @infinite="infiniteHandler">
+//
+<infinite-loading @infinite="infiniteHandler">
         //   <template #spinner> // loading here </template>
         //   <template #no-more> // text no more </template>
         //   <template #no-results> // text no results </template>
         // </infinite-loading>
-
