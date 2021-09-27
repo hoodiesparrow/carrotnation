@@ -17,6 +17,7 @@ import com.ssafy.special.domain.ProductQuery;
 import com.ssafy.special.domain.ProductSellList;
 import com.ssafy.special.repository.ProductSellListRepository;
 import com.ssafy.special.service.KeywordInfoService;
+import com.ssafy.special.service.ProductService;
 import com.ssafy.special.service.SimilarityService;
 
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,8 @@ public class MainApplication {
 //	private final String sendFilePath = "/home/ubuntu/mysqltablefile/sellList.txt";
 //	private final String receiveFilePath = "/home/j5d205/receive/";
 
+	private final ProductService productService;
+	
 	@Scheduled(fixedRate = 1000 * 60 * 60) // 1시간
 	public void crawlingStart() {
 		
@@ -88,49 +91,17 @@ public class MainApplication {
 				}
 			}
 			if (cnt == threadcnt) {
-				log.info("크롤링이 모두 끝났습니다");
-				
-				similarityService.similarityProduct();
-				
+				log.info("크롤링이 모두 끝났습니다");				
 				break;
 			} else
 				log.info("현재 " + (threadcnt - cnt) + "개의 크롤링이 진행중입니다");
 		}
+		//크롤링 끝난뒤 크롤링한 데이터를 Komoran으로 형태소 분석후 NNP, NNG만 클러스터 서버에 FTP로 파일전송
+		//전송후 해당 파일을 HDFS에 집어넣고 하둡을 돌려서 유사도 뽑아낸뒤 그걸 DB에 저장
+		similarityService.similarityProduct();
 
-	}
-
-	public void writedb() {
-		LocalDateTime time = LocalDateTime.now().minusHours(1);
-		String s = time.format(DateTimeFormatter.ofPattern("yyMMddHH"));
-		StringBuilder sb = new StringBuilder();
-		String fileName = "/home/ubuntu/mysqltablefile/sellList.txt";
-		Product p;
-		for (ProductSellList psl : productSellListRepository.txtProductSellList(Long.parseLong(s))) {
-			p = psl.getProductId();
-			sb.append(psl.getId()).append("|").append(psl.getMarket()).append("|").append(psl.getContent()).append("|")
-					.append(psl.getCreateDate()).append("|").append(psl.getCycle()).append("|")
-					.append(psl.getLocation()).append("|").append(psl.getPrice()).append("|").append(psl.getTitle())
-					.append("|").append(p.getName()).append("\n");
-		}
-		try {
-
-			// 파일 객체 생성
-			File file = new File(fileName);
-
-			// true 지정시 파일의 기존 내용에 이어서 작성
-			FileWriter fw = new FileWriter(file, true);
-
-			// 파일안에 문자열 쓰기
-			fw.write(sb.toString());
-			fw.flush();
-
-			// 객체 닫기
-			fw.close();
-			log.info("*******파일쓰기 완료*********");
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
+		//현재 판매 물품 중 최저가부터 고가, 평균가 구함
+		productService.setProductsMinMaxAvgPrice();
+		
 	}
 }
