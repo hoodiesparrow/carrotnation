@@ -2,7 +2,10 @@ package com.ssafy.special;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Optional;
 import java.util.StringTokenizer;
 
@@ -16,6 +19,7 @@ import com.ssafy.special.domain.Product;
 import com.ssafy.special.domain.ProductSellArticleSimiler;
 //import com.ssafy.special.domain.Product;
 import com.ssafy.special.domain.ProductSellList;
+import com.ssafy.special.dto.ProductSellArticleSimilerResponseDTO;
 import com.ssafy.special.main.MainApplication;
 import com.ssafy.special.repository.ProductRepository;
 import com.ssafy.special.repository.ProductSellArticleSimilerRepository;
@@ -139,77 +143,13 @@ class CrawlingServerApplicationTests {
 //		System.out.println(f);
 	}
 	
-//	@Test
+	@Test
 	void qq() {
-		List<Product> aa =productRepository.findAll();
-		for(Product p:aa) {
+		List<ProductSellArticleSimilerResponseDTO> list =productSellArticleSimilerRepository.getProductSellArticleSimiler(164589976,"thunder").orElse(new ArrayList<ProductSellArticleSimilerResponseDTO>());
+		
+		for(ProductSellArticleSimilerResponseDTO p :list) {
 			System.out.println(p);
 		}
 	}
 	
-//	@Test
-	void sef() {
-		String s = "164274556|thunder	164517194|thunder	100\r\n" + 
-				"164335475|thunder	164539903|thunder	97\r\n" + 
-				"164335880|thunder	164539903|thunder	92\r\n" + 
-				"164335880|thunder	164580213|thunder	95\r\n" + 
-				"164340425|thunder	164567687|thunder	96\r\n" + 
-				"164340425|thunder	164581126|thunder	96\r\n" + 
-				"164342091|thunder	164461957|thunder	96\r\n" + 
-				"164359845|thunder	164370705|thunder	92\r\n" + 
-				"164370705|thunder	164461957|thunder	95\r\n" + 
-				"164370705|thunder	164564593|thunder	95\r\n" + 
-				"164407603|thunder	164547946|thunder	96\r\n" + 
-				"164444819|thunder	164507338|thunder	95\r\n" + 
-				"164461957|thunder	164507338|thunder	95\r\n" + 
-				"164492996|thunder	164498696|thunder	96\r\n" + 
-				"164492996|thunder	164505577|thunder	100\r\n" + 
-				"164494853|thunder	164547946|thunder	95\r\n" + 
-				"164498287|thunder	164502180|thunder	97\r\n" + 
-				"164498287|thunder	164599610|thunder	100\r\n" + 
-				"164502180|thunder	164567687|thunder	93";
-		
-		StringTokenizer st = new StringTokenizer(s,"\r\n");
-		StringTokenizer ss,temp;
-
-		while(st.hasMoreTokens()) {
-			ss = new StringTokenizer(st.nextToken(),"\t");
-			ProductSellArticleSimiler p = new ProductSellArticleSimiler();
-			temp = new StringTokenizer(ss.nextToken(),"|");
-			p.setArticleA(new ProductSellList(Long.parseLong(temp.nextToken()),temp.nextToken()));
-
-			
-			temp = new StringTokenizer(ss.nextToken(),"|");
-			p.setArticleB(new ProductSellList(Long.parseLong(temp.nextToken()), temp.nextToken()));
-			
-			p.setSimilarity(Double.parseDouble(ss.nextToken()));
-			insertProductSellArticleSimiler(p);
-		}
-	}
-	@Test
-	void contain() {
-		String s ="아이폰 기가 풀 박스 실버 정상 해지 완료 공기 상태 특성 테두리 정도 고장 수리 내역 교체 적도 배터리 요즘 사설 프로 케이스 사진 액정 보호 필름 드릴 휴대폰 연락 인치 아이패드 프로 필요 추 금 신도";
-		StringBuilder sb = new StringBuilder();
-		
-		StringTokenizer st = new StringTokenizer(s);
-		
-		while(st.hasMoreTokens()) {
-			String ss = st.nextToken();
-			if(sb.toString().contains(ss)) {
-				System.out.println(ss);
-			}else {
-				sb.append(ss).append(" ");
-			}
-		}
-		
-	}
-	@Transactional
-	private boolean insertProductSellArticleSimiler(ProductSellArticleSimiler psas) {
-		try {
-			productSellArticleSimilerRepository.save(psas);
-		} catch (Exception e) {
-			return false;
-		}
-		return true;
-	}
 }
