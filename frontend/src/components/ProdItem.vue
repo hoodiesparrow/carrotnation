@@ -1,11 +1,6 @@
 <template>
   <div
-    class="
-      my-2
-      p-3
-      transition
-      hover:bg-purple-100 hover:text-black
-    "
+    class="my-2 p-3 transition hover:bg-purple-50 hover:text-black bg-white"
     @click="onClickItem"
   >
     <div class="grid grid-rows-3 grid-cols-3 gap-1 text-left">
@@ -13,7 +8,9 @@
         <img :src="product.img" style="height: 50px" />
       </div>
       <div class="col-span-2 text-2xl flex items-center">{{ product.title }}</div>
-      <div class="col-span-2 text-lg font-semibold flex items-center"><p>{{ product.price }}</p></div>
+      <div class="col-span-2 text-lg font-semibold flex items-center">
+        <p>{{ product.price }}</p>
+      </div>
       <div class="col-span-2 text-lg items-center">{{ product.createdate }}</div>
     </div>
   </div>
@@ -26,8 +23,8 @@ import { useStore } from "vuex";
 // import HomeItemList from './HomeItemList.vue'
 
 type UrlList = {
-  [key: string]: string
-}
+  [key: string]: string;
+};
 
 export default defineComponent({
   name: "ProdBox",
@@ -35,51 +32,51 @@ export default defineComponent({
     product: {
       type: Object,
       default: () => {
-        return {}
-      }
-    }
+        return {};
+      },
+    },
   },
   setup(props) {
-    const router = useRouter()
+    const router = useRouter();
     const urlList: UrlList = {
-      joonnaApp: 'https://m.joongna.com/product-detail/',
-      joonnaCafe: 'https://m.cafe.naver.com/ArticleRead.nhn?clubid=10050146&articleid=',
-      daangn: 'https://www.daangn.com/articles/',
-      thunder: 'https://m.bunjang.co.kr/products/',
-    }
+      joonnaApp: "https://m.joongna.com/product-detail/",
+      joonnaCafe: "https://m.cafe.naver.com/ArticleRead.nhn?clubid=10050146&articleid=",
+      daangn: "https://www.daangn.com/articles/",
+      thunder: "https://m.bunjang.co.kr/products/",
+    };
 
     const getUrl = () => {
-      return urlList[props.product.market]
-    }
+      return urlList[props.product.market];
+    };
 
     const urlRegex = () => {
-      const url = props.product.url
+      const url = props.product.url;
 
-      switch(props.product.market) {
-        case 'daangn': {
-          return /articles\/(.*)/g.exec(url)?.[1]
+      switch (props.product.market) {
+        case "daangn": {
+          return /articles\/(.*)/g.exec(url)?.[1];
         }
-        case 'joonnaApp': {
-          return /product-detail\/(.*)/g.exec(url)?.[1]
+        case "joonnaApp": {
+          return /product-detail\/(.*)/g.exec(url)?.[1];
         }
-        case 'joonnaCafe': {
-          return /articleid=(.*)&referrerAllArticles/g.exec(url)?.[1]
+        case "joonnaCafe": {
+          return /articleid=(.*)&referrerAllArticles/g.exec(url)?.[1];
         }
-        case 'thunder': {
-          return /product\/(.*)\/detail/g.exec(url)?.[1]
+        case "thunder": {
+          return /product\/(.*)\/detail/g.exec(url)?.[1];
         }
-        default: 
-          return
+        default:
+          return;
       }
-    }
+    };
 
-    const routeData = router.resolve({name: 'BridgeTest', query: {code: "someData"}})
-    
+    const routeData = router.resolve({ name: "BridgeTest", query: { code: "someData" } });
+
     const onClickItem = () => {
-      console.log(props.product)
-      console.log(`${getUrl()}${urlRegex()}`)
+      console.log(props.product);
+      console.log(`${getUrl()}${urlRegex()}`);
       // window.open("https://headlessui.dev/vue/radio-group")
-    }
+    };
 
     return {
       router,
@@ -88,8 +85,7 @@ export default defineComponent({
       urlRegex,
       onClickItem,
       routeData,
-    }
+    };
   },
-    
 });
 </script>

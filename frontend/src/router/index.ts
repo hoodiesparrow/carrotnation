@@ -35,6 +35,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'BridgeTest',
     component: importComp('BridgeTest'),
   },
+  {
+    path: '/detail',
+    name: 'Detail',
+    component: importComp('Detail'),
+  }
 ]
 
 const router = createRouter({

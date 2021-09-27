@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="text-left">
-      <div class="flex flex-col">
+      <div class="flex flex-col bg-gray-100">
         <ProdBox v-for="prod in ProdList" :key="prod.pid" :product="prod" />
       </div>
     </div>
