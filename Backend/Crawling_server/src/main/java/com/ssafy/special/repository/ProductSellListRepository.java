@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import com.ssafy.special.domain.Product;
 import com.ssafy.special.domain.ProductSellList;
 import com.ssafy.special.domain.ProductSellListPK;
-
+import java.util.Optional;
 
 public interface ProductSellListRepository extends JpaRepository<ProductSellList, ProductSellListPK>, ProductSellListRepositoryCustom {
 
@@ -21,5 +21,8 @@ public interface ProductSellListRepository extends JpaRepository<ProductSellList
   @Query(value = "SELECT *  FROM product_sell_list where cycle >= :date",
 	nativeQuery = true)
     List<ProductSellList> txtProductSellList(@Param("date")Long date);
-    
+  
+  	Optional<ProductSellList> findByIdAndMarket(Long id, String market);
+  	
+  	Optional<List<ProductSellList>> findByProductId(Product product);
 }
