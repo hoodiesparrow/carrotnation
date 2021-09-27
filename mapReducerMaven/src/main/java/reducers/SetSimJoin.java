@@ -60,12 +60,48 @@ public class SetSimJoin {
 			for(int i=0;i<str.size();i++){
 				for(int j=0;j<str.size();j++){
 					
+					String[] aarr=str.get(i).split(",");
+					String a=aarr[0];
+					int alength=Integer.parseInt(aarr[1]);
+					
+					String[] barr=str.get(j).split(",");
+					String b=barr[0];
+					int blength=Integer.parseInt(barr[1]);
+					
+					String[] atmp =a.split("\\|");			
+					long apid = Long.parseLong(atmp[0]);
+					String amarket = atmp[1];
+					if(amarket.equals("daangn"))
+						apid+=10000000000L;
+					else if(amarket.equals("joonnaApp"))
+						apid+=20000000000L;
+					else if(amarket.equals("joonnaCafe"))
+						apid+=30000000000L;
+					else if(amarket.equals("thunder"))
+						apid+=40000000000L;
+						
+					
+					String[] btmp =b.split("\\|");			
+					long bpid = Long.parseLong(btmp[0]);
+					String bmarket = btmp[1];
+					if(bmarket.equals("daangn"))
+						bpid+=10000000000L;
+					else if(bmarket.equals("joonnaApp"))
+						bpid+=20000000000L;
+					else if(bmarket.equals("joonnaCafe"))
+						bpid+=30000000000L;
+					else if(bmarket.equals("thunder"))
+						bpid+=40000000000L;
+					
+					if(apid >= bpid)
+						continue;
+			
 					//set (pair,overlab) to gloal hash table
 					ridpair = new Text(str.get(i)+"\t"+str.get(j));
 					context.write(ridpair,one);
 					//System.out.println("i, j "+i+ " "+j);
 					//System.out.println("ridpair "+ridpair.toString());
-				}			
+				}	
 			}
 		}
 	}
