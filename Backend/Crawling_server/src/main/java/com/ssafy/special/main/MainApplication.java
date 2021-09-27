@@ -17,6 +17,7 @@ import com.ssafy.special.domain.ProductQuery;
 import com.ssafy.special.domain.ProductSellList;
 import com.ssafy.special.repository.ProductSellListRepository;
 import com.ssafy.special.service.KeywordInfoService;
+import com.ssafy.special.service.SimilarityService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -30,11 +31,11 @@ public class MainApplication {
 	private final DaangnMultiThreadCrawling daangnMultiThreadCrawling;
 	private final JoongnaMultiThreadCrawling JoongnaMultiThreadCrawling;
 	private final ThunderMultiThreadCrawling thunderMultiThreadCrawling;
-	private final SSHUtils ssh;
+//	private final SSHUtils ssh;
 	private final ProductSellListRepository productSellListRepository;
-
-	private final String sendFilePath = "/home/ubuntu/mysqltablefile/sellList.txt";
-	private final String receiveFilePath = "/home/j5d205/receive/";
+	private final SimilarityService similarityService;
+//	private final String sendFilePath = "/home/ubuntu/mysqltablefile/sellList.txt";
+//	private final String receiveFilePath = "/home/j5d205/receive/";
 
 	@Scheduled(fixedRate = 1000 * 60 * 60) // 1시간
 	public void crawlingStart() {
@@ -89,32 +90,7 @@ public class MainApplication {
 			if (cnt == threadcnt) {
 				log.info("크롤링이 모두 끝났습니다");
 				
-				File file = new File("/home/ubuntu/mysqltablefile/sellList.txt");
-				if (file.exists()) {
-					if (file.delete()) {
-						log.info("파일삭제 성공");
-						writedb();
-					} else {
-						log.info("파일삭제 실패");
-					}
-				} else {
-					log.info("파일이 존재하지 않습니다.");
-					writedb();
-				}
-				
-				try {
-					ssh.connectSSH();
-					log.info("********전송시작*******");
-					ssh.sendFileToOtherServer(sendFilePath, receiveFilePath, "sellList.txt");
-					System.out.println(ssh.getSSHResponse("sudo cat " + receiveFilePath + "sellList.txt"));
-					log.info("********전송끝 *******");
-				} catch (JSchException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				similarityService.similarityProduct();
 				
 				break;
 			} else

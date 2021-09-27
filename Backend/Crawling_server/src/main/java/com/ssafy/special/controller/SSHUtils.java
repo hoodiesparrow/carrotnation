@@ -26,7 +26,7 @@ public class SSHUtils {
 //	private final String sendFilePath = "C:\\SSAFY\\aws\\check.txt";
 //	private final String receiveFilePath = "/home/j5d205/receive/test.txt";
 	private static Session session;
-	private ChannelExec channelExec;
+	private ChannelExec channelExec=null;
 	private static Channel channel = null;
 	private ChannelSftp channelSftp;
 
@@ -92,12 +92,21 @@ public class SSHUtils {
 		if (channelExec != null)
 			channelExec.disconnect();
 	}
+	public boolean checksession() {
+		if (session != null) {
+			return true;
+		}else {
+			return false;
+		}
+			
+	}
 
 	public String getSSHResponse(String command) {
 		StringBuilder response = null;
 		try {
 //			connectSSH();
 			channelExec = (ChannelExec) session.openChannel("exec");
+			
 			channelExec.setCommand(command);
 
 			InputStream inputStream = channelExec.getInputStream();
@@ -106,7 +115,7 @@ public class SSHUtils {
 			byte[] buffer = new byte[8192];
 			int decodedLength;
 			response = new StringBuilder();
-
+			//when debugging, stop here
 			while ((decodedLength = inputStream.read(buffer, 0, buffer.length)) > 0)
 				response.append(new String(buffer, 0, decodedLength));
 
@@ -114,8 +123,8 @@ public class SSHUtils {
 			log.error("JSchException");
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			this.disConnectSSH();
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
 		return response.toString();
 	}

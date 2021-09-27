@@ -16,5 +16,5 @@ public interface ProductSellListRepositoryCustom {
 	Optional<Long> getRecentProductSellListCount(Long cycle, long pid);
 	 
 	//현재 사이클 이상인 데이터만 가져옴(페이징 없음, 분석용 hdfs에 보내는용도)
-	Optional<List<ProductSellList>> getRecentProductSellList(Long cycle);
+	Optional<List<ProductSellList>> getRecentProductSellList(Long cycle,long id);
 }
