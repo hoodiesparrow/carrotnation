@@ -21,7 +21,7 @@ stages {
 						sh 'docker images -f "dangling=true" -q \
 							| xargs -r docker rmi'
 
-						sh 'docker run -d --name frontend -p 80:80 -p 443:443 -v /home/ubuntu/httpsKey/:/var/empty/
+						sh 'docker run -d --name frontend -p 80:80 -p 443:443 -v /home/ubuntu/httpsKey/:/var/empty/'
 
         }
     }
