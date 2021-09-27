@@ -8,7 +8,7 @@ RUN npm run build
 
 FROM nginx:stable-alpine as production-stage
 RUN rm /etc/nginx/conf.d/default.conf
-COPY ./nginx/frontend.conf /etc/nginx/conf.d/frontend.conf
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 
 COPY --from=build-stage ./frontend/dist /usr/share/nginx/html/frontend
 EXPOSE 80
