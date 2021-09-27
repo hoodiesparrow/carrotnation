@@ -1,8 +1,11 @@
 package com.ssafy.special.domain;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,14 +16,14 @@ import lombok.Setter;
 public class ProductSellArticleSimiler {
 	
 	@Id
-	private long idA;//게시글 pid
-	@Id
-	private String marketA;//마켓종류
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="article")
+	private ProductSellList articleA;//게시글명
 	
 	@Id
-	private long idB;//게시글 pid
-	@Id
-	private String marketB;//마켓종류
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="article")
+	private ProductSellList articleB;//게시글명
 	
 	private Double similarity;// 유사도
 	

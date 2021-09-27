@@ -2,13 +2,16 @@ package com.ssafy.special.domain;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +21,7 @@ import lombok.ToString;
 @Entity
 @Getter @Setter
 @AllArgsConstructor
-@ToString
+//@ToString
 @IdClass(ProductSellListPK.class)
 public class ProductSellList {
 
@@ -45,6 +48,13 @@ public class ProductSellList {
 	private String img;//이미지 링크
 	
 	private String location;//지역
+	
+	@OneToMany(mappedBy = "articleA", cascade = CascadeType.REMOVE)
+	private List<ProductSellArticleSimiler> productSellArticleSimilerA;
+	
+	@OneToMany(mappedBy = "articleB", cascade = CascadeType.REMOVE)
+	private List<ProductSellArticleSimiler> productSellArticleSimilerB;
+	
 	
 	/*
 	 * 년월일시간데이터를 집어넣음으로써 크롤링 데이터가 누적될때 어떤 데이터가 최신으로업데이트 된건지 파악하고자함(21년9월20일10시 -> 21092010)
