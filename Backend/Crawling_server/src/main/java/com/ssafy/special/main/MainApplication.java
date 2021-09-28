@@ -102,6 +102,10 @@ public class MainApplication {
 
 	}
 	public void similarityThread() {
+		
+		if(hadoopExecThred!=null && hadoopExecThred.getState()==Thread.State.TERMINATED) {
+			hadoopExecThred=null;
+		}
 		//리스트에 목록이 있고 스레드가 널일경우
 		if(hadoopExecThred==null) {
 //			product list
@@ -109,9 +113,7 @@ public class MainApplication {
 			hadoopExecThred = new Thread(similarityHadoopThread);
 			hadoopExecThred.run();
 		}
-		if(hadoopExecThred.getState()==Thread.State.TERMINATED) {
-			hadoopExecThred=null;
-		}
+		
 	}
 
 
