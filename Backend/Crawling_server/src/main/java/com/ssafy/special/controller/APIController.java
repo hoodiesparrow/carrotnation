@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.special.domain.Product;
+import com.ssafy.special.dto.DatePriceResponseDTO;
 import com.ssafy.special.dto.ProductSellArticleSimilerResponseDTO;
 import com.ssafy.special.dto.ProductSellListResponseDTO;
+import com.ssafy.special.service.DatePriceService;
 import com.ssafy.special.service.ProductSellListInfoService;
 import com.ssafy.special.service.ProductService;
 import com.ssafy.special.service.SimilarityService;
@@ -30,6 +32,7 @@ public class APIController {
 	private final ProductSellListInfoService productSellListInfoService;
 	private final SimilarityService similarityService;
 	private final ProductService productService;
+	private final DatePriceService datePriceService;
 	
 
 	//ProductSellList 뿌려줌(최신사이클만)
@@ -74,6 +77,7 @@ public class APIController {
 	@GetMapping("/product")
 	public ResponseEntity<Map<String, Object>> getProductPrice(@RequestParam long pid) {
 			Map<String, Object> ret = new HashMap<String, Object>();
+			Long count = productSellListInfoService.getProductSellListCount(pid);
 			
 			Product product = productService.getProduct(pid);
 			if(product==null) {
@@ -81,7 +85,28 @@ public class APIController {
 				return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ret);
 			}
 			ret.put("product", product);
+			ret.put("searchcount", count);
 			
 			return ResponseEntity.status(HttpStatus.OK).body(ret);
 	}
+	
+	@GetMapping("/dateprice")
+	public ResponseEntity<Map<String, Object>> getDatePrice(@RequestParam long pid) {
+			Map<String, Object> ret = new HashMap<String, Object>();
+			
+			List<DatePriceResponseDTO> list = datePriceService.getDatePrice(pid);
+			
+			if(list==null) {
+				ret.put("msg", "제품번호를 다시 확인해 주세요");
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ret);
+			}else if(list.size()==0) {
+				ret.put("msg", "해당제품의 가격정보가 없습니다");
+				return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ret);
+			}
+			ret.put("dateprice", list);
+			
+			return ResponseEntity.status(HttpStatus.OK).body(ret);
+	}
+	
+	
 }
