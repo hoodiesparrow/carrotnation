@@ -56,15 +56,11 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import SideBar from "@/components/SideBar.vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
 export default defineComponent({
   name: "Detail",
-  components: {
-    SideBar,
-  },
   setup() {
     const router = useRouter();
     const store = useStore();
