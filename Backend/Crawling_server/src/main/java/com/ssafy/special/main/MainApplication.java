@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.ssafy.special.domain.ProductQuery;
 import com.ssafy.special.repository.ProductSellListRepository;
+import com.ssafy.special.service.DatePriceService;
 import com.ssafy.special.service.KeywordInfoService;
 import com.ssafy.special.service.ProductService;
 import com.ssafy.special.service.SimilarityService;
@@ -37,7 +39,6 @@ public class MainApplication {
 	private final ProductService productService;
 	private final DatePriceService datePriceService;
 	
-	
 	private static class Pair{
 		private String query;
 		private Thread thread;
@@ -59,7 +60,8 @@ public class MainApplication {
 		}		
 	}
 	
-//	@Scheduled(fixedRate = 1000 * 60 * 60) // 1시간
+
+	@Scheduled(fixedRate = 1000 * 60 * 60) // 1시간
 	public void crawlingStart() {
 		
 		List<ProductQuery> productQuery = queryInfoService.getProductQueryList();
@@ -150,14 +152,13 @@ public class MainApplication {
 			}
 			
 			if (cnt == threadcnt) {
-				log.info("크롤링이 모두 끝났습니다");
-				
-//				similarityService.similarityProduct();
-				
+
+				log.info("크롤링이 모두 끝났습니다");		
 				break;
 			} else
 				log.info("현재 " + (threadcnt - cnt) + "개의 크롤링이 진행중입니다");
 		}
+
 
 		//현재 판매 물품 중 최저가부터 고가, 평균가 구함
 		productService.setProductsMinMaxAvgPrice();
@@ -187,6 +188,7 @@ public class MainApplication {
 		}
 	
 	}
+
 
 
 }

@@ -49,6 +49,7 @@ public class ProductServiceImpl implements ProductService {
 		
 		return product;		
 	}
+
 	@Override
 	public List<Long> getProductidByQuery(String query) {
 		//query에 해당하는 pid 받아옴
@@ -56,5 +57,5 @@ public class ProductServiceImpl implements ProductService {
 		
 		return pidList;		
 	}
-	
+
 }

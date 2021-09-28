@@ -10,6 +10,6 @@ public interface ProductService {
 	
 	Product getProduct(long pid);
 	
-	//쿼리에 해당한느 제품들 pid받아옴
+	//쿼리에 해당하는 제품들 pid받아옴
 	List<Long> getProductidByQuery(String query);
 }

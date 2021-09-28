@@ -1,5 +1,6 @@
 package com.ssafy.special.repository;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 @Repository
 @RequiredArgsConstructor
 public class ProductRepositoryImpl implements ProductRepositoryCustom{
+
 	private final JPAQueryFactory queryFactory;	
 	
 	public Tuple getProductsMinMaxAvgPrice(Product product) {
