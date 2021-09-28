@@ -17,18 +17,13 @@
           <span class="col-span-2 pr-4 text-lg">최저가 : {{ prodInfo.minPrice }}</span>
           <span class="col-span-2 pr-4 text-lg">평균가 : {{ prodInfo.avgPrice }}</span>
           <span class="col-span-2 pr-4 text-lg">최고가 : {{ prodInfo.maxPrice }}</span>
-          <span class="pr- text-lg">총 {{ prodList.length }}건</span>
+          <!-- <span class="pr- text-lg">총 {{ prodList.length }}건</span> -->
         </div>
       </div>
     </div>
     <div class="text-left">
-      <div class="flex flex-col">
-        <ProdBox 
-          v-for="prod in prodList" 
-          :key="prod.pid" 
-          :product="prod"
-        />
-
+      <div class="flex flex-col bg-gray-100">
+        <ProdBox v-for="prod in prodList" :key="prod.pid" :product="prod" />
       </div>
     </div>
     <div v-if="isLoading">

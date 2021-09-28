@@ -1,10 +1,9 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-function importComp(view: string) {
-  return () => import(/* webpackChunkName: "view-[request]" */ `@/views/${view}.vue`)
-}
+
 const Prod = () => import(/* webpackChunkName: "prod" */ '@/views/Prod.vue');
 const Home = () => import(/* webpackChunkName: "home" */ '@/views/Home.vue');
 const Test = () => import(/* webpackChunkName: "test" */ '@/views/Test.vue');
+const Detail = () => import(/* webpackChunkName: "detail" */ '@/views/Detail.vue');
 // const Test2 = () => import(/* webpackChunkName: "test2" */ '@/views/Test2.vue');
 
 const routes: Array<RouteRecordRaw> = [
@@ -28,11 +27,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Test',
     component: Test,
   },
-  // {
-  //   path: '/test2',
-  //   name: 'Test2',
-  //   component: Test2,
-  // },
+  {
+    path: '/detail',
+    name: 'Detail',
+    component: Detail,
+  }
 ]
 
 const router = createRouter({

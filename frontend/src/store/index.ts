@@ -7,7 +7,7 @@ interface query {
   pid: string,
   page: number,
 }
-const BASE_URL = 'http://j5d205.p.ssafy.io:8080'
+const BASE_URL = 'https://j5d205.p.ssafy.io'
 
 export default createStore({
   state: {
