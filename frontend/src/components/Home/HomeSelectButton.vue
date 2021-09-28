@@ -1,6 +1,20 @@
 <template>
   <div class="w-full px-4 py-16">
     <div class="w-full max-w-md mx-auto">
+      <button
+        class="bg-red-200 px-4 py-1.5 rounded-lg text-lg 
+        text-indigo-900 focus:outline-none 
+        focus:ring-2 focus:ring-indigo-600 hover:bg-blue-100"
+      >
+        갤럭시 20 시리즈
+      </button>
+      <button
+        class="bg-blue-200 px-4 py-1.5 rounded-lg text-lg 
+        text-indigo-900 focus:outline-none 
+        focus:ring-2 focus:ring-indigo-600 hover:bg-blue-100"
+      >
+        갤럭시 20 시리즈
+      </button>
       <RadioGroup v-model="tree1Content" class="overflow-hidden p-2">
         <transition
           enter-active-class="transition transform duration-200"
@@ -12,7 +26,7 @@
           @after-leave="tranFlag2=true"
         >
           <div v-if="tranFlag1">
-            <span class="text-lg">[{{ treeTag }}]</span>
+            <!-- <span class="text-lg">[{{ treeTag }}]</span> -->
             <RadioGroupLabel class="sr-only">{{ treeTag }}를 선택하세요.</RadioGroupLabel>
             <div class="space-y-2">
               <RadioGroupOption
@@ -43,10 +57,10 @@
                         </RadioGroupLabel>
                         <RadioGroupDescription
                           as="span"
-                          :class="checked ? 'text-blue-100' : 'text-gray-500'"
+                          :class="checked ? 'text-blue-100' : 'text-indigo-900'"
                           class="inline"
                         >
-                          <span class="text-lg font-bold">{{ option }}</span>
+                          <span class="text-xl font-bold">{{ option }}</span>
                         </RadioGroupDescription>
                       </div>
                     </div>
@@ -84,7 +98,7 @@
           @after-leave="tranFlag1=true"
         >
           <div v-if="tranFlag2">
-            <span class="text-lg">[{{ treeTag }}]</span>
+            <!-- <span class="text-lg">[{{ treeTag }}]</span> -->
             <RadioGroupLabel class="sr-only">{{ treeTag }}를 선택하세요.</RadioGroupLabel>
             <div class="space-y-2">
               <RadioGroupOption
@@ -115,10 +129,10 @@
                         </RadioGroupLabel>
                         <RadioGroupDescription
                           as="span"
-                          :class="checked ? 'text-blue-100' : 'text-gray-500'"
+                          :class="checked ? 'text-blue-100' : 'text-indigo-900'"
                           class="inline"
                         >
-                          <span class="text-lg font-bold">{{ option }}</span>
+                          <span class="text-xl font-bold">{{ option }}</span>
                         </RadioGroupDescription>
                       </div>
                     </div>
@@ -203,7 +217,7 @@ export default {
     const tranFlag1 = ref(true)
     const tranFlag2 = ref(false)
 
-    const tree1Depth = ref(['category'])
+    const tree1Depth = ref(['휴대폰'])
     const tree1 = ref(get(store.getters['getCategoryData'], tree1Depth.value))
     const tree1Content = computed(() => 
       Object.keys(tree1.value).slice(1)
@@ -211,7 +225,7 @@ export default {
     // const tree1Content = ref(Object.keys(tree1.value).slice(1))
     console.log(tree1)
 
-    const tree2Depth = ref(['category'])
+    const tree2Depth = ref(['휴대폰'])
     const tree2 = ref([])
     const tree2Content = computed(() => 
       Object.keys(tree2.value).slice(1)

@@ -1,6 +1,6 @@
 <template>
   <div class="container max-w-750px">
-    <SideBar :show="show" @closeSideBar="show = false" class="fixed top-0 z-40 h-full" />
+    <SideBar :show="show" @closeSideBar="show=false" class="fixed top-0 z-40 h-full" />
     <div class="sticky top-0">
       <div class="flex justify-between items-center bg-purple-700 p-4">
         <div>
@@ -10,12 +10,14 @@
             class="cursor-pointer"
           />
         </div>
-        <span class="text-4xl font-extrabold text-white">아이폰 프로 512g</span>
+        <span class="text-4xl font-extrabold text-white">{{ prodInfo.name }}</span>
       </div>
       <div class="grid grid-rows-2 bg-white py-2 border-b-2 border-gray-300">
         <div class="col-span-2 text-right">
-          <span class="col-span-2 pr-4">평균 가격 : N 원</span>
-          <span class="pr-4">총 {{ prodList.length }}건</span>
+          <span class="col-span-2 pr-4 text-lg">최저가 : {{ prodInfo.minPrice }}</span>
+          <span class="col-span-2 pr-4 text-lg">평균가 : {{ prodInfo.avgPrice }}</span>
+          <span class="col-span-2 pr-4 text-lg">최고가 : {{ prodInfo.maxPrice }}</span>
+          <span class="pr- text-lg">총 {{ prodList.length }}건</span>
         </div>
       </div>
     </div>
@@ -44,7 +46,7 @@
 <script>
 import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
-import { defineComponent, reactive, ref, onMounted, onUnmounted } from "vue";
+import { defineComponent, reactive, ref, onMounted, onUnmounted, computed } from "vue";
 import SideBar from "@/components/SideBar.vue";
 import ProdBox from "@/components/ProdItem.vue";
 
@@ -60,6 +62,12 @@ export default defineComponent({
     const router = useRouter();
     const store = useStore();
     const show = ref(false)
+    const prodInfo = ref({
+      name: '',
+      minPrice: 0,
+      avgPrice: 0,
+      maxPrice: 0,
+    })
     const prodList = ref([]);
     const initialLoading = ref(true)
     const isLoading = ref(false)
@@ -69,9 +77,18 @@ export default defineComponent({
       pid: route.query.pid,
       page: 0,
     })
+    store.dispatch('requestProductInfo', query.value.pid)
+      .then(res => {
+        prodInfo.value.name = res.data.product.name
+        prodInfo.value.minPrice = res.data.product.minPrice.toLocaleString()
+        prodInfo.value.avgPrice = res.data.product.avgPrice.toLocaleString()
+        prodInfo.value.maxPrice = res.data.product.maxPrice.toLocaleString()
+      })
+
+
     store.dispatch('requestProductList', query.value)
       .then((res) => {
-        totalPage.value = res.data.totalpage        
+        totalPage.value = res.data.totalpage
         prodList.value.push(...res.data.list)
       })
       .catch((err) => {
@@ -121,6 +138,7 @@ export default defineComponent({
       isLoading,
       totalPage,
       noMoreData,
+      prodInfo,
     };
   },
 });

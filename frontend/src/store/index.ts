@@ -15,10 +15,20 @@ export default createStore({
   },
   mutations: {},
   actions: {
+    requestProductInfo: function ({ commit }, pid: string) {
+      const url = `${BASE_URL}/api/product`
+      const header = { 
+        params: { 
+          pid: pid 
+        } 
+      }
+      return axios.get(url, header)
+    },
+
     requestProductList: function ({ commit }, query: query) {
       const url = `${BASE_URL}/api/productselllist`
-      const header = {
-        params: query
+      const header = { 
+        params: query 
       }
       return axios.get(url, header)
     }
