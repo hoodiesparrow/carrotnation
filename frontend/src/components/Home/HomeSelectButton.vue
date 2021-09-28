@@ -1,32 +1,28 @@
 <template>
-  <div class="w-full px-4 py-16">
-    <div class="w-full max-w-md mx-auto">
-      <button
-        class="bg-red-200 px-4 py-1.5 rounded-lg text-lg 
-        text-indigo-900 focus:outline-none 
-        focus:ring-2 focus:ring-indigo-600 hover:bg-blue-100"
-      >
-        갤럭시 20 시리즈
-      </button>
-      <button
-        class="bg-blue-200 px-4 py-1.5 rounded-lg text-lg 
-        text-indigo-900 focus:outline-none 
-        focus:ring-2 focus:ring-indigo-600 hover:bg-blue-100"
-      >
-        갤럭시 20 시리즈
-      </button>
-      <RadioGroup v-model="tree1Content" class="overflow-hidden p-2">
+  <div class="w-full p-4 py-8">
+    <div class="w-full grid grid-cols-12 gap-4">
+      <div class="col-span-2 flex justify-start pt-8">
+        <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+          viewBox="0 0 309.143 309.143" style="enable-background:new 0 0 309.143 309.143;" xml:space="preserve" class="w-12 h-12 cursor-pointer" @click="onClickBackward" v-if="!isTreeRoot">
+        <path style="fill:#231F20;" d="M112.855,154.571L240.481,26.946c2.929-2.929,2.929-7.678,0-10.606L226.339,2.197
+          C224.933,0.79,223.025,0,221.036,0c-1.989,0-3.897,0.79-5.303,2.197L68.661,149.268c-2.929,2.929-2.929,7.678,0,10.606
+          l147.071,147.071c1.406,1.407,3.314,2.197,5.303,2.197c1.989,0,3.897-0.79,5.303-2.197l14.142-14.143
+          c2.929-2.929,2.929-7.678,0-10.606L112.855,154.571z"/>
+        </svg>
+      </div>
+
+      <RadioGroup v-model="tree1Content" class="overflow-hidden col-span-8 pb-3">
         <transition
-          enter-active-class="transition transform duration-200"
-          enter-from-class="translate-x-full"
-          enter-to-class="translate-x-0"
-          leave-active-class="transition transform duration-200"
-          leave-from-class="translate-x-0"
-          leave-to-class="-translate-x-full"
+          enter-active-class="transition transform duration-300"
+          :enter-from-class="enterFrom"
+          :enter-to-class="enterTo"
+          leave-active-class="transition transform duration-300"
+          :leave-from-class="leaveFrom"
+          :leave-to-class="leaveTo"
           @after-leave="tranFlag2 = true"
         >
           <div v-if="tranFlag1">
-            <!-- <span class="text-lg">[{{ treeTag }}]</span> -->
+            <span class="text-lg">{{ treeTag }}</span>
             <RadioGroupLabel class="sr-only">{{ treeTag }}를 선택하세요.</RadioGroupLabel>
             <div class="space-y-2">
               <RadioGroupOption
@@ -92,16 +88,16 @@
           </div>
         </transition>
         <transition
-          enter-active-class="transition transform duration-200"
-          enter-from-class="translate-x-full"
-          enter-to-class="translate-x-0"
-          leave-active-class="transition transform duration-200"
-          leave-from-class="translate-x-0"
-          leave-to-class="-translate-x-full"
+          enter-active-class="transition transform duration-300"
+          :enter-from-class="enterFrom"
+          :enter-to-class="enterTo"
+          leave-active-class="transition transform duration-300"
+          :leave-from-class="leaveFrom"
+          :leave-to-class="leaveTo"
           @after-leave="tranFlag1 = true"
         >
           <div v-if="tranFlag2">
-            <!-- <span class="text-lg">[{{ treeTag }}]</span> -->
+            <span class="text-lg">{{ treeTag }}</span>
             <RadioGroupLabel class="sr-only">{{ treeTag }}를 선택하세요.</RadioGroupLabel>
             <div class="space-y-2">
               <RadioGroupOption
@@ -219,9 +215,14 @@ export default {
     const store = useStore()
     const router = useRouter()
     const selected = ref(plans[0])
-    const currentTran = ref(1)
+    const currentTran = ref(1) // 이게 필요한가..
     const tranFlag1 = ref(true)
     const tranFlag2 = ref(false)
+
+    const enterFrom = ref('translate-x-full')
+    const enterTo = ref('translate-x-0')
+    const leaveFrom = ref('translate-x-0')
+    const leaveTo = ref('-translate-x-full')
 
     const tree1Depth = ref(['휴대폰'])
     const tree1 = ref(get(store.getters['getCategoryData'], tree1Depth.value))
@@ -236,6 +237,9 @@ export default {
     const tree2Content = computed(() => 
       Object.keys(tree2.value).slice(1)
     )
+    const isTreeRoot = computed(() => {
+      return tree1Depth.value.length === 1 ? true : false
+    })
 
     const treeTag = computed(() => {
       // 얘도 분리해야 도중에 안바뀜..but 빨리 지나가서 보이지는 않네 ㅋㅋ
@@ -253,7 +257,33 @@ export default {
     // depth 버튼 만드는것도 문제네... 아마도 .splice 사용하면 될 것 같긴 해 ㅇㅇ
     // v-for에서 key를 임의idx로 잡아놓고 @click에서 인자로 넘기면 될듯
 
+    const onClickBackward = () => {
+      if (tree1Depth.value.length !== 1) {
+        tree1Depth.value.pop()
+        tree2Depth.value.pop()
+        // 1번 트리를 사용중인 경우
+        enterFrom.value = '-translate-x-full'
+        enterTo.value ='translate-x-0'
+        leaveFrom.value = 'translate-x-0'
+        leaveTo.value = 'translate-x-full'
+
+        if (tranFlag1.value === true) {
+          tree2.value = get(store.getters['getCategoryData'], tree2Depth.value)
+          console.log(enterFrom.value)
+          tranFlag1.value = false;
+        } else {
+          tree1.value = get(store.getters['getCategoryData'], tree1Depth.value)
+          console.log(enterFrom.value)
+          tranFlag2.value = false;
+        }
+      }
+    }
+
     const onClickT1 = (idx) => {
+      enterFrom.value = 'translate-x-full'
+      enterTo.value ='translate-x-0'
+      leaveFrom.value = 'translate-x-0'
+      leaveTo.value = '-translate-x-full'
       tree1Depth.value.push(tree1Content.value[idx])
       tree2Depth.value.push(tree1Content.value[idx])
       tree2.value = get(store.getters['getCategoryData'], tree2Depth.value)
@@ -276,6 +306,10 @@ export default {
 
     }
     const onClickT2 = (idx) => {
+      enterFrom.value = 'translate-x-full'
+      enterTo.value ='translate-x-0'
+      leaveFrom.value = 'translate-x-0'
+      leaveTo.value = '-translate-x-full'
       tree1Depth.value.push(tree2Content.value[idx])
       tree2Depth.value.push(tree2Content.value[idx])
       tree1.value = get(store.getters['getCategoryData'], tree1Depth.value)
@@ -301,6 +335,7 @@ export default {
       plans,
       tranFlag1,
       tranFlag2,
+      onClickBackward,
       onClickT1,
       onClickT2,
       currentTran,
@@ -310,8 +345,13 @@ export default {
       tree2,
       tree2Depth,
       tree2Content,
+      isTreeRoot,
       treeTag,
       router,
+      enterFrom,
+      enterTo,
+      leaveFrom,
+      leaveTo,
     }
   },
 };

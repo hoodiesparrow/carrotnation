@@ -24,6 +24,15 @@ export default createStore({
       }
       return axios.get(url, header)
     },
+    requestPriceInfo: function ({ commit }, pid: string) {
+      const url = `${BASE_URL}/api/dateprice`
+      const header = { 
+        params: { 
+          pid: pid 
+        } 
+      }
+      return axios.get(url, header)
+    },
 
     requestProductList: function ({ commit }, query: query) {
       const url = `${BASE_URL}/api/productselllist`

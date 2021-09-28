@@ -80,7 +80,6 @@ export default defineComponent({
         prodInfo.value.maxPrice = res.data.product.maxPrice.toLocaleString()
       })
 
-
     store.dispatch('requestProductList', query.value)
       .then((res) => {
         totalPage.value = res.data.totalpage

@@ -42,17 +42,16 @@
             </span>
           </h2>
           <p class="mb-6 text-base text-indigo-100 md:text-lg">
-            여기에 뭐 css 예제 뒤져서 예쁜걸 넣어도 되고 음,,
+            누구라도 그러하듯이
           </p>
         </div>
       </div>
     </div>
 
-    <div class="px-10">
+    <div class="">
       <div class="w-full">
         <HomeSelectButton />
       <br>
-      <!-- <HomeChart /> -->
       </div>
     </div>
   </div>
