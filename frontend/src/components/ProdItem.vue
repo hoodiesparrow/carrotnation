@@ -6,7 +6,6 @@
       transition
       hover:bg-purple-100 hover:text-black
     "
-    @click="onClickItem"
   >
     <div class="grid grid-rows-3 grid-cols-3 gap-1 text-left">
       <div class="row-span-3">
@@ -73,7 +72,7 @@ export default defineComponent({
       }
     }
 
-    const routeData = router.resolve({name: 'BridgeTest', query: {code: "someData"}})
+    // const routeData = router.resolve({name: 'BridgeTest', query: {code: "someData"}})
     
     const onClickItem = () => {
       console.log(props.product)
@@ -87,7 +86,7 @@ export default defineComponent({
       getUrl,
       urlRegex,
       onClickItem,
-      routeData,
+      // routeData,
     }
   },
     

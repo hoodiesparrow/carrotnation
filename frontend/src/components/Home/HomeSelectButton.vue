@@ -1,6 +1,20 @@
 <template>
   <div class="w-full px-4 py-16">
     <div class="w-full max-w-md mx-auto">
+      <button
+        class="bg-red-200 px-4 py-1.5 rounded-lg text-lg 
+        text-indigo-900 focus:outline-none 
+        focus:ring-2 focus:ring-indigo-600 hover:bg-blue-100"
+      >
+        갤럭시 20 시리즈
+      </button>
+      <button
+        class="bg-blue-200 px-4 py-1.5 rounded-lg text-lg 
+        text-indigo-900 focus:outline-none 
+        focus:ring-2 focus:ring-indigo-600 hover:bg-blue-100"
+      >
+        갤럭시 20 시리즈
+      </button>
       <RadioGroup v-model="tree1Content" class="overflow-hidden p-2">
         <transition
           enter-active-class="transition transform duration-200"
@@ -12,7 +26,7 @@
           @after-leave="tranFlag2 = true"
         >
           <div v-if="tranFlag1">
-            <span class="text-lg">[{{ treeTag }}]</span>
+            <!-- <span class="text-lg">[{{ treeTag }}]</span> -->
             <RadioGroupLabel class="sr-only">{{ treeTag }}를 선택하세요.</RadioGroupLabel>
             <div class="space-y-2">
               <RadioGroupOption
@@ -52,10 +66,10 @@
                         </RadioGroupLabel>
                         <RadioGroupDescription
                           as="span"
-                          :class="checked ? 'text-blue-100' : 'text-gray-500'"
+                          :class="checked ? 'text-blue-100' : 'text-indigo-900'"
                           class="inline"
                         >
-                          <span class="text-lg font-bold">{{ option }}</span>
+                          <span class="text-xl font-bold">{{ option }}</span>
                         </RadioGroupDescription>
                       </div>
                     </div>
@@ -87,7 +101,7 @@
           @after-leave="tranFlag1 = true"
         >
           <div v-if="tranFlag2">
-            <span class="text-lg">[{{ treeTag }}]</span>
+            <!-- <span class="text-lg">[{{ treeTag }}]</span> -->
             <RadioGroupLabel class="sr-only">{{ treeTag }}를 선택하세요.</RadioGroupLabel>
             <div class="space-y-2">
               <RadioGroupOption
@@ -127,10 +141,10 @@
                         </RadioGroupLabel>
                         <RadioGroupDescription
                           as="span"
-                          :class="checked ? 'text-blue-100' : 'text-gray-500'"
+                          :class="checked ? 'text-blue-100' : 'text-indigo-900'"
                           class="inline"
                         >
-                          <span class="text-lg font-bold">{{ option }}</span>
+                          <span class="text-xl font-bold">{{ option }}</span>
                         </RadioGroupDescription>
                       </div>
                     </div>
@@ -158,9 +172,10 @@
 </template>
 
 <script>
-import get from "lodash/get";
-import { computed, reactive, ref } from "vue";
-import { useStore } from "vuex";
+import get from 'lodash/get'
+import { useRouter } from 'vue-router'
+import { computed, reactive, ref } from 'vue'
+import { useStore } from 'vuex'
 import {
   // TransitionRoot,
   RadioGroup,
@@ -201,21 +216,26 @@ export default {
   },
 
   setup() {
-    const store = useStore();
-    const selected = ref(plans[0]);
-    const currentTran = ref(1);
-    const tranFlag1 = ref(true);
-    const tranFlag2 = ref(false);
+    const store = useStore()
+    const router = useRouter()
+    const selected = ref(plans[0])
+    const currentTran = ref(1)
+    const tranFlag1 = ref(true)
+    const tranFlag2 = ref(false)
 
-    const tree1Depth = ref(["category"]);
-    const tree1 = ref(get(store.getters["getCategoryData"], tree1Depth.value));
-    const tree1Content = computed(() => Object.keys(tree1.value).slice(1));
+    const tree1Depth = ref(['휴대폰'])
+    const tree1 = ref(get(store.getters['getCategoryData'], tree1Depth.value))
+    const tree1Content = computed(() => 
+      Object.keys(tree1.value).slice(1)
+    )
     // const tree1Content = ref(Object.keys(tree1.value).slice(1))
     console.log(tree1);
 
-    const tree2Depth = ref(["category"]);
-    const tree2 = ref([]);
-    const tree2Content = computed(() => Object.keys(tree2.value).slice(1));
+    const tree2Depth = ref(['휴대폰'])
+    const tree2 = ref([])
+    const tree2Content = computed(() => 
+      Object.keys(tree2.value).slice(1)
+    )
 
     const treeTag = computed(() => {
       // 얘도 분리해야 도중에 안바뀜..but 빨리 지나가서 보이지는 않네 ㅋㅋ
@@ -234,28 +254,42 @@ export default {
     // v-for에서 key를 임의idx로 잡아놓고 @click에서 인자로 넘기면 될듯
 
     const onClickT1 = (idx) => {
-      // treeDepth수정
-      tree1Depth.value.push(tree1Content.value[idx]);
-      tree2Depth.value.push(tree1Content.value[idx]);
-      // tag가 있으면?
-      tree2.value = get(store.getters["getCategoryData"], tree2Depth.value);
-      console.log(tree2.value);
-      if (Object.keys(tree2.value).indexOf("tag") === -1) {
-        console.log("end of the tree, router push required");
+      tree1Depth.value.push(tree1Content.value[idx])
+      tree2Depth.value.push(tree1Content.value[idx])
+      tree2.value = get(store.getters['getCategoryData'], tree2Depth.value)
+      console.log(tree2.value)
+      // tag가 없으면? >>> router push
+      if (Object.keys(tree2.value).indexOf('tag') === -1) {
+        console.log('end of the tree, router push required')
+        console.log(tree2.value.pid)
+        router.push({
+          name: 'Prod',
+          query: {
+            pid: tree2.value.pid
+          }
+        })
       } else {
         console.log("button animation called");
         tranFlag1.value = false;
       }
-    };
+      
+
+    }
     const onClickT2 = (idx) => {
-      // treeDepth수정
-      tree1Depth.value.push(tree2Content.value[idx]);
-      tree2Depth.value.push(tree2Content.value[idx]);
-      // tag가 있으면?
-      tree1.value = get(store.getters["getCategoryData"], tree1Depth.value);
-      console.log(tree1.value);
-      if (Object.keys(tree1.value).indexOf("tag") === -1) {
-        console.log("end of the tree, router push required");
+      tree1Depth.value.push(tree2Content.value[idx])
+      tree2Depth.value.push(tree2Content.value[idx])
+      tree1.value = get(store.getters['getCategoryData'], tree1Depth.value)
+      console.log(tree1.value)
+      // tag가 없으면? >>> router push
+      if (Object.keys(tree1.value).indexOf('tag') === -1) {
+        console.log('end of the tree, router push required')
+        console.log(tree1.value.pid)
+        router.push({
+          name: 'Prod',
+          query: {
+            pid: tree1.value.pid
+          }
+        })
       } else {
         console.log("button animation called");
         tranFlag2.value = false;
@@ -277,7 +311,8 @@ export default {
       tree2Depth,
       tree2Content,
       treeTag,
-    };
+      router,
+    }
   },
 };
 </script>
