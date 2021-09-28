@@ -31,7 +31,7 @@ public class Product {
 	private long minPrice;//최저가
 	private long avgPrice;//평균가
 	private long maxPrice;//최고가
-	
+	private long releasePrice;
 	//제외키워드
 //	@OneToMany(mappedBy = "productId", cascade = CascadeType.ALL)
 //	private List<ExceptionKeyword> exceptionKeywordList= new ArrayList<>();
