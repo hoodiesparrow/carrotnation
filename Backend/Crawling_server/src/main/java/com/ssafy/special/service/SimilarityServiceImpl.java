@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.jcraft.jsch.JSchException;
 import com.ssafy.special.controller.SSHUtils;
-import com.ssafy.special.domain.Product;
 import com.ssafy.special.domain.ProductSellArticleSimiler;
 import com.ssafy.special.domain.ProductSellList;
 import com.ssafy.special.dto.ProductSellArticleSimilerResponseDTO;
@@ -47,7 +46,7 @@ public class SimilarityServiceImpl implements SimilarityService {
 	private String receiveFilePath = "/home/j5d205/receive/";
 	private String hadoopdefault = "/usr/local/hadoop/bin/";
 	@Override
-	public void similarityProduct(List<Product> product) {
+	public void similarityProduct(List<Long> pidList) {
 		// session 연결 상태 아님
 		if (!ssh.checksession()) {
 			try {
@@ -64,10 +63,10 @@ public class SimilarityServiceImpl implements SimilarityService {
 		Komoran komoran = new Komoran(DEFAULT_MODEL.FULL);
 //		List<Product> aa = productRepository.findAll();
 		StringBuilder sb,temp;
-		for (Product p : product) {
+		for (Long p : pidList) {
 			sb = new StringBuilder();
 			
-			List<ProductSellList> list = productSellListRepository.getRecentProductSellList(cycle, p.getId())
+			List<ProductSellList> list = productSellListRepository.getRecentProductSellList(cycle, p)
 					.orElse(new ArrayList<ProductSellList>());
 
 			String strToAnalyze;
@@ -104,7 +103,7 @@ public class SimilarityServiceImpl implements SimilarityService {
 					sb.append(temp.toString()).append("\n");
 				}
 			}
-			File file = new File(sendFilePath+p.getId()+".txt");
+			File file = new File(sendFilePath+p+".txt");
 			if(file.exists()) {
 				file.delete();
 				log.info("파일삭제 성공");
@@ -125,18 +124,19 @@ public class SimilarityServiceImpl implements SimilarityService {
 			}
 			
 			try {
-				ssh.sendFileToOtherServer(sendFilePath+p.getId()+".txt", receiveFilePath, p.getId() + ".txt");
-				String f = "/usr/local/hadoop/bin/hadoop fs -put /home/j5d205/receive/" + p.getId() + ".txt "+ "Set/"+p.getId()+".txt";
+				ssh.sendFileToOtherServer(sendFilePath+p+".txt", receiveFilePath, p + ".txt");
+				String f = "/usr/local/hadoop/bin/hadoop fs -put /home/j5d205/receive/" + p + ".txt "+ "Set/"+p+".txt";
 				ssh.getSSHResponse(f);
 				ssh.getSSHResponse("/usr/local/hadoop/bin/hadoop fs -rm -r Setoutput;/usr/local/hadoop/bin/hadoop fs -mkdir Setoutput");
 //				 "/home/j5d205/mapReducer/S05P21D205/mapReducerMaven/ssafy.jar"
-				String cmd =hadoopdefault+"hadoop jar /home/j5d205/mapReducer/S05P21D205/mapReducerMaven/ssafy.jar setjoin 0.3 Set/"+p.getId()+".txt Setoutput";
+				String cmd =hadoopdefault+"hadoop jar /home/j5d205/mapReducer/S05P21D205/mapReducerMaven/ssafy.jar setjoin 0.3 Set/"+p+".txt Setoutput";
 				ssh.getSSHResponse(cmd);
 				String result =ssh.getSSHResponse(hadoopdefault+"hadoop fs -cat Setoutput/* | more");
 				
 				StringTokenizer st = new StringTokenizer(result,"\r\n");
 				StringTokenizer ss,tempst;
 				ProductSellArticleSimiler psas;
+				double similarityScore=0.0;
 				while(st.hasMoreTokens()) {
 					ss = new StringTokenizer(st.nextToken(),"\t");
 					psas = new ProductSellArticleSimiler();
@@ -146,9 +146,12 @@ public class SimilarityServiceImpl implements SimilarityService {
 					
 					tempst = new StringTokenizer(ss.nextToken(),"|");
 					psas.setArticleB(new ProductSellList(Long.parseLong(tempst.nextToken()), tempst.nextToken()));
+					similarityScore =Double.parseDouble(ss.nextToken());
+					if(similarityScore<=70&&similarityScore>=30) {
+						psas.setSimilarity(Double.parseDouble(ss.nextToken()));
+						insertProductSellArticleSimiler(psas);
+					}
 					
-					psas.setSimilarity(Double.parseDouble(ss.nextToken()));
-					insertProductSellArticleSimiler(psas);
 				}
 				
 				log.info("********전송끝 *******");

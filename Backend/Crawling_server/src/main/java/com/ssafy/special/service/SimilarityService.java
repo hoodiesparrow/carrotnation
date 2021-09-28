@@ -7,5 +7,5 @@ import com.ssafy.special.dto.ProductSellArticleSimilerResponseDTO;
 
 public interface SimilarityService {
 	public List<ProductSellArticleSimilerResponseDTO> returnSimilarity(long pid, String market);
-	public void similarityProduct(List<Product> product);
+	public void similarityProduct(List<Long> pidList);
 }
