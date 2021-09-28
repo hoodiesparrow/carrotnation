@@ -2,24 +2,23 @@ package com.ssafy.special;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
+import java.util.Map;
 import java.util.Optional;
-import java.util.StringTokenizer;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.special.controller.SSHUtils;
-import com.ssafy.special.domain.Product;
-import com.ssafy.special.domain.ProductSellArticleSimiler;
 //import com.ssafy.special.domain.Product;
 import com.ssafy.special.domain.ProductSellList;
-import com.ssafy.special.dto.ProductSellArticleSimilerResponseDTO;
 import com.ssafy.special.main.MainApplication;
 import com.ssafy.special.repository.ProductRepository;
 import com.ssafy.special.repository.ProductSellArticleSimilerRepository;
@@ -143,13 +142,10 @@ class CrawlingServerApplicationTests {
 //		System.out.println(f);
 	}
 	
-	@Test
+//	@Test
 	void qq() {
-		List<ProductSellArticleSimilerResponseDTO> list =productSellArticleSimilerRepository.getProductSellArticleSimiler(164589976,"thunder").orElse(new ArrayList<ProductSellArticleSimilerResponseDTO>());
 		
-		for(ProductSellArticleSimilerResponseDTO p :list) {
-			System.out.println(p);
-		}
 	}
+
 	
 }
