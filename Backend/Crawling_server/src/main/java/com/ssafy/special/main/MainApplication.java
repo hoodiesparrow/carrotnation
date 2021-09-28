@@ -16,6 +16,7 @@ import com.ssafy.special.domain.Product;
 import com.ssafy.special.domain.ProductQuery;
 import com.ssafy.special.domain.ProductSellList;
 import com.ssafy.special.repository.ProductSellListRepository;
+import com.ssafy.special.service.DatePriceService;
 import com.ssafy.special.service.KeywordInfoService;
 import com.ssafy.special.service.ProductService;
 import com.ssafy.special.service.SimilarityService;
@@ -39,6 +40,9 @@ public class MainApplication {
 //	private final String receiveFilePath = "/home/j5d205/receive/";
 
 	private final ProductService productService;
+	private final DatePriceService datePriceService;
+	
+	
 	
 	@Scheduled(fixedRate = 1000 * 60 * 60) // 1시간
 	public void crawlingStart() {
@@ -102,6 +106,14 @@ public class MainApplication {
 
 		//현재 판매 물품 중 최저가부터 고가, 평균가 구함
 		productService.setProductsMinMaxAvgPrice();
+	
+		//과거 품목 가격 추이
+		//매일 매일 평균가격을 쌓아 나가면서 누적되게함
+		datePriceService.setDatePrice();
+		
+		//가격별 판매 건수 조회
+		
+	
 		
 	}
 }

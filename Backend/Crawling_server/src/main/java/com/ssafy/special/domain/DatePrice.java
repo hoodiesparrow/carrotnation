@@ -1,6 +1,6 @@
 package com.ssafy.special.domain;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -23,7 +23,7 @@ public class DatePrice {
 	@JoinColumn(name = "productId")
 	private Product productId;//품명
 	
-	private LocalDateTime pdate;//시간없이 날짜만
+	private LocalDate pdate;//시간없이 날짜만
 	
 	private long price;	
 }
