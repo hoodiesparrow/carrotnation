@@ -7,6 +7,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -149,6 +150,8 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 //				System.out.println(con.getResponseMessage());
 				throw new NotPageException(con.getResponseMessage());
 			}
+		}catch(SocketTimeoutException e) {
+			e.printStackTrace();
 		}catch (MalformedURLException e) {
 			e.printStackTrace();
 		}catch(ProtocolException e) {
