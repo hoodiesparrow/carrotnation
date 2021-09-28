@@ -26,4 +26,8 @@ public class DatePrice {
 	private LocalDate pdate;//시간없이 날짜만
 	
 	private long price;	
+	
+	public DatePrice(LocalDate pdate) {
+		this.pdate=pdate;
+	}
 }

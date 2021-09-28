@@ -31,7 +31,7 @@ public class DatePriceServiceImpl implements DatePriceService {
 		for(Product p: products) {
 			LocalDate now =LocalDate.now();
 			int nowtime = Integer.parseInt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH")));
-			DatePrice datePrice = datePriceRepository.findByPdateAndProductId(now, p).orElse(new DatePrice());
+			DatePrice datePrice = datePriceRepository.findByPdateAndProductId(now, p).orElse(new DatePrice(now));
 			long price = datePrice.getPrice();
 			if(nowtime>0)
 				price = price * nowtime;
