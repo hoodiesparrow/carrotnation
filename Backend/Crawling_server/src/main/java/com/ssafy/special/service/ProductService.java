@@ -1,5 +1,7 @@
 package com.ssafy.special.service;
 
+import java.util.List;
+
 import com.ssafy.special.domain.Product;
 
 public interface ProductService {
@@ -7,4 +9,7 @@ public interface ProductService {
 	void setProductsMinMaxAvgPrice();
 	
 	Product getProduct(long pid);
+	
+	//쿼리에 해당하는 제품들 pid받아옴
+	List<Long> getProductidByQuery(String query);
 }
