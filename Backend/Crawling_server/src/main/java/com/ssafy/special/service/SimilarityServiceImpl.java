@@ -148,7 +148,7 @@ public class SimilarityServiceImpl implements SimilarityService {
 					psas.setArticleB(new ProductSellList(Long.parseLong(tempst.nextToken()), tempst.nextToken()));
 					similarityScore =Double.parseDouble(ss.nextToken());
 					if(similarityScore<=70&&similarityScore>=30) {
-						psas.setSimilarity(Double.parseDouble(ss.nextToken()));
+						psas.setSimilarity(similarityScore);
 						insertProductSellArticleSimiler(psas);
 					}
 					
