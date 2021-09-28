@@ -1,5 +1,6 @@
 package com.ssafy.special.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -48,6 +49,13 @@ public class ProductServiceImpl implements ProductService {
 		
 		return product;		
 	}
-	
-	
+
+	@Override
+	public List<Long> getProductidByQuery(String query) {
+		//query에 해당하는 pid 받아옴
+		List<Long> pidList= productRepository.getProductIdByQuery(query).orElse(new ArrayList<Long>());
+		
+		return pidList;		
+	}
+
 }
