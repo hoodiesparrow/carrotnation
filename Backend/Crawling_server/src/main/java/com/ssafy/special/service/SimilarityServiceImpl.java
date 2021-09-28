@@ -64,6 +64,7 @@ public class SimilarityServiceImpl implements SimilarityService {
 //		List<Product> aa = productRepository.findAll();
 		StringBuilder sb,temp;
 		for (Long p : pidList) {
+			log.info("*********"+p+"에 해당하는 유사도 처리를 시작합니다.");
 			sb = new StringBuilder();
 			
 			List<ProductSellList> list = productSellListRepository.getRecentProductSellList(cycle, p)
