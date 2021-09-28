@@ -137,7 +137,7 @@ class CrawlingServerApplicationTests {
 
 //		ssh.getSSHResponse(f);
 //		ssh.getSSHResponse("hadoop fs -ls Set");
-		similarityService.similarityProduct();
+//		similarityService.similarityProduct();
 //		String f = "hadoop fs -put /home/j5d205/receive/" + 1 + ".txt "+ "Set/"+1+".txt";
 //		System.out.println(f);
 	}

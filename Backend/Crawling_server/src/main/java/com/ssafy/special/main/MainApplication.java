@@ -31,19 +31,22 @@ public class MainApplication {
 	private final DaangnMultiThreadCrawling daangnMultiThreadCrawling;
 	private final JoongnaMultiThreadCrawling JoongnaMultiThreadCrawling;
 	private final ThunderMultiThreadCrawling thunderMultiThreadCrawling;
+	private final SimilarityHadoopThread similarityHadoopThread;
 //	private final SSHUtils ssh;
 	private final ProductSellListRepository productSellListRepository;
 	private final SimilarityService similarityService;
 //	private final String sendFilePath = "/home/ubuntu/mysqltablefile/sellList.txt";
 //	private final String receiveFilePath = "/home/j5d205/receive/";
-
+	static Thread hadoopExecThred=null;
 	@Scheduled(fixedRate = 1000 * 60 * 60) // 1시간
 	public void crawlingStart() {
 		
 		List<ProductQuery> productQuery = queryInfoService.getProductQueryList();
 
 		List<Thread> threadList = new ArrayList<Thread>();
-
+		
+		
+		
 		for (ProductQuery query : productQuery) {
 			List<String> queryExceptionKeywordList = queryInfoService.getQueryExceptionKeywordList(query);
 			daangnMultiThreadCrawling.setProductQuery(query);
@@ -90,7 +93,7 @@ public class MainApplication {
 			if (cnt == threadcnt) {
 				log.info("크롤링이 모두 끝났습니다");
 				
-				similarityService.similarityProduct();
+//				similarityService.similarityProduct();
 				
 				break;
 			} else
@@ -98,39 +101,18 @@ public class MainApplication {
 		}
 
 	}
-
-	public void writedb() {
-		LocalDateTime time = LocalDateTime.now().minusHours(1);
-		String s = time.format(DateTimeFormatter.ofPattern("yyMMddHH"));
-		StringBuilder sb = new StringBuilder();
-		String fileName = "/home/ubuntu/mysqltablefile/sellList.txt";
-		Product p;
-		for (ProductSellList psl : productSellListRepository.txtProductSellList(Long.parseLong(s))) {
-			p = psl.getProductId();
-			sb.append(psl.getId()).append("|").append(psl.getMarket()).append("|").append(psl.getContent()).append("|")
-					.append(psl.getCreateDate()).append("|").append(psl.getCycle()).append("|")
-					.append(psl.getLocation()).append("|").append(psl.getPrice()).append("|").append(psl.getTitle())
-					.append("|").append(p.getName()).append("\n");
+	public void similarityThread() {
+		//리스트에 목록이 있고 스레드가 널일경우
+		if(hadoopExecThred==null) {
+//			product list
+//			similarityHadoopThread.setProduct(product);
+			hadoopExecThred = new Thread(similarityHadoopThread);
+			hadoopExecThred.run();
 		}
-		try {
-
-			// 파일 객체 생성
-			File file = new File(fileName);
-
-			// true 지정시 파일의 기존 내용에 이어서 작성
-			FileWriter fw = new FileWriter(file, true);
-
-			// 파일안에 문자열 쓰기
-			fw.write(sb.toString());
-			fw.flush();
-
-			// 객체 닫기
-			fw.close();
-			log.info("*******파일쓰기 완료*********");
-
-		} catch (Exception e) {
-			e.printStackTrace();
+		if(hadoopExecThred.getState()==Thread.State.TERMINATED) {
+			hadoopExecThred=null;
 		}
-
 	}
+
+
 }
