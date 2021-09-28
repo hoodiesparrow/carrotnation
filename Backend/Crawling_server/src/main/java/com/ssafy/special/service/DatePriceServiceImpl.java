@@ -37,6 +37,7 @@ public class DatePriceServiceImpl implements DatePriceService {
 				price = price * nowtime;
 			price = (price + p.getAvgPrice())/(nowtime+1);
 			datePrice.setPrice(price);
+			datePrice.setProductId(p);
 			datePriceRepository.save(datePrice);
 		}		
 	}
