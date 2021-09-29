@@ -1,5 +1,5 @@
 <template>
-  <div class="container max-w-750px">
+  <div v-if="product" class="container max-w-750px">
     <div class="sticky top-0">
       <div class="flex justify-between items-center bg-purple-700 p-4">
         <div @click="goToBack()">
@@ -21,31 +21,31 @@
 
     <div class="bg-gray-100 p-3 pb-5">
       <div class="w-full mb-px">
-        <img :src="product.img" class="w-full" />
+        <img :src="product.articleDeatil.img" class="w-full" />
       </div>
       <div class="mb-2">
         <div class="bg-white mb-px">
-          <p class="text-xl font-semibold p-1 px-3 pt-5">{{ product.title }}</p>
-          <p class="text-2xl font-bold p-1 px-3">가격 : {{ product.price.toLocaleString() }}원</p>
+          <p class="text-xl font-semibold p-1 px-3 pt-5">{{ product.articleDeatil.title }}</p>
+          <p class="text-2xl font-bold p-1 px-3">가격 : {{ product.articleDeatil.price.toLocaleString() }}원</p>
           <div class="pb-5">
             <p class="text-lg font-bold p-1 px-3 text-gray-400">
-              작성일자: {{ product.createDate.substring(0, 10) }}
+              작성일자: {{ product.articleDeatil.createDate.substring(0, 10) }}
             </p>
-            <p class="text-lg font-bold px-3 text-gray-400" v-if="product.location">
-              위치 : {{ product.location }}
+            <p class="text-lg font-bold px-3 text-gray-400" v-if="product.articleDeatil.location">
+              위치 : {{ product.articleDeatil.location }}
             </p>
           </div>
         </div>
         <div class="bg-white mb-px pt-5">
           <p class="text-lg font-extrabold text-gray-500 p-3">상품 설명</p>
-          <p class="text-base text-lg font-medium p-4">{{ product.content }}</p>
+          <p class="text-base text-lg font-medium p-4">{{ product.articleDeatil.content }}</p>
         </div>
       </div>
       <div>
-        <div v-if="product" class="bg-white mb-3">
+        <div class="bg-white mb-3">
           <p class="text-xl font-semibold text-gray-500 p-3">유사 게시글</p>
           <div v-if="product.similerProduct.length > 0">
-            0>
+
             <div class="flex flex-col bg-gray-100">
               <SmallCard
                 v-for="prod in product.similerProduct"
@@ -91,8 +91,8 @@ export default defineComponent({
     store
       .dispatch("requestProductDetail", { id: route.query.id, market: route.query.market })
       .then((res) => {
-        console.log(res.data);
-        product.value = res.data.articleDeatil;
+        product.value = res.data;
+        console.log(product.value)
       })
       .catch((err) => {
         console.log(err.data);
