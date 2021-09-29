@@ -1,5 +1,5 @@
 <template>
-  <div class="container max-w-750px">
+  <div class="container max-w-750px" ref="container">
     <SideBar :show="show" @closeSideBar="show=false" class="fixed top-0 z-40 h-full" />
     <div class="sticky top-0">
       <div class="flex justify-between items-center bg-purple-700 p-4">
@@ -26,14 +26,17 @@
         <ProdBox v-for="prod in prodList" :key="prod.pid" :product="prod" />
       </div>
     </div>
-    <div v-if="isLoading">
-      <button type="button" class="bg-white" disabled>
-        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-pink-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        Processing
-      </button>
+    <div v-if="isLoading" class="flex justify-center">
+      <svg xml:space="preserve" viewBox="0 0 100 100" class="w-16 h-16 animate-spin" y="0" x="0" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <g class="ldl-scale">
+          <circle fill="#333" r="40" cy="50" cx="50">
+          </circle>
+          <g>
+            <path fill="#fff" d="M50 74c-13.234 0-24-10.766-24-24h7.268c0 9.226 7.506 16.732 16.732 16.732S66.732 59.226 66.732 50 59.226 33.268 50 33.268V26c13.234 0 24 10.766 24 24S63.234 74 50 74z">
+            </path>
+          </g>
+        </g>
+      </svg>
     </div>
   </div>
 </template>
@@ -56,6 +59,7 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     const store = useStore();
+    const container = ref(null)
     const show = ref(false)
     const prodInfo = ref({
       name: '',
@@ -65,6 +69,7 @@ export default defineComponent({
     })
     const prodList = ref([]);
     const initialLoading = ref(true)
+    const initialLoadingFailed = ref(false)
     const isLoading = ref(false)
     const noMoreData = ref(false)
     const totalPage = ref(0)
@@ -72,6 +77,7 @@ export default defineComponent({
       pid: route.query.pid,
       page: 0,
     })
+    
     store.dispatch('requestProductInfo', query.value.pid)
       .then(res => {
         prodInfo.value.name = res.data.product.name
@@ -82,8 +88,19 @@ export default defineComponent({
 
     store.dispatch('requestProductList', query.value)
       .then((res) => {
-        totalPage.value = res.data.totalpage
-        prodList.value.push(...res.data.list)
+        switch (res.status) {
+          case 200:
+            totalPage.value = res.data.totalpage
+            prodList.value.push(...res.data.list)
+            break
+          case 204:
+            initialLoadingFailed.value = true
+            console.log('204204')
+            break
+          default:
+            initialLoadingFailed.value = true
+            console.log('other case')
+        }
       })
       .catch((err) => {
         console.log(err)
@@ -92,24 +109,34 @@ export default defineComponent({
         initialLoading.value = false
       })
 
+    
+
     // infinite scroll
     const handleScroll = () => {
       if (((window.innerHeight + window.scrollY) >= document.body.offsetHeight) && !isLoading.value && !initialLoading.value) {
         if (query.value.page <= totalPage.value - 1) {
           console.log('additional loading seq.')
           isLoading.value = true
-          query.value.page += 1
-          store.dispatch('requestProductList', query.value)
-            .then(res => {
-              totalPage.value = res.data.totalpage
-              prodList.value.push(...res.data.list)
-            })
-            .catch(err => {
-              console.log(err)
-            })
-            .finally(() => {
-              isLoading.value = false
-            })
+          setTimeout(() => {
+            container.value.scrollTop = container.value.scrollHeight;
+          }, 100)
+          console.log(container.value.scrollTop)
+          console.log(container.value.scrollHeight)
+
+          setTimeout(() => {
+            query.value.page += 1
+            store.dispatch('requestProductList', query.value)
+              .then(res => {
+                totalPage.value = res.data.totalpage
+                prodList.value.push(...res.data.list)
+              })
+              .catch(err => {
+                console.log(err)
+              })
+              .finally(() => {
+                isLoading.value = false
+              })
+          }, 1000)
         } else {
           noMoreData.value = true
         }
@@ -124,11 +151,13 @@ export default defineComponent({
     })
     
     return { 
+      container,
       prodList, 
       show,
       query,
       handleScroll,
       initialLoading,
+      initialLoadingFailed,
       isLoading,
       totalPage,
       noMoreData,
