@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -62,6 +63,7 @@ public class MainApplication {
 	
 
 	@Scheduled(fixedRate = 1000 * 60 * 60) // 1시간
+	@Async
 	private void crawlingStart() {
 		log.info("Schedule Start ----------------------------------------------------------------------------------");
 		
