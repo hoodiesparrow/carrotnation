@@ -49,6 +49,9 @@ export default defineComponent({
         return {};
       },
     },
+    productName: {
+      type: String,
+    },
   },
   setup(props) {
     const router = useRouter();
@@ -107,6 +110,7 @@ export default defineComponent({
         query: {
           id: props.product.id,
           market: props.product.market,
+          productName: props.productName,
         },
       });
     };
