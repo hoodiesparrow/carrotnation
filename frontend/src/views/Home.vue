@@ -1,7 +1,17 @@
 <template>
   <!-- <div class="container max-w-750px flex-column items-center text-center bg-gradient-to-b from-purple-500 via-pink-400 py-20"> -->
   <!-- <div class="container max-w-750px text-center min-h-screen bg-gradient-to-r from-blue-400 to-indigo-500"> -->
-  <div class="container max-w-750px text-center min-h-screen bg-gradient-to-r from-blue-100 to-pink-100">
+  <div
+    class="
+      container
+      max-w-750px
+      text-center
+      min-h-screen
+      bg-gradient-to-r
+      from-blue-100
+      to-pink-100
+    "
+  >
     <div class="relative bg-purple-400">
       <div class="absolute inset-x-0 bottom-0">
         <svg class="absolute inset-x-0 bottom-0 text-white" viewBox="0 -1 1160 163">
@@ -41,18 +51,15 @@
               <span class="relative text-green-900">번개시세</span>
             </span>
           </h2>
-          <p class="mb-6 text-base text-indigo-100 md:text-lg">
-            여기에 뭐 css 예제 뒤져서 예쁜걸 넣어도 되고 음,,
-          </p>
+          <p class="mb-6 text-base text-indigo-100 md:text-lg">누구라도 그러하듯이</p>
         </div>
       </div>
     </div>
 
-    <div class="px-10">
+    <div class="">
       <div class="w-full">
         <HomeSelectButton />
-      <br>
-      <!-- <HomeChart /> -->
+        <br />
       </div>
     </div>
   </div>

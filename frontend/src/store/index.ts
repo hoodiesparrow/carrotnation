@@ -7,6 +7,11 @@ interface query {
   pid: string,
   page: number,
 }
+interface detailquery {
+  id: string,
+  market: string,
+}
+
 const BASE_URL = 'https://j5d205.p.ssafy.io'
 
 export default createStore({
@@ -31,6 +36,22 @@ export default createStore({
         params: query 
       }
       return axios.get(url, header)
+    },
+
+    requestProductSalesInfo: function ({ commit }, pid: string) {
+      const url = `${BASE_URL}/api/dateprice`
+      const header = {
+        params: { pid: pid }
+      }
+      return axios.get(url, header)
+    },
+
+    requestProductDetail: function ({ commit }, query: detailquery) {
+      const url = `${BASE_URL}/api/productselldetail`
+      const header = {
+        params: query
+      }
+      return axios.get(url, header);
     }
   },
   getters: {

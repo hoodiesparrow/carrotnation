@@ -3,15 +3,29 @@
     class="mt-3 mr-3 ml-3 p-3 transition hover:bg-purple-50 hover:text-black bg-white"
     @click="onClickItem"
   >
-    <div class="grid grid-rows-3 grid-cols-3 gap-1 text-left">
-      <div class="row-span-3">
-        <img :src="product.img" style="height: 50px" />
+    <div class="grid grid-rows-4 grid-cols-3 place-content-cente max-w-dm h-40">
+      <div class="row-span-4">
+        <img :src="product.img" class="w-auto h-full flex" />
       </div>
-      <div class="col-span-2 text-2xl flex items-center overflow-hidden">{{ product.title }}</div>
-      <div class="col-span-2 text-lg font-semibold flex items-center">
-        <p>{{ product.price }}</p>
+      <div class="col-span-2 text-sl font-semibold flex items-center pl-1">{{ getAppName() }}</div>
+      <div
+        class="col-span-2 text-xl flex items-center pl-1 pt-2"
+        style="
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+          width: 90%;
+          display: block;
+        "
+      >
+        {{ product.title }}
       </div>
-      <div class="col-span-2 text-lg items-center">{{ product.createdate }}</div>
+      <div class="col-span-2 text-xl font-semibold flex items-center pl-1">
+        <p>{{ product.price.toLocaleString() }}원</p>
+      </div>
+      <div class="col-span-2 text-sm items-center pl-1 text-gray-500">
+        {{ product.createDate.substring(2, 10) }}
+      </div>
     </div>
   </div>
 </template>
@@ -49,6 +63,20 @@ export default defineComponent({
       return urlList[props.product.market];
     };
 
+    const getAppName = () => {
+      switch (props.product.market) {
+        case "daangn":
+          return "당근마켓";
+        case "joonnaApp":
+          return "중고나라";
+        case "thunder":
+          return "번개장터";
+
+        default:
+          return "?";
+      }
+    };
+
     const urlRegex = () => {
       const url = props.product.url;
 
@@ -73,13 +101,14 @@ export default defineComponent({
     // const routeData = router.resolve({ name: "BridgeTest", query: { code: "someData" } });
 
     const onClickItem = () => {
-      console.log(props.product.productId)
+      console.log(props.product.productId);
       router.push({
-        name: 'Detail',
+        name: "Detail",
         query: {
-          pid: props.product.productId
-        }
-      })
+          id: props.product.id,
+          market: props.product.market,
+        },
+      });
     };
 
     return {
@@ -88,6 +117,7 @@ export default defineComponent({
       getUrl,
       urlRegex,
       onClickItem,
+      getAppName,
     };
   },
 });
