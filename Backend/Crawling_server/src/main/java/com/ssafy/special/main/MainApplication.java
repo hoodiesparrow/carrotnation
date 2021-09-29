@@ -180,6 +180,7 @@ public class MainApplication {
 			while(similarity.getState() != Thread.State.TERMINATED) {
 				try {
 					Thread.sleep(1000 * 10);
+					log.info(" 180 line while similarity");
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

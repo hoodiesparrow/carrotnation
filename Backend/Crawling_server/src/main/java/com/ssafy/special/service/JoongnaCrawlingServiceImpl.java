@@ -167,7 +167,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 	public void joongnaPostCrawling(String query, int page, List<String> exception, List<ProductDTO> list)
 			throws PageEndException {
 		// TODO Auto-generated method stub
-
+		
 		String categorySeq;
 		if (query.contains("아이폰")) {
 			categorySeq = APPLE;
