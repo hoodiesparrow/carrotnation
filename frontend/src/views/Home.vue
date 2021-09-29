@@ -3,24 +3,16 @@
   <!-- <div class="container max-w-750px text-center min-h-screen bg-gradient-to-r from-blue-400 to-indigo-500"> -->
   <div class="container max-w-750px text-center min-h-screen bg-gradient-to-r from-blue-100 to-pink-100">
     <div class="relative bg-purple-400">
-      <div class="absolute inset-x-0 bottom-0">
-        <svg class="absolute inset-x-0 bottom-0 text-white" viewBox="0 -1 1160 163">
-          <path
-            fill="currentColor"
-            d="M-164 13L-104 39.7C-44 66 76 120 196 141C316 162 436 152 556 119.7C676 88 796 34 916 13C1036 -8 1156 2 1216 7.7L1276 13V162.5H1216C1156 162.5 1036 162.5 916 162.5C796 162.5 676 162.5 556 162.5C436 162.5 316 162.5 196 162.5C76 162.5 -44 162.5 -104 162.5H-164V13Z"
-          ></path>
-        </svg>
-      </div>
       <div
         class="
           px-4
-          py-16
+          pt-16
           mx-auto
           sm:max-w-xl
           md:max-w-full
           lg:max-w-screen-xl
           md:px-24
-          lg:px-8 lg:py-20
+          lg:px-8 lg:pt-20
         "
       >
         <div class="relative max-w-2xl sm:mx-auto sm:max-w-xl md:max-w-2xl sm:text-center">
@@ -41,11 +33,19 @@
               <span class="relative text-green-900">번개시세</span>
             </span>
           </h2>
-          <p class="mb-6 text-base text-indigo-100 md:text-lg">
-            누구라도 그러하듯이
+          <p class="text-base text-indigo-100 md:text-lg">
+            호머심슨 마지부블리에 바트심슨 리사심슨
           </p>
         </div>
       </div>
+    </div>
+    <div class="">
+      <svg class="text-purple-400" viewBox="0 -1 1160 163">
+        <path
+          fill="currentColor"
+          d="M -164 13 L -104 39.7 C -44 66 76 120 196 141 C 316 162 436 152 556 119.7 C 676 88 796 34 916 13 C 1036 -8 1156 2 1216 7.7 L 1276 13 V -394 H -164 Z"
+        ></path>
+      </svg>
     </div>
 
     <div class="">
@@ -62,7 +62,7 @@ import { defineComponent, defineAsyncComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 // import HomeItemList from './HomeItemList.vue'
-const HomeChart = defineAsyncComponent(() => import("@/components/TempChart1.vue"));
+// const HomeChart = defineAsyncComponent(() => import("@/components/TempChart1.vue"));
 const HomeSelectButton = defineAsyncComponent(
   () => import("@/components/Home/HomeSelectButton.vue")
 );
