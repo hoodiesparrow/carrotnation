@@ -2,10 +2,13 @@ package com.ssafy.special.service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ssafy.special.domain.ProductSellList;
 import com.ssafy.special.repository.ProductSellArticleSimilerRepository;
 import com.ssafy.special.repository.ProductSellListRepository;
 
@@ -35,7 +38,11 @@ public class PreCycleDeleteServiceImpl implements PreCycleDeleteService {
 		//cycle 보다 작은 데이터들 삭제
 		LocalDateTime now = LocalDateTime.now().minusHours(1);
 		Long cycle = Long.parseLong(now.format(DateTimeFormatter.ofPattern("yyMMddHH")));	
-		productSellListRepository.deletePreCycle(cycle);
+		
+	  	List<ProductSellList> tmp = productSellListRepository.findByCycleLessThan(cycle).orElse(new ArrayList<>());
+	  	for(ProductSellList t:tmp) {
+	  		productSellListRepository.delete(t);
+	  	}		
 	}
 	
 }

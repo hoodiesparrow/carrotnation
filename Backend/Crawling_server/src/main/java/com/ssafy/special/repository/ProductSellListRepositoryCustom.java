@@ -21,7 +21,4 @@ public interface ProductSellListRepositoryCustom {
 	
 	Optional<List<ProductPriceResponseDTO>> getProductByPrice(Long cycle,long id);
 
-	// cycle 보다 작은 데이터들 삭제
-	void deletePreCycle(long cycle);
-
 }
