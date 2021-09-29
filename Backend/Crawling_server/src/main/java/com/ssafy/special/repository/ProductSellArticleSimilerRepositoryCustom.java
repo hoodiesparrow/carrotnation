@@ -7,5 +7,5 @@ import com.ssafy.special.dto.ProductSellArticleSimilerResponseDTO;
 
 public interface ProductSellArticleSimilerRepositoryCustom{
 	// 해당 market, pid를 가지는 게시글과 유사한 게시글리스트 리턴
-	Optional<List<ProductSellArticleSimilerResponseDTO>> getProductSellArticleSimiler(long pid, String market);
+	Optional<List<ProductSellArticleSimilerResponseDTO>> getProductSellArticleSimiler(long pid, String market, Long cycle);
 }
