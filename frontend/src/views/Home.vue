@@ -1,7 +1,17 @@
 <template>
   <!-- <div class="container max-w-750px flex-column items-center text-center bg-gradient-to-b from-purple-500 via-pink-400 py-20"> -->
   <!-- <div class="container max-w-750px text-center min-h-screen bg-gradient-to-r from-blue-400 to-indigo-500"> -->
-  <div class="container max-w-750px text-center min-h-screen bg-gradient-to-r from-blue-100 to-pink-100">
+  <div
+    class="
+      container
+      max-w-750px
+      text-center
+      min-h-screen
+      bg-gradient-to-r
+      from-blue-100
+      to-pink-100
+    "
+  >
     <div class="relative bg-purple-400">
       <div
         class="

@@ -168,10 +168,10 @@
 </template>
 
 <script>
-import get from 'lodash/get'
-import { useRouter } from 'vue-router'
-import { computed, reactive, ref } from 'vue'
-import { useStore } from 'vuex'
+import get from "lodash/get";
+import { useRouter } from "vue-router";
+import { computed, reactive, ref } from "vue";
+import { useStore } from "vuex";
 import {
   // TransitionRoot,
   RadioGroup,
@@ -289,22 +289,20 @@ export default {
       tree2.value = get(store.getters['getCategoryData'], tree2Depth.value)
       console.log(tree2.value)
       // tag가 없으면? >>> router push
-      if (Object.keys(tree2.value).indexOf('tag') === -1) {
-        console.log('end of the tree, router push required')
-        console.log(tree2.value.pid)
+      if (Object.keys(tree2.value).indexOf("tag") === -1) {
+        console.log("end of the tree, router push required");
+        console.log(tree2.value.pid);
         router.push({
-          name: 'Prod',
+          name: "Prod",
           query: {
-            pid: tree2.value.pid
-          }
-        })
+            pid: tree2.value.pid,
+          },
+        });
       } else {
         console.log("button animation called");
         tranFlag1.value = false;
       }
-      
-
-    }
+    };
     const onClickT2 = (idx) => {
       enterFrom.value = 'translate-x-full'
       enterTo.value ='translate-x-0'
@@ -315,15 +313,15 @@ export default {
       tree1.value = get(store.getters['getCategoryData'], tree1Depth.value)
       console.log(tree1.value)
       // tag가 없으면? >>> router push
-      if (Object.keys(tree1.value).indexOf('tag') === -1) {
-        console.log('end of the tree, router push required')
-        console.log(tree1.value.pid)
+      if (Object.keys(tree1.value).indexOf("tag") === -1) {
+        console.log("end of the tree, router push required");
+        console.log(tree1.value.pid);
         router.push({
-          name: 'Prod',
+          name: "Prod",
           query: {
-            pid: tree1.value.pid
-          }
-        })
+            pid: tree1.value.pid,
+          },
+        });
       } else {
         console.log("button animation called");
         tranFlag2.value = false;

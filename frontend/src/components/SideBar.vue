@@ -1,5 +1,5 @@
 <template>
-  <TransitionRoot 
+  <TransitionRoot
     :show="open"
     enter="transition transform duration-300"
     enter-from="-translate-x-48"
@@ -8,7 +8,7 @@
     leave-from="translate-x-0"
     leave-to="-translate-x-48"
   >
-    <div class="min-w-2000px h-full bg-black bg-opacity-50  ">
+    <div class="min-w-2000px h-full bg-black bg-opacity-50">
       <div class="bg-gray-50 h-full w-180px z-50">
         <div class="close_btn">
           <a href="#">
@@ -18,53 +18,44 @@
             />
           </a>
         </div>
-        <div>메뉴</div>
-        <div>
-          <select class="w-full border bg-white rounded px-3 py-2 outline-none">
-            <option class="py-1">Option 1</option>
-            <option class="py-1">Option 2</option>
-            <option class="py-1">Option 3</option>
-          </select>
-          <select class="w-full border bg-white rounded px-3 py-2 outline-none">
-            <option class="py-1">Option 1</option>
-            <option class="py-1">Option 2</option>
-            <option class="py-1">Option 3</option>
-          </select>
-          <select class="w-full border bg-white rounded px-3 py-2 outline-none">
-            <option class="py-1">Option 1</option>
-            <option class="py-1">Option 2</option>
-            <option class="py-1">Option 3</option>
-          </select>
-        </div>
+      </div>
+
+      <div>
+        <SalesTrend v-bind:chartData="chartData" />
       </div>
     </div>
   </TransitionRoot>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue";
-import { TransitionRoot, TransitionChild } from '@headlessui/vue' 
+import { defineComponent, computed, defineAsyncComponent, ref } from "vue";
+import { TransitionRoot, TransitionChild } from "@headlessui/vue";
+const SalesTrend = defineAsyncComponent(() => import("@/components/charts/SalesTrend.vue"));
 // interface State {
 //   openNav: boolean
 // }
 
 export default defineComponent({
   components: {
-    TransitionRoot, 
+    TransitionRoot,
+    SalesTrend,
     // TransitionChild,
   },
   props: {
     show: {
       type: Boolean,
       default: false,
-    }
+    },
+    dateprice: {
+      type: Array,
+    },
   },
   setup(props) {
-    const open = computed(() => 
-      props.show
-    )
+    const open = computed(() => props.show);
+    let datelist = [];
+    let pricelist = [];
 
-    return { open }
-  }
+    return { open };
+  },
 });
 </script>

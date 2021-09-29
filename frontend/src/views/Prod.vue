@@ -62,11 +62,11 @@ export default defineComponent({
     const container = ref(null)
     const show = ref(false)
     const prodInfo = ref({
-      name: '',
+      name: "",
       minPrice: 0,
       avgPrice: 0,
       maxPrice: 0,
-    })
+    });
     const prodList = ref([]);
     const initialLoading = ref(true)
     const initialLoadingFailed = ref(false)
@@ -103,25 +103,29 @@ export default defineComponent({
         }
       })
       .catch((err) => {
-        console.log(err)
+        console.log(err);
       })
       .finally(() => {
-        initialLoading.value = false
-      })
+        initialLoading.value = false;
+      });
 
     
 
     // infinite scroll
     const handleScroll = () => {
-      if (((window.innerHeight + window.scrollY) >= document.body.offsetHeight) && !isLoading.value && !initialLoading.value) {
+      if (
+        window.innerHeight + window.scrollY >= document.body.offsetHeight &&
+        !isLoading.value &&
+        !initialLoading.value
+      ) {
         if (query.value.page <= totalPage.value - 1) {
           console.log('additional loading seq.')
           isLoading.value = true
-          setTimeout(() => {
-            container.value.scrollTop = container.value.scrollHeight;
-          }, 100)
-          console.log(container.value.scrollTop)
-          console.log(container.value.scrollHeight)
+          // setTimeout(() => {
+          //   container.value.scrollTop = container.value.scrollHeight;
+          // }, 100)
+          // console.log(container.value.scrollTop)
+          // console.log(container.value.scrollHeight)
 
           setTimeout(() => {
             query.value.page += 1
@@ -138,14 +142,14 @@ export default defineComponent({
               })
           }, 1000)
         } else {
-          noMoreData.value = true
+          noMoreData.value = true;
         }
       }
-    }
+    };
 
     onMounted(() => {
-      window.addEventListener('scroll', handleScroll)
-    })
+      window.addEventListener("scroll", handleScroll);
+    });
     onUnmounted(() => {
       window.removeEventListener('scroll', handleScroll)
     })
