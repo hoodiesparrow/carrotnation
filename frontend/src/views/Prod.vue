@@ -12,13 +12,20 @@
         </div>
         <span class="text-4xl font-extrabold text-white">{{ prodInfo.name }}</span>
       </div>
-      <div class="grid grid-rows-2 bg-white py-2 border-b-2 border-gray-300">
-        <div class="col-span-2 text-right">
-          <span class="col-span-2 pr-4 text-lg">최저가 : {{ prodInfo.minPrice }}</span>
-          <span class="col-span-2 pr-4 text-lg">평균가 : {{ prodInfo.avgPrice }}</span>
-          <span class="col-span-2 pr-4 text-lg">최고가 : {{ prodInfo.maxPrice }}</span>
-          <!-- <span class="pr- text-lg">총 {{ prodList.length }}건</span> -->
+      <div class="flex justify-between bg-white px-3 py-1 border-b-2 border-gray-300">
+        <div class="flex flex-col items-start">
+          <span class="text-lg border-b-2">최저</span>
+          <span class="text-md">{{ prodInfo.minPrice }}원</span>
         </div>
+        <div class="flex flex-col items-start">
+          <span class="text-lg border-b-2">평균</span>
+          <span class="text-md">{{ prodInfo.avgPrice }}원</span>
+        </div>
+        <div class="flex flex-col items-start">
+          <span class="text-lg border-b-2">최고</span>
+          <span class="text-md">{{ prodInfo.maxPrice }}원</span>
+        </div>
+          <!-- <span class="pr- text-lg">총 {{ prodList.length }}건</span> -->
       </div>
     </div>
     <div class="text-left">
