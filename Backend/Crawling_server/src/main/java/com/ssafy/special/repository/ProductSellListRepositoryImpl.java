@@ -81,6 +81,13 @@ public class ProductSellListRepositoryImpl implements ProductSellListRepositoryC
 										.fetch();
 		return Optional.ofNullable(result);
 	}
-
 	
+	// cycle 보다 작은 데이터들 삭제
+	@Override
+	public void deletePreCycle(long cycle) {
+		QProductSellList qpsl = QProductSellList.productSellList;
+		
+		queryFactory.delete(qpsl).where(qpsl.cycle.lt(cycle)).execute();	
+	}
+
 }
