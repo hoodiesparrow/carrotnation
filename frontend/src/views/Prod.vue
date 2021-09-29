@@ -1,7 +1,7 @@
 <template>
   <div class="container max-w-750px" ref="container">
     <SideBar :show="show" @closeSideBar="show=false" class="fixed top-0 z-40 h-full" />
-    <div class="sticky top-0">
+    <div class="sticky top-0 transition duration-300 border-gray-300" :class="{'shadow-2xl': !atTopOfPage, 'border-b-2': atTopOfPage}">
       <div class="flex justify-between items-center bg-purple-700 p-4">
         <div>
           <img
@@ -12,7 +12,7 @@
         </div>
         <span class="text-4xl font-extrabold text-white">{{ prodInfo.name }}</span>
       </div>
-      <div class="flex justify-between bg-white px-3 sm:px-20 py-1 border-b-2 border-gray-300">
+      <div class="flex justify-between bg-white px-3 sm:px-20 py-1">
         <div class="flex flex-col items-start">
           <span class="text-lg border-b-2">최저</span>
           <span class="text-md">{{ prodInfo.minPrice }}원</span>
@@ -30,7 +30,7 @@
     </div>
     <div class="text-left">
       <div class="flex flex-col bg-gray-100">
-        <span class="float-right p-1 text-right text-lg">총 {{ prodInfo.count }}건</span>
+        <span class="p-1 text-right text-lg">총 {{ prodInfo.count }}건</span>
         <ProdBox v-for="prod in prodList" :key="prod.pid" :product="prod" />
       </div>
     </div>
@@ -69,6 +69,7 @@ export default defineComponent({
     const store = useStore();
     const container = ref(null)
     const show = ref(false)
+    const atTopOfPage = ref(true)
     const prodInfo = ref({
       name: "",
       minPrice: 0,
@@ -123,6 +124,17 @@ export default defineComponent({
 
     // infinite scroll
     const handleScroll = () => {
+      // 그림자 추가하기
+      if (window.pageYOffset>0) {
+        if (atTopOfPage.value) {
+          atTopOfPage.value = false
+        }
+      } else {
+        if (!atTopOfPage.value) {
+          atTopOfPage.value = true
+        } 
+      }
+
       if (
         window.innerHeight + window.scrollY >= document.body.offsetHeight &&
         !isLoading.value &&
@@ -176,6 +188,7 @@ export default defineComponent({
       totalPage,
       noMoreData,
       prodInfo,
+      atTopOfPage,
     };
   },
 });
