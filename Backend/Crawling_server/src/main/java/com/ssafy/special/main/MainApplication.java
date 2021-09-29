@@ -61,8 +61,10 @@ public class MainApplication {
 	}
 	
 
-	@Scheduled(fixedRate = 1000 * 60 * 60) // 1시간
+//	@Scheduled(fixedRate = 1000 * 60 * 60) // 1시간
 	public void crawlingStart() {
+		log.info("Schedule Start ----------------------------------------------------------------------------------");
+		
 		
 		List<ProductQuery> productQuery = queryInfoService.getProductQueryList();
 
@@ -186,7 +188,8 @@ public class MainApplication {
 				similarity.start();			
 			}
 		}
-	
+		
+		log.info("Schedule end ----------------------------------------------------------------------------------");
 	}
 
 
