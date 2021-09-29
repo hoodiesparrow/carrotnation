@@ -184,13 +184,13 @@ public class MainApplication {
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}
-				similarityThread.setPidList(pidList);
-				pidList = new ArrayList<Long>();
-				
-				similarity=new Thread(similarityThread);
-				similarity.start();			
+				}	
 			}
+			similarityThread.setPidList(pidList);
+			pidList = new ArrayList<Long>();
+			
+			similarity=new Thread(similarityThread);
+			similarity.start();		
 		}
 		
 		log.info("Schedule end ----------------------------------------------------------------------------------");
