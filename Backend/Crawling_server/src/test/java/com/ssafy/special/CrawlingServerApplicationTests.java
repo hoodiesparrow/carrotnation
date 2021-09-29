@@ -3,15 +3,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.ssafy.special.controller.SSHUtils;
 //import com.ssafy.special.domain.Product;
 import com.ssafy.special.domain.ProductSellList;
+import com.ssafy.special.dto.PriceStepResponseDTO;
+import com.ssafy.special.dto.ProductPriceResponseDTO;
 import com.ssafy.special.main.MainApplication;
 import com.ssafy.special.repository.ProductRepository;
 import com.ssafy.special.repository.ProductSellArticleSimilerRepository;
@@ -142,9 +139,57 @@ class CrawlingServerApplicationTests {
 //		System.out.println(f);
 	}
 	
-//	@Test
+	@Test
 	void qq() {
+		List<ProductPriceResponseDTO> list = productSellListRepository.getProductByPrice(Long.parseLong("21092912"),(long)10).orElse(new ArrayList<ProductPriceResponseDTO>());
+		long maxPrice = list.get(0).getMaxPrice();
+		long stepbase = priceRound(maxPrice*0.1);
+		long Fstep = priceRound(maxPrice*0.28);
+		long Sstep = priceRound(maxPrice*0.46);
+		long Thstep = priceRound(maxPrice*0.64);
+		long Fostep = priceRound(maxPrice*0.82);
 		
+		Map<String,PriceStepResponseDTO> pricemap = new HashMap<String, PriceStepResponseDTO>();
+		
+		int[] arr = new int[5];
+		long[] arr2 = {stepbase,Fstep,Sstep,Thstep,Fostep,maxPrice};
+		System.out.println(Fstep+" "+Sstep+" "+Thstep+" "+Fostep+" "+maxPrice);
+		for(ProductPriceResponseDTO ppr:list) {
+			if(stepbase>=ppr.getPrice()) {
+				continue;
+			}else if(stepbase<ppr.getPrice() && Fstep>=ppr.getPrice()) {
+				arr[0]++;
+			}else if(Fstep<ppr.getPrice() && Sstep>=ppr.getPrice()) {
+				arr[1]++;
+			}else if(Sstep<ppr.getPrice() && Thstep>=ppr.getPrice()) {
+				arr[2]++;
+			}else if(Thstep<ppr.getPrice() && Fostep>=ppr.getPrice()) {
+				arr[3]++;
+			}else if(Fostep<ppr.getPrice() && maxPrice>=ppr.getPrice()) {
+				arr[4]++;
+			}
+		}
+		PriceStepResponseDTO psr;
+		psr = new PriceStepResponseDTO();
+		psr.setMin(arr2[0]);
+		psr.setMax(arr2[1]);
+		psr.setCount(0);
+		pricemap.put("1Step", psr);
+		for(int i=1;i<5;i++) {
+			psr = new PriceStepResponseDTO();
+			psr.setMin(arr2[i]);
+			psr.setMax(arr2[i+1]);
+			psr.setCount(arr[i]);
+			pricemap.put(i+1+"Step", psr);
+		}
+		
+	}
+	
+	public long priceRound(double price) {
+		String temp = Integer.toString((int)Math.round(price));
+		int round =(int) Math.round(Integer.parseInt(temp.substring(0, temp.length()-3))*0.1);
+		temp = Integer.toString(round)+"0000";
+		return Long.parseLong(temp);
 	}
 
 	

@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.special.domain.Product;
 import com.ssafy.special.dto.DatePriceResponseDTO;
+import com.ssafy.special.dto.PriceStepResponseDTO;
 import com.ssafy.special.dto.ProductSellArticleSimilerResponseDTO;
 import com.ssafy.special.dto.ProductSellListResponseDTO;
 import com.ssafy.special.service.DatePriceService;
+import com.ssafy.special.service.ProductByPriceService;
 import com.ssafy.special.service.ProductSellListInfoService;
 import com.ssafy.special.service.ProductService;
 import com.ssafy.special.service.SimilarityService;
@@ -33,7 +35,7 @@ public class APIController {
 	private final SimilarityService similarityService;
 	private final ProductService productService;
 	private final DatePriceService datePriceService;
-	
+	private final ProductByPriceService productByPriceService; 
 
 	//ProductSellList 뿌려줌(최신사이클만)
 	@GetMapping("/productselllist")
@@ -108,5 +110,10 @@ public class APIController {
 			return ResponseEntity.status(HttpStatus.OK).body(ret);
 	}
 	
+	@GetMapping("/byprice")
+	public ResponseEntity<Map<String,PriceStepResponseDTO>> getbyPrice(@RequestParam long pid, @RequestParam long cycle){
+		
+		return ResponseEntity.status(HttpStatus.OK).body(productByPriceService.byPrice(pid, cycle));
+	}
 	
 }

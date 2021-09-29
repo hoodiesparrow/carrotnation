@@ -11,6 +11,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.special.domain.ProductSellList;
 //import com.ssafy.special.domain.QProductSellList;
 import com.ssafy.special.domain.QProductSellList;
+import com.ssafy.special.dto.ProductPriceResponseDTO;
 import com.ssafy.special.dto.ProductSellListResponseDTO;
 
 import lombok.RequiredArgsConstructor;
@@ -66,5 +67,20 @@ public class ProductSellListRepositoryImpl implements ProductSellListRepositoryC
 		
 		return Optional.ofNullable(result);
 	}
+	
+	@Override
+	public Optional<List<ProductPriceResponseDTO>> getProductByPrice(Long cycle, long id) {
+		// TODO Auto-generated method stub
+		QProductSellList qpsl= QProductSellList.productSellList;
+		List<ProductPriceResponseDTO> result = queryFactory.select(
+										Projections.constructor(ProductPriceResponseDTO.class,
+												qpsl.id, qpsl.market,qpsl.price,qpsl.productId.maxPrice)
+										)
+										.from(qpsl)
+										.where(qpsl.cycle.goe(cycle).and(qpsl.productId.id.eq(id)))
+										.fetch();
+		return Optional.ofNullable(result);
+	}
+
 	
 }
