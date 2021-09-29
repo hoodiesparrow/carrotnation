@@ -110,7 +110,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		return map;
 	}
 
-	public String urlconnection(String payload, String method, String linkUrl) throws NotPageException{
+	public String urlconnection(String payload, String method, String linkUrl) throws NotPageException {
 		String methodlower = method.toLowerCase();
 		StringBuilder sb = new StringBuilder();
 		try {
@@ -137,26 +137,27 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 			} else {
 				return null;
 			}
-
-			if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
-				// Stream을 처리해줘야 하는 귀찮음이 있음.
-				BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"));
-				String line;
-				while ((line = br.readLine()) != null) {
-					sb.append(line).append("\n");
-				}
-				br.close();
-			} else {
+			try {
+				if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
+					// Stream을 처리해줘야 하는 귀찮음이 있음.
+					BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream(), "utf-8"));
+					String line;
+					while ((line = br.readLine()) != null) {
+						sb.append(line).append("\n");
+					}
+					br.close();
+				} else {
 //				System.out.println(con.getResponseMessage());
-				throw new NotPageException(con.getResponseMessage());
+					throw new NotPageException(con.getResponseMessage());
+				}
+			} catch (SocketTimeoutException e) {
+				e.printStackTrace();
 			}
-		}catch(SocketTimeoutException e) {
+		} catch (MalformedURLException e) {
 			e.printStackTrace();
-		}catch (MalformedURLException e) {
+		} catch (ProtocolException e) {
 			e.printStackTrace();
-		}catch(ProtocolException e) {
-			e.printStackTrace();
-		}catch(IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
@@ -213,16 +214,16 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 						product.setLink(item.get("articleUrl").toString().replaceAll("\"", ""));
 						try {
 							product.setContent(joongnacafe(product.getLink()));
-						}catch(NotPageException e){
+						} catch (NotPageException e) {
 							continue;
 						}
-						
+
 					} else {
 						product.setSeq(seq);
 						product.setLink("https://m.joongna.com/product-detail/" + seq);
 						try {
 							product.setContent(joongnaapp(product.getSeq()));
-						}catch(NotPageException e) {
+						} catch (NotPageException e) {
 							continue;
 						}
 					}
@@ -282,15 +283,16 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		return true;
 	}
 
-	public String joongnaapp(String seq) throws NotPageException{
+	public String joongnaapp(String seq) throws NotPageException {
 		String basicurl = "https://edge-live.joongna.com/api/product/basic/" + seq;
 		String sb = urlconnection("", "get", basicurl);
-		if(sb==null||"".equals(sb)) return null;
+		if (sb == null || "".equals(sb))
+			return null;
 		ObjectMapper mapper = new ObjectMapper();
 		try {
 			JsonNode node = mapper.readTree(sb.toString());
 			String content = node.get("data").get("productDescription").toString();
-			
+
 			return content;
 
 		} catch (JsonProcessingException err) {
@@ -392,7 +394,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		return true;
 	}
 
-	public String joongnacafe(String appurl) throws NotPageException{
+	public String joongnacafe(String appurl) throws NotPageException {
 		// TODO Auto-generated method stub
 		HashMap<String, String> querymap = getQueryMap(appurl);
 
@@ -407,7 +409,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 //		}
 //		sb.deleteCharAt(sb.length()-1);
 		String t = urlconnection("", "get", apiurl);
-		if(t==null||"".equals(t)) {
+		if (t == null || "".equals(t)) {
 			return null;
 		}
 		StringBuilder sb = null;
@@ -415,7 +417,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		JsonNode node;
 		try {
 			node = mapper.readTree(t.toString());
-			
+
 			try {
 				Document doc = Jsoup.parse(node.get("result").get("article").get("contentHtml").toString());
 				Elements spantag = doc.select("span");
@@ -423,14 +425,12 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 				for (Element e : spantag) {
 					sb.append(e.text()).append(" ");
 				}
-			}catch (NullPointerException e) {
+			} catch (NullPointerException e) {
 				// TODO: handle exception
 				System.out.println(t);
 				System.out.println(node);
 			}
-			
-			
-			
+
 		} catch (JsonMappingException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
