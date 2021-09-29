@@ -45,4 +45,14 @@ public class ProductSellArticleSimilerRepositoryImpl implements ProductSellArtic
 		result.addAll(tmp);
 		return Optional.ofNullable(result);
 	}
+	
+	
+	// cycle 보다 작은 데이터들 삭제
+	@Override
+	public void deletePreCycle(long cycle) {
+		QProductSellArticleSimiler qpsas = QProductSellArticleSimiler.productSellArticleSimiler;
+		
+		queryFactory.delete(qpsas).where(qpsas.cycle.lt(cycle)).execute();	
+	}
+
 }
