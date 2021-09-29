@@ -12,7 +12,7 @@
         </div>
         <span class="text-4xl font-extrabold text-white">{{ prodInfo.name }}</span>
       </div>
-      <div class="flex justify-between bg-white px-3 py-1 border-b-2 border-gray-300">
+      <div class="flex justify-between bg-white px-3 sm:px-20 py-1 border-b-2 border-gray-300">
         <div class="flex flex-col items-start">
           <span class="text-lg border-b-2">최저</span>
           <span class="text-md">{{ prodInfo.minPrice }}원</span>
@@ -30,6 +30,7 @@
     </div>
     <div class="text-left">
       <div class="flex flex-col bg-gray-100">
+        <span class="float-right p-1 text-right text-lg">총 {{ prodInfo.count }}건</span>
         <ProdBox v-for="prod in prodList" :key="prod.pid" :product="prod" />
       </div>
     </div>
@@ -73,6 +74,7 @@ export default defineComponent({
       minPrice: 0,
       avgPrice: 0,
       maxPrice: 0,
+      count: 0,
     });
     const prodList = ref([]);
     const initialLoading = ref(true)
@@ -91,6 +93,7 @@ export default defineComponent({
         prodInfo.value.minPrice = res.data.product.minPrice.toLocaleString()
         prodInfo.value.avgPrice = res.data.product.avgPrice.toLocaleString()
         prodInfo.value.maxPrice = res.data.product.maxPrice.toLocaleString()
+        prodInfo.value.count = res.data.searchcount
       })
 
     store.dispatch('requestProductList', query.value)
