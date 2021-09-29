@@ -24,7 +24,10 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
 		QProductSellList qpsl = QProductSellList.productSellList;
 		
 		Tuple result = queryFactory.select(qpsl.price.min(),qpsl.price.max(),qpsl.price.avg())
-				.from(qpsl).where(qpsl.productId.eq(product)).fetchOne();
+				.from(qpsl).where(qpsl.productId.eq(product)
+									.and(qpsl.price.loe(qpsl.productId.releasePrice))//출고가 이하
+									.and(qpsl.price.goe(qpsl.productId.releasePrice.divide(10))))//출고가의 10퍼센트 이상
+				.fetchOne();
 		
 		Long tmp = result.get(0,Long.class);
 		if(tmp==null)
