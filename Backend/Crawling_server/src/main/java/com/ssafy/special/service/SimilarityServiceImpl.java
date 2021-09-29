@@ -84,7 +84,7 @@ public class SimilarityServiceImpl implements SimilarityService {
 
 					tokenList = analyzeResultList.getTokenList();
 				} catch (NullPointerException e) {
-					// TODO: handle exception
+					e.printStackTrace();
 					continue;
 				}
 				temp = new StringBuilder();
@@ -283,6 +283,7 @@ public class SimilarityServiceImpl implements SimilarityService {
 		try {
 			productSellArticleSimilerRepository.save(psas);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 		return true;

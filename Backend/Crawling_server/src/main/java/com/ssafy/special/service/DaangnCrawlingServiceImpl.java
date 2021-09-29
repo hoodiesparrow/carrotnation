@@ -276,6 +276,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 			try {
 				dateTime=LocalDateTime.now().minusSeconds(Long.parseLong(time.replace("초", "")));
 			} catch (Exception e) {
+				e.printStackTrace();
 				dateTime=null;
 			}			
 		}
@@ -326,6 +327,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		try {
 			productSellListRepository.save(sellList);
 		}catch (Exception e ) {
+			e.printStackTrace();
 			return false;
 		}
 		return true;

@@ -66,7 +66,7 @@ public class ProductSellListRepositoryImpl implements ProductSellListRepositoryC
 		
 		return Optional.ofNullable(result);
 	}
-	
+
 	@Override
 	public Optional<List<ProductPriceResponseDTO>> getProductByPrice(Long cycle, long id) {
 		// TODO Auto-generated method stub
@@ -80,6 +80,7 @@ public class ProductSellListRepositoryImpl implements ProductSellListRepositoryC
 										.fetch();
 		return Optional.ofNullable(result);
 	}
+
 	
 	// cycle 보다 작은 데이터들 삭제
 	@Override
