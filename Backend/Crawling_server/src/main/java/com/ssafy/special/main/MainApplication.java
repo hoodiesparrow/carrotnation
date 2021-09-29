@@ -106,6 +106,7 @@ public class MainApplication {
 			try {
 				Thread.sleep(1000 * 60);
 			} catch (Exception e) {
+				e.printStackTrace();
 				// TODO: handle exception
 			}
 			

@@ -214,6 +214,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 						try {
 							product.setContent(joongnacafe(product.getLink()));
 						}catch(NotPageException e){
+							e.printStackTrace();
 							continue;
 						}
 						
@@ -387,6 +388,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		try {
 			productSellListRepository.save(sellList);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
 		return true;
@@ -424,6 +426,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 					sb.append(e.text()).append(" ");
 				}
 			}catch (NullPointerException e) {
+				e.printStackTrace();
 				// TODO: handle exception
 				System.out.println(t);
 				System.out.println(node);

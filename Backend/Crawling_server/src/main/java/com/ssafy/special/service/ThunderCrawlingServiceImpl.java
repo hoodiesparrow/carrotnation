@@ -233,6 +233,7 @@ public class ThunderCrawlingServiceImpl implements ThunderCrawlingService {
 			}
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			// TODO: handle exception
 		}
 		return false;
@@ -279,6 +280,7 @@ public class ThunderCrawlingServiceImpl implements ThunderCrawlingService {
 		try {
 			productSellListRepository.save(sellList);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}		
 		return true;
