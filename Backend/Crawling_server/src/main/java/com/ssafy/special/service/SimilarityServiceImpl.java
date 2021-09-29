@@ -290,8 +290,9 @@ public class SimilarityServiceImpl implements SimilarityService {
 
 	@Override
 	public List<ProductSellArticleSimilerResponseDTO> returnSimilarity(long pid, String market) {
-		
-		return productSellArticleSimilerRepository.getProductSellArticleSimiler(pid,market).orElse(new ArrayList<ProductSellArticleSimilerResponseDTO>());
+		LocalDateTime now = LocalDateTime.now().minusHours(1);
+		Long cycle = Long.parseLong(now.format(DateTimeFormatter.ofPattern("yyMMddHH")));		
+		return productSellArticleSimilerRepository.getProductSellArticleSimiler(pid,market,cycle).orElse(new ArrayList<ProductSellArticleSimilerResponseDTO>());
 	}
 
 
