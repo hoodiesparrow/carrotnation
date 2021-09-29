@@ -1,19 +1,31 @@
 <template>
   <div
-    class="
-      my-2
-      p-3
-      transition
-      hover:bg-purple-100 hover:text-black
-    "
+    class="mt-3 mr-3 ml-3 p-3 transition hover:bg-purple-50 hover:text-black bg-white"
+    @click="onClickItem"
   >
-    <div class="grid grid-rows-3 grid-cols-3 gap-1 text-left">
-      <div class="row-span-3">
-        <img :src="product.img" style="height: 50px" />
+    <div class="grid grid-rows-4 grid-cols-3 place-content-cente max-w-dm h-40">
+      <div class="row-span-4">
+        <img :src="product.img" class="w-auto h-full flex" />
       </div>
-      <div class="col-span-2 text-2xl flex items-center">{{ product.title }}</div>
-      <div class="col-span-2 text-lg font-semibold flex items-center"><p>{{ product.price }}</p></div>
-      <div class="col-span-2 text-lg items-center">{{ product.createdate }}</div>
+      <div class="col-span-2 text-sl font-semibold flex items-center pl-1">{{ getAppName() }}</div>
+      <div
+        class="col-span-2 text-xl flex items-center pl-1 pt-2"
+        style="
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+          width: 90%;
+          display: block;
+        "
+      >
+        {{ product.title }}
+      </div>
+      <div class="col-span-2 text-xl font-semibold flex items-center pl-1">
+        <p>{{ product.price.toLocaleString() }}원</p>
+      </div>
+      <div class="col-span-2 text-sm items-center pl-1 text-gray-500">
+        {{ product.createDate.substring(2, 10) }}
+      </div>
     </div>
   </div>
 </template>
@@ -25,8 +37,8 @@ import { useStore } from "vuex";
 // import HomeItemList from './HomeItemList.vue'
 
 type UrlList = {
-  [key: string]: string
-}
+  [key: string]: string;
+};
 
 export default defineComponent({
   name: "ProdBox",
@@ -34,51 +46,70 @@ export default defineComponent({
     product: {
       type: Object,
       default: () => {
-        return {}
-      }
-    }
+        return {};
+      },
+    },
   },
   setup(props) {
-    const router = useRouter()
+    const router = useRouter();
     const urlList: UrlList = {
-      joonnaApp: 'https://m.joongna.com/product-detail/',
-      joonnaCafe: 'https://m.cafe.naver.com/ArticleRead.nhn?clubid=10050146&articleid=',
-      daangn: 'https://www.daangn.com/articles/',
-      thunder: 'https://m.bunjang.co.kr/products/',
-    }
+      joonnaApp: "https://m.joongna.com/product-detail/",
+      joonnaCafe: "https://m.cafe.naver.com/ArticleRead.nhn?clubid=10050146&articleid=",
+      daangn: "https://www.daangn.com/articles/",
+      thunder: "https://m.bunjang.co.kr/products/",
+    };
 
     const getUrl = () => {
-      return urlList[props.product.market]
-    }
+      return urlList[props.product.market];
+    };
+
+    const getAppName = () => {
+      switch (props.product.market) {
+        case "daangn":
+          return "당근마켓";
+        case "joonnaApp":
+          return "중고나라";
+        case "thunder":
+          return "번개장터";
+
+        default:
+          return "?";
+      }
+    };
 
     const urlRegex = () => {
-      const url = props.product.url
+      const url = props.product.url;
 
-      switch(props.product.market) {
-        case 'daangn': {
-          return /articles\/(.*)/g.exec(url)?.[1]
+      switch (props.product.market) {
+        case "daangn": {
+          return /articles\/(.*)/g.exec(url)?.[1];
         }
-        case 'joonnaApp': {
-          return /product-detail\/(.*)/g.exec(url)?.[1]
+        case "joonnaApp": {
+          return /product-detail\/(.*)/g.exec(url)?.[1];
         }
-        case 'joonnaCafe': {
-          return /articleid=(.*)&referrerAllArticles/g.exec(url)?.[1]
+        case "joonnaCafe": {
+          return /articleid=(.*)&referrerAllArticles/g.exec(url)?.[1];
         }
-        case 'thunder': {
-          return /product\/(.*)\/detail/g.exec(url)?.[1]
+        case "thunder": {
+          return /product\/(.*)\/detail/g.exec(url)?.[1];
         }
-        default: 
-          return
+        default:
+          return;
       }
-    }
+    };
 
-    // const routeData = router.resolve({name: 'BridgeTest', query: {code: "someData"}})
-    
+    // const routeData = router.resolve({ name: "BridgeTest", query: { code: "someData" } });
+
     const onClickItem = () => {
-      console.log(props.product)
-      console.log(`${getUrl()}${urlRegex()}`)
-      // window.open("https://headlessui.dev/vue/radio-group")
-    }
+      console.log(props.product.productId);
+      router.push({
+        name: "Detail",
+        query: {
+          id: props.product.id,
+          market: props.product.market,
+        },
+      });
+    };
 
     return {
       router,
@@ -86,9 +117,8 @@ export default defineComponent({
       getUrl,
       urlRegex,
       onClickItem,
-      // routeData,
-    }
+      getAppName,
+    };
   },
-    
 });
 </script>
