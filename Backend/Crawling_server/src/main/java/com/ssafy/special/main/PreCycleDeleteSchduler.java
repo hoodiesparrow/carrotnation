@@ -14,7 +14,7 @@ import lombok.extern.log4j.Log4j2;
 public class PreCycleDeleteSchduler {
 	private final PreCycleDeleteService preCycleDeleteService;
 	
-	@Scheduled(fixedRate = 1000 * 60 * 60 * 24)//24시간마다 동작
+//	@Scheduled(fixedRate = 1000 * 60 * 60 * 24)//24시간마다 동작
 	private void preCycleDelete() {
 		//ProductSellArticleSimiler의 이전 사이클 삭제
 		preCycleDeleteService.deleteProductSellArticleSimiler();

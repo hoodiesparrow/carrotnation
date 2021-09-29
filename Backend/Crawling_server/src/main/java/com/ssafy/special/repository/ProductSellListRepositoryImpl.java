@@ -33,7 +33,7 @@ public class ProductSellListRepositoryImpl implements ProductSellListRepositoryC
 										)
 										.from(qpsl)
 										.where(qpsl.cycle.goe(cycle).and(qpsl.productId.id.eq(pid)))
-										.orderBy(qpsl.createDate.asc())
+										.orderBy(qpsl.createDate.desc())
 										.offset(page.getOffset())
 										.limit(page.getPageSize())										
 										.fetch();
@@ -47,8 +47,7 @@ public class ProductSellListRepositoryImpl implements ProductSellListRepositoryC
 		QProductSellList qpsl= QProductSellList.productSellList;
 		
 		Long result= queryFactory.selectFrom(qpsl)
-										.where(qpsl.cycle.goe(cycle).and(qpsl.productId.id.eq(pid)))
-										.orderBy(qpsl.createDate.asc())								
+										.where(qpsl.cycle.goe(cycle).and(qpsl.productId.id.eq(pid)))							
 										.fetchCount();
 		
 		return Optional.ofNullable(result);
@@ -62,12 +61,12 @@ public class ProductSellListRepositoryImpl implements ProductSellListRepositoryC
 		
 		List<ProductSellList> result= queryFactory.selectFrom(qpsl)
 										.where(qpsl.cycle.goe(cycle).and(qpsl.productId.id.eq(id)))
-										.orderBy(qpsl.createDate.asc())									
+										.orderBy(qpsl.createDate.desc())									
 										.fetch();
 		
 		return Optional.ofNullable(result);
 	}
-
+	
 	@Override
 	public Optional<List<ProductPriceResponseDTO>> getProductByPrice(Long cycle, long id) {
 		// TODO Auto-generated method stub
@@ -81,7 +80,6 @@ public class ProductSellListRepositoryImpl implements ProductSellListRepositoryC
 										.fetch();
 		return Optional.ofNullable(result);
 	}
-
 	
 	// cycle 보다 작은 데이터들 삭제
 	@Override
@@ -90,4 +88,5 @@ public class ProductSellListRepositoryImpl implements ProductSellListRepositoryC
 		
 		queryFactory.delete(qpsl).where(qpsl.cycle.lt(cycle)).execute();	
 	}
+
 }
