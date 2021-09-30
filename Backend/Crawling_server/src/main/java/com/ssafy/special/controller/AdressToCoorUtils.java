@@ -6,17 +6,23 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.springframework.stereotype.Component;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 public class AdressToCoorUtils {
 	String GEOCODE_URL = "http://dapi.kakao.com/v2/local/search/address.json?query=";
 	String GEOCODE_USER_INFO="KakaoAK 4b066a70f29a2124557b960d7c360b80";
 
-	public void AdressToCoorUtilstest(String add) {
+	public Map<String, String> AdressToCoorUtilstest(String add) {
+		Map<String, String> coord = new HashMap<String, String>();
 		try
 		{
 			String address = URLEncoder.encode(add, "UTF-8");
@@ -35,16 +41,31 @@ public class AdressToCoorUtils {
 			while ((inputLine = in.readLine()) != null) {
 				response.append(inputLine);
 			} 
-			JSONParser jsonParser = new JSONParser();
-			JSONObject jsonObject = (JSONObject)jsonParser.parse(response.toString());
-			System.out.println(jsonObject);
-			System.out.println(jsonObject.get("documents"));
-			Object ob=jsonObject.get("documents");
-			System.out.println();
+			ObjectMapper mapper = new ObjectMapper();
+			JsonNode node;
+			JsonNode getxy;
+			JsonNode doc;
+			try {
+				node = mapper.readTree(response.toString());
+				doc = node.get("documents");
+				if("[]".equals(doc.toString())) {
+					return null;
+				} 
+				getxy =node.get("documents").get(0).get("address");
+				coord.put("x", getxy.get("x").toString());
+				coord.put("y", getxy.get("y").toString());
+//				System.out.println(getxy.get("x"));
+//				System.out.println(getxy.get("y"));
+			} catch (JsonMappingException e) {
+				e.printStackTrace();
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		
+		return coord;
 	}
 	
 }

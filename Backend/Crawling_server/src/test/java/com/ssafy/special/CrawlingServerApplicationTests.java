@@ -7,10 +7,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mysql.cj.xdevapi.JsonArray;
 import com.ssafy.special.controller.AdressToCoorUtils;
 import com.ssafy.special.controller.SSHUtils;
 //import com.ssafy.special.domain.Product;
@@ -196,8 +205,33 @@ class CrawlingServerApplicationTests {
 
 	@Test
 	void testadress() {
-		String s= "인천광역시 남동구 논현1동";
-		adresstocoor.AdressToCoorUtilstest(s);
+		String s= "서울특별시 광진구 구의3동";
+		System.out.println(adresstocoor.AdressToCoorUtilstest(s));
+	}
+	
+	void adress() {
+		String s="{\"documents\":[{\"address\":{\"mountain_yn\":\"N\",\"h_code\":\"2820069000\",\"region_3depth_name\":\"\",\"main_address_no\":\"\",\"x\":\"126.729305079841\",\"sub_address_no\":\"\",\"y\":\"37.4057349526159\",\"address_name\":\"인천 남동구 논현1동\",\"region_2depth_name\":\"남동구\",\"region_3depth_h_name\":\"논현1동\",\"region_1depth_name\":\"인천\",\"b_code\":\"\"},\"address_type\":\"REGION\",\"x\":\"126.729305079841\",\"y\":\"37.4057349526159\",\"address_name\":\"인천 남동구 논현1동\",\"road_address\":null}],\"meta\":{\"total_count\":1,\"is_end\":true,\"pageable_count\":1}}";
+		String d ="{\"documents\":[],\"meta\":{\"is_end\":true,\"pageable_count\":0,\"total_count\":0}}";
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode node;
+		JsonNode sgg;
+		try {
+			node = mapper.readTree(s);
+			sgg =node.get("documents").get(0).get("address");
+			System.out.println(sgg.get("x"));
+			System.out.println(sgg.get("y"));
+			node = mapper.readTree(d);
+			sgg =node.get("documents"); //[]
+			System.out.println(sgg);
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
 	}
 	
 }
