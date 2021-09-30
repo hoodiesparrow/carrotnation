@@ -122,7 +122,7 @@ public class ThunderCrawlingServiceImpl implements ThunderCrawlingService {
 					sellList.setMarket(market);
 					sellList.setProductId(product);
 					sellList.setTitle(p.getTitle());
-					sellList.setContent(p.getContent().replaceAll("\n", " "));					
+					sellList.setContent(p.getContent());					
 					sellList.setImg(p.getImg());
 					sellList.setPrice(p.getPrice());
 					sellList.setCreateDate(p.getDate());
@@ -226,7 +226,16 @@ public class ThunderCrawlingServiceImpl implements ThunderCrawlingService {
 				JSONObject jsonDetailObject = (JSONObject) jsonParser.parse(jsonDetailInfo);
 				JSONObject item_info = (JSONObject) jsonDetailObject.get("item_info");
 				
+				try {//0.01초 기다렸다가 돌림
+					Thread.sleep(10);
+				} catch (Exception e) {
+					e.printStackTrace();
+					// TODO: handle exception
+				}
+				
 				//게시글 내용
+				if(item_info==null)
+					continue;
 				product.setContent((String) item_info.get("description_for_detail"));
 				
 				productList.add(product);
