@@ -21,8 +21,8 @@ public class AdressToCoorUtils {
 	String GEOCODE_URL = "http://dapi.kakao.com/v2/local/search/address.json?query=";
 	String GEOCODE_USER_INFO="KakaoAK 4b066a70f29a2124557b960d7c360b80";
 
-	public Map<String, String> AdressToCoorUtilstest(String add) {
-		Map<String, String> coord = new HashMap<String, String>();
+	public Map<String, Double> AdressToCoorUtilstest(String add) {
+		Map<String, Double> coord = new HashMap<String, Double>();
 		try
 		{
 			String address = URLEncoder.encode(add, "UTF-8");
@@ -52,8 +52,8 @@ public class AdressToCoorUtils {
 					return null;
 				} 
 				getxy =node.get("documents").get(0).get("address");
-				coord.put("x", getxy.get("x").toString());
-				coord.put("y", getxy.get("y").toString());
+				coord.put("x", Double.parseDouble(getxy.get("x").toString().replace("\"", "")));
+				coord.put("y", Double.parseDouble(getxy.get("y").toString().replace("\"", "")));
 //				System.out.println(getxy.get("x"));
 //				System.out.println(getxy.get("y"));
 			} catch (JsonMappingException e) {
