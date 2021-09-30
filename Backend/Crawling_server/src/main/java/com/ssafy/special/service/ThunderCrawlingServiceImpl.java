@@ -129,7 +129,7 @@ public class ThunderCrawlingServiceImpl implements ThunderCrawlingService {
 					sellList.setCreateDate(p.getDate());
 					sellList.setLink(p.getLink());
 					sellList.setLocation(p.getLocation());
-					if(p.getLocation()!=null&&"".equals(p.getLocation().trim())){
+					if(p.getLocation()!=null&&!"".equals(p.getLocation().trim())){
 						Map<String,String> coordnt = adresstoCoorUrils.AdressToCoorUtilstest(p.getLocation());
 						if(coordnt!=null) {
 							sellList.setX(coordnt.get("x"));

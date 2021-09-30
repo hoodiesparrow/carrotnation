@@ -375,7 +375,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 					sellList.setLink(pd.getLink());
 					sellList.setLocation(pd.getLocation());
 					sellList.setImg(pd.getImg());
-					if(pd.getLocation()!=null&&"".equals(pd.getLocation().trim())){
+					if(pd.getLocation()!=null&&!"".equals(pd.getLocation().trim())){
 						Map<String,String> coordnt = adresstoCoorUrils.AdressToCoorUtilstest(pd.getLocation());
 						if(coordnt!=null) {
 							sellList.setX(coordnt.get("x"));
