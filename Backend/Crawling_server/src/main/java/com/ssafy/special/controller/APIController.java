@@ -46,10 +46,7 @@ public class APIController {
 										@RequestParam(defaultValue = "0") List<Integer> market) {
 			List<ProductSellListResponseDTO> productSellLists = productSellListInfoService.getProductSellLists(page, pid, sort, market);
 			Long count = productSellListInfoService.getProductSellListCount(pid);
-			
-			System.out.println("sort" + sort);
-			System.out.println("market" + market);
-			
+						
 			
 			Map<String, Object> ret = new HashMap<String, Object>();
 			
