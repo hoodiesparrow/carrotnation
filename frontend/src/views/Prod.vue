@@ -1,7 +1,8 @@
 <template>
   <div class="container max-w-750px" ref="container">
     <SideBar :show="show" @closeSideBar="show=false" class="fixed top-0 z-40 h-full" />
-    <div class="sticky top-0 transition duration-300 border-gray-300" :class="{'shadow-2xl': !atTopOfPage, 'border-b-2': atTopOfPage}">
+    <div class="sticky top-0 transition duration-300 border-gray-300" :class="{'shadow-xl': !atTopOfPage, 'border-b-2': atTopOfPage}">
+      <!-- <div class="flex justify-between items-center bg-gradient-to-r from-purple-400 to-purple-700 p-4"> -->
       <div class="flex justify-between items-center bg-purple-700 p-4">
         <div>
           <img
@@ -14,37 +15,43 @@
       </div>
       <div class="flex justify-between bg-white px-3 sm:px-20 py-1">
         <div class="flex flex-col items-start">
-          <span class="text-lg border-b-2">최저</span>
-          <span class="text-md">{{ prodInfo.minPrice }}원</span>
+          <span class="text-md border-b-2">최저</span>
+          <span class="text-sm">{{ prodInfo.minPrice }}원</span>
         </div>
         <div class="flex flex-col items-start">
-          <span class="text-lg border-b-2">평균</span>
-          <span class="text-md">{{ prodInfo.avgPrice }}원</span>
+          <span class="text-md border-b-2">평균</span>
+          <span class="text-sm">{{ prodInfo.avgPrice }}원</span>
         </div>
         <div class="flex flex-col items-start">
-          <span class="text-lg border-b-2">최고</span>
-          <span class="text-md">{{ prodInfo.maxPrice }}원</span>
+          <span class="text-md border-b-2">최고</span>
+          <span class="text-sm">{{ prodInfo.maxPrice }}원</span>
         </div>
           <!-- <span class="pr- text-lg">총 {{ prodList.length }}건</span> -->
       </div>
     </div>
     <div class="text-left">
       <div class="flex flex-col bg-gray-100">
-        <span class="p-1 text-right text-lg">총 {{ prodInfo.count }}건</span>
+        <span class="p-1 pr-3 text-right text-gray-500 text-md">총 {{ prodInfo.count }}건</span>
         <ProdBox v-for="prod in prodList" :key="prod.pid" :product="prod" />
+        <div v-if="isLoading" class="flex justify-center">
+          <svg xml:space="preserve" viewBox="0 0 100 100" class="w-16 h-16 animate-spin" y="0" x="0" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <g class="ldl-scale">
+              <circle fill="#333" r="40" cy="50" cx="50">
+              </circle>
+              <g>
+                <path fill="#fff" d="M50 74c-13.234 0-24-10.766-24-24h7.268c0 9.226 7.506 16.732 16.732 16.732S66.732 59.226 66.732 50 59.226 33.268 50 33.268V26c13.234 0 24 10.766 24 24S63.234 74 50 74z">
+                </path>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div v-if="initialLoadingFailed">
+          로딩에 실패하였습니다.
+        </div>
+        <div v-if="noMoreData">
+          <p class="border-t-2 border-gray-300 w-full text-center">리스트의 마지막입니다.</p>
+        </div>
       </div>
-    </div>
-    <div v-if="isLoading" class="flex justify-center">
-      <svg xml:space="preserve" viewBox="0 0 100 100" class="w-16 h-16 animate-spin" y="0" x="0" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
-        <g class="ldl-scale">
-          <circle fill="#333" r="40" cy="50" cx="50">
-          </circle>
-          <g>
-            <path fill="#fff" d="M50 74c-13.234 0-24-10.766-24-24h7.268c0 9.226 7.506 16.732 16.732 16.732S66.732 59.226 66.732 50 59.226 33.268 50 33.268V26c13.234 0 24 10.766 24 24S63.234 74 50 74z">
-            </path>
-          </g>
-        </g>
-      </svg>
     </div>
   </div>
 </template>
@@ -52,7 +59,7 @@
 <script>
 import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
-import { defineComponent, reactive, ref, onMounted, onUnmounted, computed } from "vue";
+import { defineComponent, reactive, ref, onMounted, onUnmounted, computed, watch } from "vue";
 import SideBar from "@/components/SideBar.vue";
 import ProdBox from "@/components/ProdItem.vue";
 
@@ -138,16 +145,15 @@ export default defineComponent({
       if (
         window.innerHeight + window.scrollY >= document.body.offsetHeight &&
         !isLoading.value &&
-        !initialLoading.value
+        !initialLoading.value &&
+        !initialLoadingFailed.value
       ) {
-        if (query.value.page <= totalPage.value - 1) {
+        if (query.value.page <= totalPage.value - 2) {
           console.log('additional loading seq.')
           isLoading.value = true
-          // setTimeout(() => {
-          //   container.value.scrollTop = container.value.scrollHeight;
-          // }, 100)
-          // console.log(container.value.scrollTop)
-          // console.log(container.value.scrollHeight)
+          setTimeout(() => {
+            window.scrollTo(0, container.value.scrollHeight)
+          }, 20)
 
           setTimeout(() => {
             query.value.page += 1

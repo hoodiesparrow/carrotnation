@@ -1,6 +1,6 @@
 <template>
   <div
-    class="mt-3 mr-3 ml-3 p-3 transition hover:bg-purple-50 hover:text-black bg-white"
+    class="mb-3 mr-3 ml-3 p-3 transition hover:bg-purple-50 hover:text-black bg-white shadow-md"
     @click="onClickItem"
   >
     <div class="grid grid-rows-4 grid-cols-3 place-content-cente max-w-dm h-40">
