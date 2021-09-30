@@ -375,10 +375,12 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 					sellList.setLink(pd.getLink());
 					sellList.setLocation(pd.getLocation());
 					sellList.setImg(pd.getImg());
-					Map<String,String> coordnt = adresstoCoorUrils.AdressToCoorUtilstest(pd.getLocation());
-					if(coordnt!=null) {
-						sellList.setX(coordnt.get("x"));
-						sellList.setY(coordnt.get("y"));
+					if(pd.getLocation()!=null&&"".equals(pd.getLocation().trim())){
+						Map<String,String> coordnt = adresstoCoorUrils.AdressToCoorUtilstest(pd.getLocation());
+						if(coordnt!=null) {
+							sellList.setX(coordnt.get("x"));
+							sellList.setY(coordnt.get("y"));
+						}
 					}
 					boolean result = insertProductSellList(sellList);
 					if (!result) {
