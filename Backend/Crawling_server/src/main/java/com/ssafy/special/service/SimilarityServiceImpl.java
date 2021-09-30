@@ -132,7 +132,7 @@ public class SimilarityServiceImpl implements SimilarityService {
 //				 "/home/j5d205/mapReducer/S05P21D205/mapReducerMaven/ssafy.jar"
 				String cmd =hadoopdefault+"hadoop jar /home/j5d205/mapReducer/S05P21D205/mapReducerMaven/ssafy.jar setjoin 0.3 Set/"+p+".txt Setoutput";
 				ssh.getSSHResponse(cmd);
-				String result =ssh.getSSHResponse(hadoopdefault+"hadoop fs -cat Setoutput/* | more");
+				String result =ssh.getSSHResponse(hadoopdefault+"hadoop fs -cat Setoutput/*");
 				
 				StringTokenizer st = new StringTokenizer(result,"\r\n");
 				StringTokenizer ss,tempst;

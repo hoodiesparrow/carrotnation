@@ -222,16 +222,18 @@ public class ThunderCrawlingServiceImpl implements ThunderCrawlingService {
 				product.setLink("https://m.bunjang.co.kr/products/" + (String)productObject.get("pid"));
 				//내용 뽑아내기
 				String detailUrl = thunderDetail + (String)productObject.get("pid") + "/detail_info.json?version=4";
-				String jsonDetailInfo = Jsoup.connect(detailUrl).ignoreContentType(true).execute().body();
+				String jsonDetailInfo = null;
+				try {
+					jsonDetailInfo=Jsoup.connect(detailUrl).ignoreContentType(true).execute().body();
+					Thread.sleep(10);//0.01초 기다렸다가 돌림
+				} catch (Exception e) {
+					log.info("(번개) "+detailUrl+" 세부크롤링중 에러발생");
+					continue;
+				}
+				
 				JSONObject jsonDetailObject = (JSONObject) jsonParser.parse(jsonDetailInfo);
 				JSONObject item_info = (JSONObject) jsonDetailObject.get("item_info");
-				
-				try {//0.01초 기다렸다가 돌림
-					Thread.sleep(10);
-				} catch (Exception e) {
-					e.printStackTrace();
-					// TODO: handle exception
-				}
+
 				
 				//게시글 내용
 				if(item_info==null)
