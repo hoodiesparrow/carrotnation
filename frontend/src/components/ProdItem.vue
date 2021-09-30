@@ -3,9 +3,9 @@
     class="mt-3 mr-3 ml-3 p-3 transition hover:bg-purple-50 hover:text-black bg-white"
     @click="onClickItem"
   >
-    <div class="grid grid-rows-4 grid-cols-3 place-content-cente max-w-dm h-40">
+    <div class="grid grid-rows-4 grid-cols-3 place-content-cente max-w-dm h-48">
       <div class="row-span-4">
-        <img :src="product.img" class="w-auto h-full flex" />
+        <img :src="product.img" class="w-full h-full object-center pr-2 h-5/6" />
       </div>
       <div class="col-span-2 text-sl font-semibold flex items-center pl-1">{{ getAppName() }}</div>
       <div

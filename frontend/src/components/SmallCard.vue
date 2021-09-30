@@ -1,13 +1,20 @@
 <template>
-  <div @click="goToDetail()">
-    <img :src="simprod.img" />
-    <p>{{ simprod.price.toLocaleString() }}</p>
+  <div
+    class="bg-white rounded-lg md:w-1/4 shadow-md inline-block m-1 mx-2"
+    @click="goToDetail"
+    style=""
+  >
+    <img :src="product.img" class="w-full h-48" />
+
+    <p class="font-bold text-gray-800 text-right py-1 pr-2">
+      {{ product.price.toLocaleString() }}원
+    </p>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 
 export default defineComponent({
   props: {
@@ -23,7 +30,10 @@ export default defineComponent({
   },
   setup(props) {
     const router = useRouter();
+    const route = useRoute();
+
     const goToDetail = () => {
+      console.log(props.productName);
       router.push({
         name: "Detail",
         query: {
@@ -35,6 +45,7 @@ export default defineComponent({
     };
 
     return {
+      router,
       goToDetail,
     };
   },
