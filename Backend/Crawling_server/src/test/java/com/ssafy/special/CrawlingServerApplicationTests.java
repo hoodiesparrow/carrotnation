@@ -139,7 +139,7 @@ class CrawlingServerApplicationTests {
 //		System.out.println(f);
 	}
 	
-	@Test
+	// @Test
 	void qq() {
 		List<ProductPriceResponseDTO> list = productSellListRepository.getProductByPrice(Long.parseLong("21092912"),(long)10).orElse(new ArrayList<ProductPriceResponseDTO>());
 		long maxPrice = list.get(0).getMaxPrice();
