@@ -11,7 +11,7 @@ import com.ssafy.special.dto.ProductSellListResponseDTO;
 
 public interface ProductSellListRepositoryCustom {
 	//현재 사이클 이상인 데이터만 가져옴(페이징, 프론트 뿌리는용)
-	Optional<List<ProductSellListResponseDTO>> getRecentProductSellListWithPaging(Long cycle,Pageable page, long pid);
+	Optional<List<ProductSellListResponseDTO>> getRecentProductSellListWithPaging(Long cycle,Pageable page, long pid, int sort, List<Integer> market);
 	
 	//현재 사이클 이상인 데이터갯수 가져옴
 	Optional<Long> getRecentProductSellListCount(Long cycle, long pid);

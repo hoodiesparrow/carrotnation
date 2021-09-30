@@ -39,9 +39,17 @@ public class APIController {
 
 	//ProductSellList 뿌려줌(최신사이클만)
 	@GetMapping("/productselllist")
-	public ResponseEntity<Map<String, Object>> getProductSellList(@RequestParam(defaultValue = "0") int page, @RequestParam long pid) {
-			List<ProductSellListResponseDTO> productSellLists = productSellListInfoService.getProductSellLists(page, pid);
+	public ResponseEntity<Map<String, Object>> getProductSellList(
+										@RequestParam(defaultValue = "0") int page, 
+										@RequestParam long pid, 
+										@RequestParam(defaultValue = "0")int sort, 
+										@RequestParam(defaultValue = "0") List<Integer> market) {
+			List<ProductSellListResponseDTO> productSellLists = productSellListInfoService.getProductSellLists(page, pid, sort, market);
 			Long count = productSellListInfoService.getProductSellListCount(pid);
+			
+			System.out.println("sort" + sort);
+			System.out.println("market" + market);
+			
 			
 			Map<String, Object> ret = new HashMap<String, Object>();
 			
@@ -55,7 +63,7 @@ public class APIController {
 			if(count%20>0)
 				totalpage+=1;
 			ret.put("totalpage", totalpage);
-			ret.put("list", productSellLists);			
+			ret.put("list", productSellLists);
 			
 			return ResponseEntity.status(HttpStatus.OK).body(ret);
 	}
