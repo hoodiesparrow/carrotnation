@@ -198,9 +198,8 @@ class CrawlingServerApplicationTests {
 		return Long.parseLong(temp);
 	}
 
-	@Test
 	void testadress() {
-		String s= "서울특별시 광진구 구의3동";
+		String s= "서울 노량진역";
 		System.out.println(adresstocoor.AdressToCoorUtilstest(s));
 	}
 	

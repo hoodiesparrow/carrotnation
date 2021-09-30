@@ -33,6 +33,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssafy.special.controller.AdressToCoorUtils;
 import com.ssafy.special.domain.ExceptionKeyword;
 import com.ssafy.special.domain.Product;
 import com.ssafy.special.domain.ProductQuery;
@@ -58,7 +59,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 	private final ExceptionKeywordRepository exceptionKeywordRepository;
 	private final RequireKeywordRepository requireKeywordRepository;
 	private final ProductSellListRepository productSellListRepository;
-
+	private final AdressToCoorUtils adresstoCoorUrils;
 	static String giga;
 	static String strUrl = "https://search-api.joongna.com/v25/search/product";
 //	SimpleDateFormat fourteen_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -374,6 +375,11 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 					sellList.setLink(pd.getLink());
 					sellList.setLocation(pd.getLocation());
 					sellList.setImg(pd.getImg());
+					Map<String,String> coordnt = adresstoCoorUrils.AdressToCoorUtilstest(pd.getLocation());
+					if(coordnt!=null) {
+						sellList.setX(coordnt.get("x"));
+						sellList.setY(coordnt.get("y"));
+					}
 					boolean result = insertProductSellList(sellList);
 					if (!result) {
 						log.info("(중고나라)데이터 삽입에 실패 했습니다");

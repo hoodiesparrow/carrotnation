@@ -49,6 +49,10 @@ public class ProductSellList {
 	
 	private String location;//지역
 	
+	private String x;
+	
+	private String y;
+	
 	@OneToMany(mappedBy = "articleA", cascade = CascadeType.REMOVE)
 	private List<ProductSellArticleSimiler> productSellArticleSimilerA;
 	

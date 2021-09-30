@@ -15,6 +15,7 @@ import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ssafy.special.controller.AdressToCoorUtils;
 import com.ssafy.special.domain.ExceptionKeyword;
 import com.ssafy.special.domain.Product;
 import com.ssafy.special.domain.ProductQuery;
@@ -40,6 +41,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 //	private final ProductQueryRepository productQueryRepository; 
 //	private final QueryExceptionKeywordRepository queryExceptionKeywordRepository; 
 	private final ProductSellListRepository productSellListRepository; 
+	private final AdressToCoorUtils adresstoCoorUrils;
 	
 	// carrot1 + "검색어" + caroot2 + 페이지번호(1부터 시작)
 	private static String carrot1 = "https://www.daangn.com/search/";
@@ -151,6 +153,11 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 					sellList.setLink(p.getLink());
 					sellList.setImg(p.getImg());
 					sellList.setLocation(p.getLocation());
+					Map<String,String> coordnt = adresstoCoorUrils.AdressToCoorUtilstest(p.getLocation());
+					if(coordnt!=null) {
+						sellList.setX(coordnt.get("x"));
+						sellList.setY(coordnt.get("y"));
+					}
 					if(sellList.getCreateDate()==null)
 						continue;
 					boolean result = insertProductSellList(sellList);

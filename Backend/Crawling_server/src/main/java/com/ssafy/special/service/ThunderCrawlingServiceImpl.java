@@ -20,6 +20,7 @@ import org.jsoup.Jsoup;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ssafy.special.controller.AdressToCoorUtils;
 import com.ssafy.special.domain.ExceptionKeyword;
 import com.ssafy.special.domain.Product;
 import com.ssafy.special.domain.ProductQuery;
@@ -47,7 +48,7 @@ public class ThunderCrawlingServiceImpl implements ThunderCrawlingService {
 	private final ProductQueryRepository productQueryRepository; 
 	private final QueryExceptionKeywordRepository queryExceptionKeywordRepository; 
 	private final ProductSellListRepository productSellListRepository;
-
+	private final AdressToCoorUtils adresstoCoorUrils;
 	//https://api.bunjang.co.kr/api/1/find_v2.json?q=%EC%95%84%EC%9D%B4%ED%8F%B012&page=0
 	
 	// thunder1 + "검색어" + thunder2 + 페이지번호(1부터 시작)
@@ -128,6 +129,11 @@ public class ThunderCrawlingServiceImpl implements ThunderCrawlingService {
 					sellList.setCreateDate(p.getDate());
 					sellList.setLink(p.getLink());
 					sellList.setLocation(p.getLocation());
+					Map<String,String> coordnt = adresstoCoorUrils.AdressToCoorUtilstest(p.getLocation());
+					if(coordnt!=null) {
+						sellList.setX(coordnt.get("x"));
+						sellList.setY(coordnt.get("y"));
+					}
 					boolean result = insertProductSellList(sellList);
 					if(result) {
 						break;
