@@ -75,6 +75,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		int page = 0;
 		date_now = LocalDateTime.now();
 		cal = date_now.minusMonths(1);
+		cal = date_now.minusDays(14);
 		List<ProductDTO> pdlist = new ArrayList<ProductDTO>();
 		log.info("(중고나라)" + productQuery.getQuery() + " 상품 목록을 크롤링 중입니다");
 		while (true) {
@@ -175,8 +176,8 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 			categorySeq = SAMSUNG;
 		}
 
-		String payload = "{\r\n" + "    \"filter\": {\r\n" + "        \"categoryDepth\": 3,\r\n"
-				+ "        \"categorySeq\": " + categorySeq + ",\r\n" + "        \"dateFilterParameter\": {\r\n"
+		String payload = "{\r\n" + "    \"filter\": {\r\n" + "        \"categoryDepth\": 0,\r\n"
+				+ "        \"categorySeq\": " + 0 + ",\r\n" + "        \"dateFilterParameter\": {\r\n"
 				+ "            \"sortEndDate\": \"" + date_now.toLocalDate() + "\",\r\n"
 				+ "            \"sortStartDate\": \"" + cal.toLocalDate() + "\"\r\n" + "        },\r\n"
 				+ "        \"productCondition\": -1,\r\n" + "        \"flawedYn\": 0,\r\n"
@@ -216,8 +217,6 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 							product.setContent(joongnacafe(product.getLink()));
 						
 						}catch(NotPageException e){
-							e.printStackTrace();
-
 							continue;
 						}
 
@@ -392,7 +391,6 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		try {
 			productSellListRepository.save(sellList);
 		} catch (Exception e) {
-			e.printStackTrace();
 			return false;
 		}
 		return true;
@@ -431,7 +429,6 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 				}
 
 			}catch (NullPointerException e) {
-				e.printStackTrace();
 				System.out.println(t);
 				System.out.println(node);
 			}

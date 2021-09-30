@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.ssafy.special.controller.AdressToCoorUtils;
 import com.ssafy.special.controller.SSHUtils;
 //import com.ssafy.special.domain.Product;
 import com.ssafy.special.domain.ProductSellList;
@@ -54,7 +55,8 @@ class CrawlingServerApplicationTests {
 	ProductRepository productRepository;
 	@Autowired
 	SSHUtils ssh;
-	
+	@Autowired
+	AdressToCoorUtils adresstocoor;
 	@Autowired
 	SimilarityService similarityService;
 	
@@ -192,5 +194,10 @@ class CrawlingServerApplicationTests {
 		return Long.parseLong(temp);
 	}
 
+	@Test
+	void testadress() {
+		String s= "인천광역시 남동구 논현1동";
+		adresstocoor.AdressToCoorUtilstest(s);
+	}
 	
 }
