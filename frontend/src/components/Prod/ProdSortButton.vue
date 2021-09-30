@@ -1,13 +1,15 @@
 <template>
-  <div class="w-56 text-right fixed top-16">
-    <Menu as="div" class="relative inline-block text-left">
-      <div>
-        <MenuButton
-          class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-black rounded-md bg-opacity-20 hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"
-        >
-          Options
-        </MenuButton>
-      </div>
+    <Menu as="template">
+      <MenuButton
+        class="flex items-center"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
+          <path d="M8 10v4h4l-6 7-6-7h4v-4h-4l6-7 6 7h-4zm16 5h-10v2h10v-2zm0 6h-10v-2h10v2zm0-8h-10v-2h10v2zm0-4h-10v-2h10v2zm0-4h-10v-2h10v2z"/>
+        </svg>
+        <span class="pl-1">
+          정렬
+        </span>
+      </MenuButton>
 
       <transition
         enter-active-class="transition duration-100 ease-out"
@@ -23,7 +25,7 @@
             <MenuItem v-slot="{ active }">
               <button
                 :class="[
-                  active ? 'bg-violet-500 text-white' : 'text-gray-900',
+                  active ? 'bg-violet-500' : 'text-gray-900',
                   'group flex rounded-md items-center w-full px-2 py-2 text-sm',
                 ]"
               >
@@ -33,7 +35,7 @@
             <MenuItem v-slot="{ active }">
               <button
                 :class="[
-                  active ? 'bg-violet-500 text-white' : 'text-gray-900',
+                  active ? 'bg-violet-500' : 'text-gray-900',
                   'group flex rounded-md items-center w-full px-2 py-2 text-sm',
                 ]"
               >
@@ -43,7 +45,7 @@
             <MenuItem v-slot="{ active }">
               <button
                 :class="[
-                  active ? 'bg-violet-500 text-white' : 'text-gray-900',
+                  active ? 'bg-violet-500' : 'text-gray-900',
                   'group flex rounded-md items-center w-full px-2 py-2 text-sm',
                 ]"
               >
@@ -53,7 +55,7 @@
             <MenuItem v-slot="{ active }">
               <button
                 :class="[
-                  active ? 'bg-violet-500 text-white' : 'text-gray-900',
+                  active ? 'bg-violet-500' : 'text-gray-900',
                   'group flex rounded-md items-center w-full px-2 py-2 text-sm',
                 ]"
               >
@@ -63,7 +65,7 @@
             <MenuItem v-slot="{ active }">
               <button
                 :class="[
-                  active ? 'bg-violet-500 text-white' : 'text-gray-900',
+                  active ? 'bg-violet-500' : 'text-gray-900',
                   'group flex rounded-md items-center w-full px-2 py-2 text-sm',
                 ]"
               >
@@ -73,7 +75,6 @@
         </MenuItems>
       </transition>
     </Menu>
-  </div>
 </template>
 
 <script>

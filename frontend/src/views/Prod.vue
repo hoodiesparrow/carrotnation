@@ -1,7 +1,7 @@
 <template>
-  <div class="container max-w-750px" ref="container">
+  <div class="container max-w-750px  bg-gray-100" ref="container">
     <SideBar :show="show" @closeSideBar="show=false" class="fixed top-0 z-40 h-full" />
-    <div class="sticky top-0 transition duration-300 border-gray-300" :class="{'shadow-xl': !atTopOfPage, 'border-b-2': atTopOfPage}">
+    <div class="sticky top-0 transition duration-300 border-gray-300 z-40" :class="{'shadow-xl': !atTopOfPage, 'border-b-2': atTopOfPage}">
       <!-- <div class="flex justify-between items-center bg-gradient-to-r from-purple-400 to-purple-700 p-4"> -->
       <div class="flex justify-between items-center bg-purple-700 p-4">
         <div>
@@ -13,25 +13,29 @@
         </div>
         <span class="text-4xl font-extrabold text-white">{{ prodInfo.name }}</span>
       </div>
-      <div class="flex justify-between bg-white px-3 sm:px-20 py-1">
-        <div class="flex flex-col items-start">
-          <span class="text-md border-b-2">최저</span>
-          <span class="text-sm">{{ prodInfo.minPrice }}원</span>
+      <div class="bg-white p-3 flex justify-between text-gray-800">
+        <div class="flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
+            <path d="M12 0c-4.198 0-8 3.403-8 7.602 0 4.198 3.469 9.21 8 16.398 4.531-7.188 8-12.2 8-16.398 0-4.199-3.801-7.602-8-7.602zm0 11c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3z"/>
+          </svg>
+          <span>내 주변</span>
         </div>
-        <div class="flex flex-col items-start">
-          <span class="text-md border-b-2">평균</span>
-          <span class="text-sm">{{ prodInfo.avgPrice }}원</span>
+        <div class="flex">
+          <div class="flex items-center pr-6">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
+              <path d="M19 2c1.654 0 3 1.346 3 3v14c0 1.654-1.346 3-3 3h-14c-1.654 0-3-1.346-3-3v-14c0-1.654 1.346-3 3-3h14zm5 3c0-2.761-2.238-5-5-5h-14c-2.762 0-5 2.239-5 5v14c0 2.761 2.238 5 5 5h14c2.762 0 5-2.239 5-5v-14zm-13 12h-2v3h-2v-3h-2v-3h6v3zm-2-13h-2v8h2v-8zm10 5h-6v3h2v8h2v-8h2v-3zm-2-5h-2v3h2v-3z"/>
+            </svg>
+            <span class="pl-1">
+              마켓
+            </span>
+          </div>
+          <ProdSortButton />
         </div>
-        <div class="flex flex-col items-start">
-          <span class="text-md border-b-2">최고</span>
-          <span class="text-sm">{{ prodInfo.maxPrice }}원</span>
-        </div>
-          <!-- <span class="pr- text-lg">총 {{ prodList.length }}건</span> -->
       </div>
     </div>
     <div class="text-left">
-      <div class="flex flex-col bg-gray-100">
-        <span class="p-1 pr-3 text-right text-gray-500 text-md">총 {{ prodInfo.count }}건</span>
+      <div class="flex flex-col">
+        <ProdPriceInfo :prodInfo="prodInfo" />
         <ProdBox v-for="prod in prodList" :key="prod.pid" :product="prod" />
         <div v-if="isLoading" class="flex justify-center">
           <svg xml:space="preserve" viewBox="0 0 100 100" class="w-16 h-16 animate-spin" y="0" x="0" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -62,12 +66,16 @@ import { useRoute, useRouter } from "vue-router";
 import { defineComponent, reactive, ref, onMounted, onUnmounted, computed, watch } from "vue";
 import SideBar from "@/components/SideBar.vue";
 import ProdBox from "@/components/ProdItem.vue";
+import ProdPriceInfo from "@/components/Prod/ProdPriceInfo.vue";
+import ProdSortButton from "@/components/Prod/ProdSortButton.vue"
 
 export default defineComponent({
   name: "Home",
   components: {
     ProdBox,
     SideBar,
+    ProdPriceInfo,
+    ProdSortButton,
   },
 
   setup() {
@@ -102,6 +110,7 @@ export default defineComponent({
         prodInfo.value.avgPrice = res.data.product.avgPrice.toLocaleString()
         prodInfo.value.maxPrice = res.data.product.maxPrice.toLocaleString()
         prodInfo.value.count = res.data.searchcount
+        console.log(res)
       })
 
     store.dispatch('requestProductList', query.value)
