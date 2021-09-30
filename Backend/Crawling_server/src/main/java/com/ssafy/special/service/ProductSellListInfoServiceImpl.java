@@ -9,7 +9,6 @@ import javax.transaction.Transactional;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.ssafy.special.domain.ProductSellList;
 import com.ssafy.special.dto.ProductSellListResponseDTO;
@@ -27,10 +26,10 @@ public class ProductSellListInfoServiceImpl implements ProductSellListInfoServic
 
 	// 현재 사이클 이상인 데이터만 가져옴
 	@Override
-	public List<ProductSellListResponseDTO> getProductSellLists(int page, long pid) {
+	public List<ProductSellListResponseDTO> getProductSellLists(int page, long pid, int sort, List<Integer> market) {
 		LocalDateTime now = LocalDateTime.now().minusHours(1);
 		Long cycle = Long.parseLong(now.format(DateTimeFormatter.ofPattern("yyMMddHH")));
-		return productSellListRepository.getRecentProductSellListWithPaging(cycle, PageRequest.of(page, 20), pid)
+		return productSellListRepository.getRecentProductSellListWithPaging(cycle, PageRequest.of(page, 20), pid, sort, market)
 				.orElse(new ArrayList<ProductSellListResponseDTO>());
 	}
 
