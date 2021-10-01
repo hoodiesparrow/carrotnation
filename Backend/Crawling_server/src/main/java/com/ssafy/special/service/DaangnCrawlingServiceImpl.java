@@ -104,6 +104,8 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		log.info("(당근)"+ productQuery.getQuery()+" : 부적합한 물건을 제외하는 중입니다");
 		
 //		int i=0;
+		List<ProductSellList> psllist;
+		List<ProductSellList> address;
 		ProductSellList pslcheck;
 		for(ProductDTO p : productList) {
 			isOldDate=false;// 1달 넘어가는 데이터면 탈출시켜
@@ -155,19 +157,30 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 					sellList.setImg(p.getImg());
 					sellList.setLocation(p.getLocation());
 					
-					pslcheck =productSellListRepository.findByIdAndMarket(sellList.getId(), sellList.getMarket()).orElse(null);
-					if(pslcheck==null||pslcheck.getX()<=0) {
-						if(p.getLocation()!=null&&!"".equals(p.getLocation().trim())){
-							Map<String,Double> coordnt = adresstoCoorUrils.AdressToCoorUtilstest(p.getLocation());
-							if(coordnt!=null) {
-								sellList.setX(coordnt.get("x"));
-								sellList.setY(coordnt.get("y"));
-							}
-						}
-					}else {
+					
+					psllist =productSellListRepository.getcoordinate(sellList.getAid(), sellList.getMarket()).orElse(null);
+					if(psllist!=null) {
+						pslcheck = psllist.get(0);
 						sellList.setX(pslcheck.getX());
 						sellList.setY(pslcheck.getY());
+					}else {
+						if(p.getLocation()!=null&&!"".equals(p.getLocation().trim())){
+							address = productSellListRepository.findByLocation(p.getLocation()).orElse(null);
+							if(address!=null) {
+								pslcheck=address.get(0);
+								sellList.setX(pslcheck.getX());
+								sellList.setY(pslcheck.getY());
+							}else {
+								Map<String,Double> coordnt = adresstoCoorUrils.AdressToCoorUtilstest(p.getLocation());
+								if(coordnt!=null) {
+									sellList.setX(coordnt.get("x"));
+									sellList.setY(coordnt.get("y"));
+								}
+							}
+							
+						}
 					}
+					
 					
 					if(sellList.getCreateDate()==null)
 						continue;

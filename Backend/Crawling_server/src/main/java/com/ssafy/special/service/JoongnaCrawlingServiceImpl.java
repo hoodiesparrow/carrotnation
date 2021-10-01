@@ -325,6 +325,8 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 
 		}
 		HashMap<String, String> map;
+		List<ProductSellList> psllist;
+		List<ProductSellList> address;
 		ProductSellList pslcheck;
 		for (ProductDTO pd : list) {
 
@@ -377,18 +379,27 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 					sellList.setLocation(pd.getLocation());
 					sellList.setImg(pd.getImg());
 					
-					pslcheck =productSellListRepository.findByIdAndMarket(sellList.getId(), sellList.getMarket()).orElse(null);
-					if(pslcheck==null||pslcheck.getX()<=0) {
-						if(pd.getLocation()!=null&&!"".equals(pd.getLocation().trim())){
-							Map<String,Double> coordnt = adresstoCoorUrils.AdressToCoorUtilstest(pd.getLocation());
-							if(coordnt!=null) {
-								sellList.setX(coordnt.get("x"));
-								sellList.setY(coordnt.get("y"));
-							}
-						}
-					}else {
+					psllist =productSellListRepository.getcoordinate(sellList.getAid(), sellList.getMarket()).orElse(null);
+					if(psllist!=null) {
+						pslcheck = psllist.get(0);
 						sellList.setX(pslcheck.getX());
 						sellList.setY(pslcheck.getY());
+					}else {
+						if(pd.getLocation()!=null&&!"".equals(pd.getLocation().trim())){
+							address = productSellListRepository.findByLocation(pd.getLocation()).orElse(null);
+							if(address!=null) {
+								pslcheck=address.get(0);
+								sellList.setX(pslcheck.getX());
+								sellList.setY(pslcheck.getY());
+							}else {
+								Map<String,Double> coordnt = adresstoCoorUrils.AdressToCoorUtilstest(pd.getLocation());
+								if(coordnt!=null) {
+									sellList.setX(coordnt.get("x"));
+									sellList.setY(coordnt.get("y"));
+								}
+							}
+							
+						}
 					}
 					
 					boolean result = insertProductSellList(sellList);

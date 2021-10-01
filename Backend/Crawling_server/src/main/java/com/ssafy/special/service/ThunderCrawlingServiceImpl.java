@@ -102,6 +102,8 @@ public class ThunderCrawlingServiceImpl implements ThunderCrawlingService {
 		}
 		
 		int i=0;
+		List<ProductSellList> psllist;
+		List<ProductSellList> address;
 		ProductSellList pslcheck;
 		for(ProductDTO p : productList) {
 			if(i!=0 && i%100==0)
@@ -131,18 +133,27 @@ public class ThunderCrawlingServiceImpl implements ThunderCrawlingService {
 					sellList.setLink(p.getLink());
 					sellList.setLocation(p.getLocation());
 					
-					pslcheck =productSellListRepository.findByIdAndMarket(sellList.getId(), sellList.getMarket()).orElse(null);
-					if(pslcheck==null||pslcheck.getX()<=0) {
-						if(p.getLocation()!=null&&!"".equals(p.getLocation().trim())){
-							Map<String,Double> coordnt = adresstoCoorUrils.AdressToCoorUtilstest(p.getLocation());
-							if(coordnt!=null) {
-								sellList.setX(coordnt.get("x"));
-								sellList.setY(coordnt.get("y"));
-							}
-						}
-					}else {
+					psllist =productSellListRepository.getcoordinate(sellList.getAid(), sellList.getMarket()).orElse(null);
+					if(psllist!=null) {
+						pslcheck = psllist.get(0);
 						sellList.setX(pslcheck.getX());
 						sellList.setY(pslcheck.getY());
+					}else {
+						if(p.getLocation()!=null&&!"".equals(p.getLocation().trim())){
+							address = productSellListRepository.findByLocation(p.getLocation()).orElse(null);
+							if(address!=null) {
+								pslcheck=address.get(0);
+								sellList.setX(pslcheck.getX());
+								sellList.setY(pslcheck.getY());
+							}else {
+								Map<String,Double> coordnt = adresstoCoorUrils.AdressToCoorUtilstest(p.getLocation());
+								if(coordnt!=null) {
+									sellList.setX(coordnt.get("x"));
+									sellList.setY(coordnt.get("y"));
+								}
+							}
+							
+						}
 					}
 					
 					boolean result = insertProductSellList(sellList);

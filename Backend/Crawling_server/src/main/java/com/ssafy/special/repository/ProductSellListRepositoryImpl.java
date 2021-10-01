@@ -120,7 +120,6 @@ public class ProductSellListRepositoryImpl implements ProductSellListRepositoryC
 										.where(qpsl.cycle.eq(cycle).and(qpsl.productId.id.eq(id)))
 										.fetch();
 		return Optional.ofNullable(result);
-
 	}	
 	
 	// cycle 보다 작은 데이터들 삭제
@@ -131,4 +130,14 @@ public class ProductSellListRepositoryImpl implements ProductSellListRepositoryC
 		queryFactory.delete(qpsl).where(qpsl.cycle.lt(cycle)).execute();	
 	}
 	
+	
+	@Override
+	public Optional<List<ProductSellList>> getcoordinate(Long id, String market) {
+		// TODO Auto-generated method stub
+		QProductSellList qpsl= QProductSellList.productSellList;
+		List<ProductSellList> result = queryFactory.selectFrom(qpsl)
+										.where(qpsl.aid.eq(id).and(qpsl.market.eq(market)).and(qpsl.x.gt(0)))
+										.fetch();
+		return Optional.ofNullable(result);
+	}	
 }

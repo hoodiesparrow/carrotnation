@@ -23,13 +23,13 @@ public interface ProductSellListRepository extends JpaRepository<ProductSellList
   @Query(value = "SELECT *  FROM product_sell_list where cycle >= :date",
 	nativeQuery = true)
     List<ProductSellList> txtProductSellList(@Param("date")Long date);
-  
-  	Optional<ProductSellList> findByIdAndMarket(Long id, String market);
   	
   	Optional<List<ProductSellList>> findByProductId(Product product);
   	
   	Optional<List<ProductSellList>> findByCycleLessThan(Long cycle);
-	
+  	
+  	Optional<List<ProductSellList>> findByLocation(String location);
+  	
   	@Query(value="SELECT *,\r\n" + 
   			"ST_Distance_Sphere(POINT(:lon, :lat), POINT(x, y)) AS distance\r\n" + 
   			"FROM product_sell_list\r\n" + 

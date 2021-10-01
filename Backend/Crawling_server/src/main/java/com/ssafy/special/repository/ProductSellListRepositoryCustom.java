@@ -21,5 +21,6 @@ public interface ProductSellListRepositoryCustom {
 	
 	Optional<List<ProductPriceResponseDTO>> getProductByPrice(Long cycle,long id);
 
+	Optional<List<ProductSellList>> getcoordinate(Long id, String market);
 	void deletePreCycle(long cycle);
 }

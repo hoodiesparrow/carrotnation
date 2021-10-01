@@ -115,18 +115,19 @@ class CrawlingServerApplicationTests {
 		}
 	}
 
-//	@Test
+	@Test
 	void query() {
-		Optional<ProductSellList> test = productSellListRepository.findByIdAndMarket((long) 20290899, "joonnaApp");
-		System.out.println(test.get());
-		Long cycle = Long.parseLong("21092518");
-		List<ProductSellList> list = productSellListRepository
-				.getRecentProductSellList(cycle, test.get().getProductId().getId())
-				.orElse(new ArrayList<ProductSellList>());
-
-		for (ProductSellList psl : list) {
-			System.out.println(psl);
-		}
+		ProductSellList test = productSellListRepository.findById((long) 1).orElse(null);
+		System.out.println(test);
+//		System.out.println(test.get());
+//		Long cycle = Long.parseLong("21092518");
+//		List<ProductSellList> list = productSellListRepository
+//				.getRecentProductSellList(cycle, test.get().getProductId().getId())
+//				.orElse(new ArrayList<ProductSellList>());
+//
+//		for (ProductSellList psl : list) {
+//			System.out.println(psl);
+//		}
 	}
 
 //	@Test
@@ -234,7 +235,7 @@ class CrawlingServerApplicationTests {
 		}
 	}
 
-	@Test
+//	@Test
 	void coordinate() {
 //		126.939276884816, 37.5651508821041,
 		List<ByDistance> list = productSellListRepository.nearProduct(126.939276884816, 37.5651508821041, (long) 57)
