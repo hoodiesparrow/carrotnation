@@ -10,5 +10,5 @@ public interface ProductSellListInfoService {
 	// 현재 사이클 한시간 전인 데이터 갯수 가져옴
 	Long getProductSellListCount(long pid, List<Integer> market);
 	//게시글 상세보기
-	ProductSellListResponseDTO getProductSellDetail(String market, long pid);
+	ProductSellListResponseDTO getProductSellDetail(long id);
 }
