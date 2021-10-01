@@ -28,11 +28,11 @@ public interface ProductSellListRepository extends JpaRepository<ProductSellList
   	Optional<List<ProductSellList>> findByProductId(Product product);
   	
   	Optional<List<ProductSellList>> findByCycleLessThan(Long cycle);
-  	
-  	@Query(value="SELECT *,ST_Distance_Sphere(POINT(127.091961310776, 37.5379818127006), POINT(x, y)) AS distance\r\n" +  
-  			"FROM product_sell_list\r\n" + 
-  			"WHERE ST_Distance_Sphere(POINT(:lon, :lat), POINT(x, y)) <= 5000 and product_id=:pid\r\n" + 
-  			"ORDER BY distance")
-  	Optional<List<ProductSellListByDistanceResponseDTO>> nearProduct(@Param("lon")double x, @Param("lat")double y,@Param("pid")long id);
+//  	
+//  	@Query(value="SELECT *,ST_Distance_Sphere(POINT(127.091961310776, 37.5379818127006), POINT(x, y)) AS distance\r\n" +  
+//  			"FROM product_sell_list\r\n" + 
+//  			"WHERE ST_Distance_Sphere(POINT(:lon, :lat), POINT(x, y)) <= 5000 and product_id=:pid\r\n" + 
+//  			"ORDER BY distance")
+//  	Optional<List<ProductSellListByDistanceResponseDTO>> nearProduct(@Param("lon")double x, @Param("lat")double y,@Param("pid")long id);
   	
 }
