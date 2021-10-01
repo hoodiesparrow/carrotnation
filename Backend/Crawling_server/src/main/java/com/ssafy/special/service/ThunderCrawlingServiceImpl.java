@@ -21,12 +21,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.special.controller.AdressToCoorUtils;
+import com.ssafy.special.domain.Coordinate;
 import com.ssafy.special.domain.ExceptionKeyword;
 import com.ssafy.special.domain.Product;
 import com.ssafy.special.domain.ProductQuery;
 import com.ssafy.special.domain.ProductSellList;
 import com.ssafy.special.domain.RequireKeyword;
 import com.ssafy.special.dto.ProductDTO;
+import com.ssafy.special.repository.CoordinateRepository;
 import com.ssafy.special.repository.ExceptionKeywordRepository;
 import com.ssafy.special.repository.ProductQueryRepository;
 import com.ssafy.special.repository.ProductRepository;
@@ -49,6 +51,7 @@ public class ThunderCrawlingServiceImpl implements ThunderCrawlingService {
 	private final QueryExceptionKeywordRepository queryExceptionKeywordRepository; 
 	private final ProductSellListRepository productSellListRepository;
 	private final AdressToCoorUtils adresstoCoorUrils;
+	private final CoordinateRepository coordinateRepository;
 	//https://api.bunjang.co.kr/api/1/find_v2.json?q=%EC%95%84%EC%9D%B4%ED%8F%B012&page=0
 	
 	// thunder1 + "검색어" + thunder2 + 페이지번호(1부터 시작)
@@ -103,7 +106,7 @@ public class ThunderCrawlingServiceImpl implements ThunderCrawlingService {
 		
 		int i=0;
 		List<ProductSellList> psllist;
-		List<ProductSellList> address;
+		Coordinate address;
 		ProductSellList pslcheck;
 		for(ProductDTO p : productList) {
 			if(i!=0 && i%100==0)
@@ -140,11 +143,10 @@ public class ThunderCrawlingServiceImpl implements ThunderCrawlingService {
 						sellList.setY(pslcheck.getY());
 					}else {
 						if(p.getLocation()!=null&&!"".equals(p.getLocation().trim())){
-							address = productSellListRepository.findByLocation(p.getLocation()).orElse(null);
+							address = coordinateRepository.findByaddress(p.getLocation()).orElse(null);
 							if(address!=null) {
-								pslcheck=address.get(0);
-								sellList.setX(pslcheck.getX());
-								sellList.setY(pslcheck.getY());
+								sellList.setX(Double.parseDouble(address.getLon()));
+								sellList.setY(Double.parseDouble(address.getLat()));
 							}else {
 								Map<String,Double> coordnt = adresstoCoorUrils.AdressToCoorUtilstest(p.getLocation());
 								if(coordnt!=null) {

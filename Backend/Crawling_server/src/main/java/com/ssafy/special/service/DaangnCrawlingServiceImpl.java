@@ -16,12 +16,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.special.controller.AdressToCoorUtils;
+import com.ssafy.special.domain.Coordinate;
 import com.ssafy.special.domain.ExceptionKeyword;
 import com.ssafy.special.domain.Product;
 import com.ssafy.special.domain.ProductQuery;
 import com.ssafy.special.domain.ProductSellList;
 import com.ssafy.special.domain.RequireKeyword;
 import com.ssafy.special.dto.ProductDTO;
+import com.ssafy.special.repository.CoordinateRepository;
 import com.ssafy.special.repository.ExceptionKeywordRepository;
 import com.ssafy.special.repository.ProductRepository;
 import com.ssafy.special.repository.ProductSellListRepository;
@@ -42,7 +44,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 //	private final QueryExceptionKeywordRepository queryExceptionKeywordRepository; 
 	private final ProductSellListRepository productSellListRepository; 
 	private final AdressToCoorUtils adresstoCoorUrils;
-	
+	private final CoordinateRepository coordinateRepository;
 	// carrot1 + "검색어" + caroot2 + 페이지번호(1부터 시작)
 	private static String carrot1 = "https://www.daangn.com/search/";
 	private static String carrot2 = "/more/flea_market?page=";
@@ -105,7 +107,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		
 //		int i=0;
 		List<ProductSellList> psllist;
-		List<ProductSellList> address;
+		Coordinate address;
 		ProductSellList pslcheck;
 		for(ProductDTO p : productList) {
 			isOldDate=false;// 1달 넘어가는 데이터면 탈출시켜
@@ -165,11 +167,10 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 						sellList.setY(pslcheck.getY());
 					}else {
 						if(p.getLocation()!=null&&!"".equals(p.getLocation().trim())){
-							address = productSellListRepository.findByLocation(p.getLocation()).orElse(null);
+							address = coordinateRepository.findByaddress(p.getLocation()).orElse(null);
 							if(address!=null) {
-								pslcheck=address.get(0);
-								sellList.setX(pslcheck.getX());
-								sellList.setY(pslcheck.getY());
+								sellList.setX(Double.parseDouble(address.getLon()));
+								sellList.setY(Double.parseDouble(address.getLat()));
 							}else {
 								Map<String,Double> coordnt = adresstoCoorUrils.AdressToCoorUtilstest(p.getLocation());
 								if(coordnt!=null) {

@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.special.controller.AdressToCoorUtils;
 import com.ssafy.special.controller.SSHUtils;
+import com.ssafy.special.domain.Coordinate;
 //import com.ssafy.special.domain.Product;
 import com.ssafy.special.domain.ProductSellList;
 import com.ssafy.special.dto.ByDistance;
@@ -25,6 +26,7 @@ import com.ssafy.special.dto.PriceStepResponseDTO;
 import com.ssafy.special.dto.ProductPriceResponseDTO;
 import com.ssafy.special.dto.ProductSellListByDistanceResponseDTO;
 import com.ssafy.special.main.MainApplication;
+import com.ssafy.special.repository.CoordinateRepository;
 import com.ssafy.special.repository.ProductRepository;
 import com.ssafy.special.repository.ProductSellArticleSimilerRepository;
 import com.ssafy.special.repository.ProductSellListRepository;
@@ -66,6 +68,8 @@ class CrawlingServerApplicationTests {
 	@Autowired
 	SimilarityService similarityService;
 
+	@Autowired
+	CoordinateRepository coordinateRepository;
 //	@Test
 //	@Transactional
 	void contextLoads() {
@@ -115,7 +119,7 @@ class CrawlingServerApplicationTests {
 		}
 	}
 
-	@Test
+	//@Test
 	void query() {
 		ProductSellList test = productSellListRepository.findById((long) 1).orElse(null);
 		System.out.println(test);
@@ -234,7 +238,12 @@ class CrawlingServerApplicationTests {
 			e.printStackTrace();
 		}
 	}
-
+	@Test
+	void qquu() {
+		Coordinate s = coordinateRepository.findByaddress("충청북도 옥천군 청산면").orElse(null);
+		System.out.println(s);
+	}
+	
 //	@Test
 	void coordinate() {
 //		126.939276884816, 37.5651508821041,

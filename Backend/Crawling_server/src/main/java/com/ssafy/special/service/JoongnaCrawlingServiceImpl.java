@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.special.controller.AdressToCoorUtils;
+import com.ssafy.special.domain.Coordinate;
 import com.ssafy.special.domain.ExceptionKeyword;
 import com.ssafy.special.domain.Product;
 import com.ssafy.special.domain.ProductQuery;
@@ -42,6 +43,7 @@ import com.ssafy.special.domain.RequireKeyword;
 import com.ssafy.special.dto.ProductDTO;
 import com.ssafy.special.exception.NotPageException;
 import com.ssafy.special.exception.PageEndException;
+import com.ssafy.special.repository.CoordinateRepository;
 import com.ssafy.special.repository.ExceptionKeywordRepository;
 import com.ssafy.special.repository.ProductRepository;
 import com.ssafy.special.repository.ProductSellListRepository;
@@ -60,6 +62,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 	private final RequireKeywordRepository requireKeywordRepository;
 	private final ProductSellListRepository productSellListRepository;
 	private final AdressToCoorUtils adresstoCoorUrils;
+	private final CoordinateRepository coordinateRepository;
 	static String giga;
 	static String strUrl = "https://search-api.joongna.com/v25/search/product";
 //	SimpleDateFormat fourteen_format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -326,7 +329,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		}
 		HashMap<String, String> map;
 		List<ProductSellList> psllist;
-		List<ProductSellList> address;
+		Coordinate address;
 		ProductSellList pslcheck;
 		for (ProductDTO pd : list) {
 
@@ -386,11 +389,10 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 						sellList.setY(pslcheck.getY());
 					}else {
 						if(pd.getLocation()!=null&&!"".equals(pd.getLocation().trim())){
-							address = productSellListRepository.findByLocation(pd.getLocation()).orElse(null);
+							address = coordinateRepository.findByaddress(pd.getLocation()).orElse(null);
 							if(address!=null) {
-								pslcheck=address.get(0);
-								sellList.setX(pslcheck.getX());
-								sellList.setY(pslcheck.getY());
+								sellList.setX(Double.parseDouble(address.getLon()));
+								sellList.setY(Double.parseDouble(address.getLat()));
 							}else {
 								Map<String,Double> coordnt = adresstoCoorUrils.AdressToCoorUtilstest(pd.getLocation());
 								if(coordnt!=null) {
