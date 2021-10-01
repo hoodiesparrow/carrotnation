@@ -58,7 +58,7 @@ public class SimilarityServiceImpl implements SimilarityService {
 		}
 		ssh.getSSHResponse("/usr/local/hadoop/bin/hadoop fs -rm -r Set; /usr/local/hadoop/bin/hadoop fs -mkdir Set");
 		
-		LocalDateTime now = LocalDateTime.now().minusHours(1);
+		LocalDateTime now = LocalDateTime.now();
 		Long cycle = Long.parseLong(now.format(DateTimeFormatter.ofPattern("yyMMddHH")));
 		Komoran komoran = new Komoran(DEFAULT_MODEL.FULL);
 //		List<Product> aa = productRepository.findAll();

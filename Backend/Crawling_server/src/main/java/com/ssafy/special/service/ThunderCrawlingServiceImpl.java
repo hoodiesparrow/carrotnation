@@ -119,7 +119,7 @@ public class ThunderCrawlingServiceImpl implements ThunderCrawlingService {
 				//name이 지정되었으면 ProductSellList테이블에 삽입
 				if(p.getName()!=null) {		
 					ProductSellList sellList=new ProductSellList();
-					sellList.setId(Integer.parseInt(p.getSeq()));
+					sellList.setAid(Integer.parseInt(p.getSeq()));
 					sellList.setMarket(market);
 					sellList.setProductId(product);
 					sellList.setTitle(p.getTitle());

@@ -14,7 +14,6 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.special.domain.ProductSellList;
-import com.ssafy.special.domain.QProductSellArticleSimiler;
 //import com.ssafy.special.domain.QProductSellList;
 import com.ssafy.special.domain.QProductSellList;
 import com.ssafy.special.dto.ProductPriceResponseDTO;
@@ -34,11 +33,11 @@ public class ProductSellListRepositoryImpl implements ProductSellListRepositoryC
 		
 		List<ProductSellListResponseDTO> result= queryFactory.select(
 											Projections.constructor(ProductSellListResponseDTO.class,
-													qpsl.id,qpsl.market,qpsl.productId.id,qpsl.title,qpsl.content,
+													qpsl.aid,qpsl.market,qpsl.productId.id,qpsl.title,qpsl.content,
 													qpsl.price,qpsl.createDate,qpsl.link,qpsl.img,qpsl.location,qpsl.cycle)
 										)
 										.from(qpsl)
-										.where(qpsl.cycle.goe(cycle).and(qpsl.productId.id.eq(pid)),
+										.where(qpsl.cycle.eq(cycle).and(qpsl.productId.id.eq(pid)),
 												getMarketContition(market, qpsl))
 										.orderBy(getSortedColumn(sort))
 										.offset(page.getOffset())
@@ -89,7 +88,7 @@ public class ProductSellListRepositoryImpl implements ProductSellListRepositoryC
 		QProductSellList qpsl= QProductSellList.productSellList;
 		
 		Long result= queryFactory.selectFrom(qpsl)
-										.where(qpsl.cycle.goe(cycle).and(qpsl.productId.id.eq(pid)))							
+										.where(qpsl.cycle.eq(cycle).and(qpsl.productId.id.eq(pid)))							
 										.fetchCount();
 		
 		return Optional.ofNullable(result);
@@ -102,7 +101,7 @@ public class ProductSellListRepositoryImpl implements ProductSellListRepositoryC
 		QProductSellList qpsl= QProductSellList.productSellList;
 		
 		List<ProductSellList> result= queryFactory.selectFrom(qpsl)
-										.where(qpsl.cycle.goe(cycle).and(qpsl.productId.id.eq(id)))
+										.where(qpsl.cycle.eq(cycle).and(qpsl.productId.id.eq(id)))
 										.orderBy(qpsl.createDate.desc())									
 										.fetch();
 		
@@ -115,10 +114,10 @@ public class ProductSellListRepositoryImpl implements ProductSellListRepositoryC
 		QProductSellList qpsl= QProductSellList.productSellList;
 		List<ProductPriceResponseDTO> result = queryFactory.select(
 										Projections.constructor(ProductPriceResponseDTO.class,
-												qpsl.id, qpsl.market,qpsl.price,qpsl.productId.maxPrice)
+												qpsl.aid, qpsl.market,qpsl.price,qpsl.productId.maxPrice)
 										)
 										.from(qpsl)
-										.where(qpsl.cycle.goe(cycle).and(qpsl.productId.id.eq(id)))
+										.where(qpsl.cycle.eq(cycle).and(qpsl.productId.id.eq(id)))
 										.fetch();
 		return Optional.ofNullable(result);
 

@@ -3,7 +3,6 @@ package com.ssafy.special.repository;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.types.Projections;
@@ -24,26 +23,35 @@ public class ProductSellArticleSimilerRepositoryImpl implements ProductSellArtic
 		QProductSellArticleSimiler qpsas = QProductSellArticleSimiler.productSellArticleSimiler;
 		
 		List<ProductSellArticleSimilerResponseDTO> result=null;
+//		result = queryFactory.select(
+//				Projections.constructor(ProductSellArticleSimilerResponseDTO.class,
+//						qpsas.articleB.aid,qpsas.articleB.market,qpsas.articleB.productId.id,qpsas.articleB.title,qpsas.articleB.content,
+//						qpsas.articleB.price,qpsas.articleB.createDate,qpsas.articleB.link,qpsas.articleB.img,qpsas.articleB.location,qpsas.articleB.cycle, qpsas.similarity)
+//			).from(qpsas)
+//			.where(qpsas.articleA.market.eq(market).and(qpsas.articleA.aid.eq(pid)).and(qpsas.cycle.goe(cycle)),
+//					qpsas.articleB.market.eq(market).and(qpsas.similarity.between(30, 70))
+//						.or(qpsas.articleB.market.ne(market).and(qpsas.similarity.between(30, 70))))
+//			.fetch();
+//		List<ProductSellArticleSimilerResponseDTO> tmp=
+//		queryFactory.select(
+//				Projections.constructor(ProductSellArticleSimilerResponseDTO.class,
+//						qpsas.articleA.aid,qpsas.articleA.market,qpsas.articleA.productId.id,qpsas.articleA.title,qpsas.articleA.content,
+//						qpsas.articleA.price,qpsas.articleA.createDate,qpsas.articleA.link,qpsas.articleA.img,qpsas.articleA.location,qpsas.articleA.cycle,qpsas.similarity)
+//			).from(qpsas)
+//			.where(qpsas.articleB.market.eq(market).and(qpsas.articleB.aid.eq(pid)).and(qpsas.cycle.goe(cycle)),
+//					qpsas.articleA.market.eq(market).and(qpsas.similarity.between(30, 70))
+//						.or(qpsas.articleA.market.ne(market).and(qpsas.similarity.between(30, 70))))
+//			.fetch();
+//		result.addAll(tmp);
+		
 		result = queryFactory.select(
 				Projections.constructor(ProductSellArticleSimilerResponseDTO.class,
-						qpsas.articleB.id,qpsas.articleB.market,qpsas.articleB.productId.id,qpsas.articleB.title,qpsas.articleB.content,
+						qpsas.articleB.aid,qpsas.articleB.market,qpsas.articleB.productId.id,qpsas.articleB.title,qpsas.articleB.content,
 						qpsas.articleB.price,qpsas.articleB.createDate,qpsas.articleB.link,qpsas.articleB.img,qpsas.articleB.location,qpsas.articleB.cycle, qpsas.similarity)
 			).from(qpsas)
-			.where(qpsas.articleA.market.eq(market).and(qpsas.articleA.id.eq(pid)).and(qpsas.cycle.goe(cycle)),
-					qpsas.articleB.market.eq(market).and(qpsas.similarity.between(30, 50))
-						.or(qpsas.articleB.market.ne(market).and(qpsas.similarity.between(30, 70))))
+			.where(qpsas.articleA.market.eq(market).and(qpsas.articleA.aid.eq(pid)).and(qpsas.cycle.goe(cycle)))
 			.fetch();
-		List<ProductSellArticleSimilerResponseDTO> tmp=
-		queryFactory.select(
-				Projections.constructor(ProductSellArticleSimilerResponseDTO.class,
-						qpsas.articleA.id,qpsas.articleA.market,qpsas.articleA.productId.id,qpsas.articleA.title,qpsas.articleA.content,
-						qpsas.articleA.price,qpsas.articleA.createDate,qpsas.articleA.link,qpsas.articleA.img,qpsas.articleA.location,qpsas.articleA.cycle,qpsas.similarity)
-			).from(qpsas)
-			.where(qpsas.articleB.market.eq(market).and(qpsas.articleB.id.eq(pid)).and(qpsas.cycle.goe(cycle)),
-					qpsas.articleA.market.eq(market).and(qpsas.similarity.between(30, 50))
-						.or(qpsas.articleA.market.ne(market).and(qpsas.similarity.between(30, 70))))
-			.fetch();
-		result.addAll(tmp);
+		
 		return Optional.ofNullable(result);
 	}
 	
@@ -62,7 +70,7 @@ public class ProductSellArticleSimilerRepositoryImpl implements ProductSellArtic
 	public void deleteByProductSellListIds(List<Long> article) {
 		QProductSellArticleSimiler qpsas = QProductSellArticleSimiler.productSellArticleSimiler;
 		
-		queryFactory.delete(qpsas).where(qpsas.articleA.id.in(article).or(qpsas.articleB.id.in(article))).execute();	
+		queryFactory.delete(qpsas).where(qpsas.articleA.aid.in(article).or(qpsas.articleB.aid.in(article))).execute();	
 	}
 	
 }
