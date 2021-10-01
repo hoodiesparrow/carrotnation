@@ -11,10 +11,10 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.ssafy.special.domain.ProductSellList;
+import com.ssafy.special.domain.QProductSellArticleSimiler;
 //import com.ssafy.special.domain.QProductSellList;
 import com.ssafy.special.domain.QProductSellList;
 import com.ssafy.special.dto.ProductPriceResponseDTO;
@@ -123,4 +123,13 @@ public class ProductSellListRepositoryImpl implements ProductSellListRepositoryC
 		return Optional.ofNullable(result);
 
 	}	
+	
+	// cycle 보다 작은 데이터들 삭제
+	@Override
+	public void deletePreCycle(long cycle) {
+		QProductSellList qpsl= QProductSellList.productSellList;
+		
+		queryFactory.delete(qpsl).where(qpsl.cycle.lt(cycle)).execute();	
+	}
+	
 }

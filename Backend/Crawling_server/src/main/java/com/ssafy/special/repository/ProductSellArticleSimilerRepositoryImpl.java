@@ -3,6 +3,7 @@ package com.ssafy.special.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.types.Projections;
@@ -54,5 +55,14 @@ public class ProductSellArticleSimilerRepositoryImpl implements ProductSellArtic
 		
 		queryFactory.delete(qpsas).where(qpsas.cycle.lt(cycle)).execute();	
 	}
+	
 
+	//해당 article을 가지는 데이터들 삭제
+	@Override
+	public void deleteByProductSellListIds(List<Long> article) {
+		QProductSellArticleSimiler qpsas = QProductSellArticleSimiler.productSellArticleSimiler;
+		
+		queryFactory.delete(qpsas).where(qpsas.articleA.id.in(article).or(qpsas.articleB.id.in(article))).execute();	
+	}
+	
 }

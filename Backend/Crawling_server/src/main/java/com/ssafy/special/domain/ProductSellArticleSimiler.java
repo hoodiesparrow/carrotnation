@@ -24,18 +24,12 @@ public class ProductSellArticleSimiler {
 	
 	@Id
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumns({
-        @JoinColumn(name="idA"),
-        @JoinColumn(name="marketA")
-	})
+    @JoinColumn(name="articleA")
 	private ProductSellList articleA;//게시글명
 	
 	@Id
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumns({
-        @JoinColumn(name="idB"),
-        @JoinColumn(name="marketB")
-	})
+    @JoinColumn(name="articleB")
 	private ProductSellList articleB;//게시글명
 	
 	private Double similarity;// 유사도

@@ -4,11 +4,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ssafy.special.domain.ProductSellList;
 import com.ssafy.special.repository.ProductSellArticleSimilerRepository;
 import com.ssafy.special.repository.ProductSellListRepository;
 
@@ -39,10 +39,9 @@ public class PreCycleDeleteServiceImpl implements PreCycleDeleteService {
 		LocalDateTime now = LocalDateTime.now().minusHours(1);
 		Long cycle = Long.parseLong(now.format(DateTimeFormatter.ofPattern("yyMMddHH")));	
 		
-	  	List<ProductSellList> tmp = productSellListRepository.findByCycleLessThan(cycle).orElse(new ArrayList<>());
-	  	for(ProductSellList t:tmp) {
-	  		productSellListRepository.delete(t);
-	  	}		
+	  	List<Long> list = productSellListRepository.findByCycleLessThan(cycle).orElse(new ArrayList<>()).stream().map((a)->a.getId()).collect(Collectors.toList());
+	  	productSellArticleSimilerRepository.deleteByProductSellListIds(list);
+	  	productSellListRepository.deletePreCycle(cycle);
 	}
 	
 }
