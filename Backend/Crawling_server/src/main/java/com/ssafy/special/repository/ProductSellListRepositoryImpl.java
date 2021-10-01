@@ -33,7 +33,7 @@ public class ProductSellListRepositoryImpl implements ProductSellListRepositoryC
 		
 		List<ProductSellListResponseDTO> result= queryFactory.select(
 											Projections.constructor(ProductSellListResponseDTO.class,
-													qpsl.aid,qpsl.market,qpsl.productId.id,qpsl.title,qpsl.content,
+													qpsl.id,qpsl.aid,qpsl.market,qpsl.productId.id,qpsl.title,qpsl.content,
 													qpsl.price,qpsl.createDate,qpsl.link,qpsl.img,qpsl.location,qpsl.cycle)
 										)
 										.from(qpsl)

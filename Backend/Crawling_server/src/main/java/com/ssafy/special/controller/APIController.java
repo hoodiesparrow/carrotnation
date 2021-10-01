@@ -66,11 +66,11 @@ public class APIController {
 	}
 	
 	@GetMapping("/productselldetail")
-	public ResponseEntity<Map<String, Object>> getProductSellDetail(@RequestParam String market, @RequestParam long id) {
-			ProductSellListResponseDTO productSellDetail = productSellListInfoService.getProductSellDetail(market, id);
-			List<ProductSellArticleSimilerResponseDTO> similerlist = similarityService.returnSimilarity(id,market);
+	public ResponseEntity<Map<String, Object>> getProductSellDetail(@RequestParam long id) {
+			ProductSellListResponseDTO productSellDetail = productSellListInfoService.getProductSellDetail(id);
+			List<ProductSellArticleSimilerResponseDTO> similerlist = similarityService.returnSimilarity(id);
 			Map<String, Object> ret = new HashMap<String, Object>();
-			
+			System.out.println(similerlist);
 			if(productSellDetail==null) {
 				ret.put("msg", "페이지, 게시글번호를 다시 확인해 주세요");
 				return ResponseEntity.status(HttpStatus.NO_CONTENT).body(ret);
