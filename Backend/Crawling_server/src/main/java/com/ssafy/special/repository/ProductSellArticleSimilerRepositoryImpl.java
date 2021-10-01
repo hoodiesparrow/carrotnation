@@ -19,7 +19,7 @@ public class ProductSellArticleSimilerRepositoryImpl implements ProductSellArtic
 	
 	// 해당 market, pid를 가지는 게시글과 유사한 게시글리스트 리턴
 	@Override
-	public Optional<List<ProductSellArticleSimilerResponseDTO>> getProductSellArticleSimiler(long pid, String market, Long cycle){
+	public Optional<List<ProductSellArticleSimilerResponseDTO>> getProductSellArticleSimiler(long id, Long cycle){
 		QProductSellArticleSimiler qpsas = QProductSellArticleSimiler.productSellArticleSimiler;
 		
 		List<ProductSellArticleSimilerResponseDTO> result=null;
@@ -49,7 +49,7 @@ public class ProductSellArticleSimilerRepositoryImpl implements ProductSellArtic
 						qpsas.articleB.aid,qpsas.articleB.market,qpsas.articleB.productId.id,qpsas.articleB.title,qpsas.articleB.content,
 						qpsas.articleB.price,qpsas.articleB.createDate,qpsas.articleB.link,qpsas.articleB.img,qpsas.articleB.location,qpsas.articleB.cycle, qpsas.similarity)
 			).from(qpsas)
-			.where(qpsas.articleA.market.eq(market).and(qpsas.articleA.aid.eq(pid)).and(qpsas.cycle.goe(cycle)))
+			.where(qpsas.articleA.id.eq(id).and(qpsas.cycle.goe(cycle)))
 			.fetch();
 		
 		return Optional.ofNullable(result);
