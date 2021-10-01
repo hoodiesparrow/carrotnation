@@ -1,5 +1,5 @@
 <template>
-  <div class="container max-w-750px h-screen bg-gray-100" ref="container">
+  <div class="container max-w-750px" ref="container">
     <SideBar :show="show" @closeSideBar="show=false" class="fixed top-0 z-40 h-full" />
     <div class="sticky top-0 transition duration-300 border-gray-300 z-40" :class="{'shadow-xl': !atTopOfPage, 'border-b-2': atTopOfPage}">
       <!-- <div class="flex justify-between items-center bg-gradient-to-r from-purple-400 to-purple-700 p-4"> -->
@@ -27,7 +27,7 @@
       </div>
     </div>
     <div class="text-left">
-      <div v-if="!errorFlag" class="flex flex-col">
+      <div v-if="!errorFlag" class="flex flex-col bg-gray-100">
         <ProdPriceInfo :prodInfo="prodInfo" />
         <ProdBox v-for="prod in prodList" :key="prod.pid" :product="prod" />
         <div v-if="initialLoading" class="flex justify-center">
@@ -60,14 +60,14 @@
         </div>
       </div>
 
-      <div v-if="initialLoadingFailed" class="flex flex-col items-center mt-32">
+      <div v-if="initialLoadingFailed" class="h-screen bg-gray-100 flex flex-col items-center pt-32">
         <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24">
           <path d="M16.143 2l5.857 5.858v8.284l-5.857 5.858h-8.286l-5.857-5.858v-8.284l5.857-5.858h8.286zm.828-2h-9.942l-7.029 7.029v9.941l7.029 7.03h9.941l7.03-7.029v-9.942l-7.029-7.029zm-6.471 6h3l-1 8h-1l-1-8zm1.5 12.25c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"/>
         </svg>
         <span class="text-lg mt-4">요청이 실패하였습니다.</span>
         <button class="mt-10 p-1 bg-white border border-black" @click="initialLoader">다시 시도</button>
       </div>
-      <div v-if="noData" class="flex flex-col items-center mt-32">
+      <div v-if="noData" class="h-screen bg-gray-100 flex flex-col items-center pt-32">
         <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24">
           <path d="M16.142 2l5.858 5.858v8.284l-5.858 5.858h-8.284l-5.858-5.858v-8.284l5.858-5.858h8.284zm.829-2h-9.942l-7.029 7.029v9.941l7.029 7.03h9.941l7.03-7.029v-9.942l-7.029-7.029zm-8.482 16.992l3.518-3.568 3.554 3.521 1.431-1.43-3.566-3.523 3.535-3.568-1.431-1.432-3.539 3.583-3.581-3.457-1.418 1.418 3.585 3.473-3.507 3.566 1.419 1.417z"/>
         </svg>
@@ -128,14 +128,19 @@ export default defineComponent({
     
 
     const initialLoader = function () {
-      store.dispatch('requestProductInfo', query.value.pid)
+      console.log('@initialLoader', query.value)
+      const infoQuery = { 
+        pid: query.value.pid,
+        market: query.value.market === undefined ? 0 : query.value.market
+      }
+      console.log(infoQuery)
+      store.dispatch('requestProductInfo', infoQuery)
         .then(res => {
           prodInfo.value.name = res.data.product.name
           prodInfo.value.minPrice = res.data.product.minPrice.toLocaleString()
           prodInfo.value.avgPrice = res.data.product.avgPrice.toLocaleString()
           prodInfo.value.maxPrice = res.data.product.maxPrice.toLocaleString()
           prodInfo.value.count = res.data.searchcount
-          console.log(res)
         })
       // 초기화
       initialLoading.value = true
@@ -150,10 +155,10 @@ export default defineComponent({
               totalPage.value = res.data.totalpage
               prodList.value.push(...res.data.list)
               initialLoading.value = false;
+              console.log(res.data)
               break
             case 204:
               noData.value = true
-              console.log('204204')
               initialLoading.value = false;
               break
 
@@ -235,16 +240,19 @@ export default defineComponent({
     }
     
     const market = function () {
+      const { market: temp, ...rest } = query.value
       if (store.getters['getMarket'] >= 1) {
         query.value = {
-          ...query.value, 
+          ...rest,
           page: 0,
           market: store.getters['getMarket']
         }
       } else {
-        delete query.value.market
-        query.value.page = 0
-        console.log(query.value)
+        query.value = {
+          ...rest,
+          page: 0,
+        }
+      console.log(query.value)
       }
       initialLoader()
     }
