@@ -1,5 +1,5 @@
 <template>
-    <Menu as="template">
+    <Menu as="div">
       <MenuButton
         class="flex items-center"
       >
@@ -20,56 +20,17 @@
         leave-to-class="transform scale-95 opacity-0"
       >
         <MenuItems
-          class="absolute right-0 w-56 mt-2 origin-top-right bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+          class="absolute right-0 pr-2 origin-top-right bg-white shadow-lg"
         >
-            <MenuItem v-slot="{ active }">
+            <MenuItem
+              v-for="(sort, idx) in sortOption"
+              :key="idx"
+              @click="onClickSort(idx)"
+            >
               <button
-                :class="[
-                  active ? 'bg-violet-500' : 'text-gray-900',
-                  'group flex rounded-md items-center w-full px-2 py-2 text-sm',
-                ]"
+                class="text-gray-900 flex rounded-md items-center w-full px-2 py-2 text-sm"
               >
-                Edit
-              </button>
-            </MenuItem>
-            <MenuItem v-slot="{ active }">
-              <button
-                :class="[
-                  active ? 'bg-violet-500' : 'text-gray-900',
-                  'group flex rounded-md items-center w-full px-2 py-2 text-sm',
-                ]"
-              >
-                Duplicate
-              </button>
-            </MenuItem>
-            <MenuItem v-slot="{ active }">
-              <button
-                :class="[
-                  active ? 'bg-violet-500' : 'text-gray-900',
-                  'group flex rounded-md items-center w-full px-2 py-2 text-sm',
-                ]"
-              >
-                Archive
-              </button>
-            </MenuItem>
-            <MenuItem v-slot="{ active }">
-              <button
-                :class="[
-                  active ? 'bg-violet-500' : 'text-gray-900',
-                  'group flex rounded-md items-center w-full px-2 py-2 text-sm',
-                ]"
-              >
-                Move
-              </button>
-            </MenuItem>
-            <MenuItem v-slot="{ active }">
-              <button
-                :class="[
-                  active ? 'bg-violet-500' : 'text-gray-900',
-                  'group flex rounded-md items-center w-full px-2 py-2 text-sm',
-                ]"
-              >
-                Delete
+                <span class="text-md font-bold">{{ sort }}</span>
               </button>
             </MenuItem>
         </MenuItems>
@@ -78,8 +39,9 @@
 </template>
 
 <script>
+import { ref } from 'vue'
+import { useStore } from 'vuex'
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
-
 
 export default {
   components: {
@@ -88,5 +50,20 @@ export default {
     MenuItems,
     MenuItem,
   },
+  setup(props, { emit }) {
+    const store = useStore()
+    const sortOption = ref(['최신 순', '오래된 순', '가격 높은 순', '가격 낮은 순'])
+    const onClickSort = function (idx) {
+      console.log('@ sortBTN, idx', idx + 1)
+      store.commit('CHANGE_SORT', idx + 1)
+      emit('sort')
+    }
+
+    return {
+      store,
+      sortOption,
+      onClickSort,
+    }
+  }
 }
 </script>

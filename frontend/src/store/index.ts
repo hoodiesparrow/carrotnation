@@ -17,8 +17,17 @@ const BASE_URL = 'https://j5d205.p.ssafy.io'
 export default createStore({
   state: {
     categoryData: categoryData,
+    sort: 1,
+    market: 0,
   },
-  mutations: {},
+  mutations: {
+    CHANGE_SORT: function (state, idx: number) {
+      state.sort = idx
+    },
+    CHANGE_MARKET: function (state, idx: number) {
+      state.market = idx
+    }
+  },
   actions: {
     requestProductInfo: function ({ commit }, pid: string) {
       const url = `${BASE_URL}/api/product`
@@ -66,7 +75,13 @@ export default createStore({
   getters: {
     getCategoryData: function (state) {
       return state.categoryData
-    }
+    },
+    getSort: function (state) {
+      return state.sort
+    },
+    getMarket: function (state) {
+      return state.market
+    },
   },
   modules: {},
 });

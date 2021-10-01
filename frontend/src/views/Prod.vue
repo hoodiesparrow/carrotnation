@@ -21,15 +21,8 @@
           <span>내 주변</span>
         </div>
         <div class="flex">
-          <div class="flex items-center pr-6">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
-              <path d="M19 2c1.654 0 3 1.346 3 3v14c0 1.654-1.346 3-3 3h-14c-1.654 0-3-1.346-3-3v-14c0-1.654 1.346-3 3-3h14zm5 3c0-2.761-2.238-5-5-5h-14c-2.762 0-5 2.239-5 5v14c0 2.761 2.238 5 5 5h14c2.762 0 5-2.239 5-5v-14zm-13 12h-2v3h-2v-3h-2v-3h6v3zm-2-13h-2v8h2v-8zm10 5h-6v3h2v8h2v-8h2v-3zm-2-5h-2v3h2v-3z"/>
-            </svg>
-            <span class="pl-1">
-              마켓
-            </span>
-          </div>
-          <ProdSortButton />
+          <ProdMarketButton @market="market" class="pr-6" />
+          <ProdSortButton @sort="sort" />
         </div>
       </div>
     </div>
@@ -68,6 +61,7 @@ import SideBar from "@/components/SideBar.vue";
 import ProdBox from "@/components/ProdItem.vue";
 import ProdPriceInfo from "@/components/Prod/ProdPriceInfo.vue";
 import ProdSortButton from "@/components/Prod/ProdSortButton.vue"
+import ProdMarketButton from "@/components/Prod/ProdMarketButton.vue"
 
 export default defineComponent({
   name: "Home",
@@ -76,6 +70,7 @@ export default defineComponent({
     SideBar,
     ProdPriceInfo,
     ProdSortButton,
+    ProdMarketButton,
   },
 
   setup() {
@@ -113,30 +108,38 @@ export default defineComponent({
         console.log(res)
       })
 
-    store.dispatch('requestProductList', query.value)
-      .then((res) => {
-        switch (res.status) {
-          case 200:
-            totalPage.value = res.data.totalpage
-            prodList.value.push(...res.data.list)
-            break
-          case 204:
-            initialLoadingFailed.value = true
-            console.log('204204')
-            break
-          default:
-            initialLoadingFailed.value = true
-            console.log('other case')
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        initialLoading.value = false;
-      });
+    const initialLoader = function () {
+      // 초기화
+      initialLoading.value = true
+      initialLoadingFailed.value = false
+      prodList.value = []
 
-    
+      store.dispatch('requestProductList', query.value)
+        .then((res) => {
+          switch (res.status) {
+            case 200:
+              totalPage.value = res.data.totalpage
+              prodList.value.push(...res.data.list)
+              break
+            case 204:
+              initialLoadingFailed.value = true
+              console.log('204204')
+              break
+            default:
+              initialLoadingFailed.value = true
+              console.log('other case')
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          initialLoading.value = false;
+        });
+    }
+    initialLoader()
+
+
 
     // infinite scroll
     const handleScroll = () => {
@@ -151,35 +154,37 @@ export default defineComponent({
         } 
       }
 
-      if (
-        window.innerHeight + window.scrollY >= document.body.offsetHeight &&
-        !isLoading.value &&
-        !initialLoading.value &&
-        !initialLoadingFailed.value
-      ) {
-        if (query.value.page <= totalPage.value - 2) {
-          console.log('additional loading seq.')
-          isLoading.value = true
-          setTimeout(() => {
-            window.scrollTo(0, container.value.scrollHeight)
-          }, 20)
-
-          setTimeout(() => {
-            query.value.page += 1
-            store.dispatch('requestProductList', query.value)
-              .then(res => {
-                totalPage.value = res.data.totalpage
-                prodList.value.push(...res.data.list)
-              })
-              .catch(err => {
-                console.log(err)
-              })
-              .finally(() => {
-                isLoading.value = false
-              })
-          }, 1000)
-        } else {
-          noMoreData.value = true;
+      if (!noMoreData.value) {
+        if (
+          window.innerHeight + window.scrollY >= document.body.offsetHeight &&
+          !isLoading.value &&
+          !initialLoading.value &&
+          !initialLoadingFailed.value
+        ) {
+          if (query.value.page <= totalPage.value - 2) {
+            console.log('additional loading seq.')
+            isLoading.value = true
+            setTimeout(() => {
+              window.scrollTo(0, container.value.scrollHeight)
+            }, 20)
+  
+            setTimeout(() => {
+              query.value.page += 1
+              store.dispatch('requestProductList', query.value)
+                .then(res => {
+                  totalPage.value = res.data.totalpage
+                  prodList.value.push(...res.data.list)
+                })
+                .catch(err => {
+                  console.log(err)
+                })
+                .finally(() => {
+                  isLoading.value = false
+                })
+            }, 1000)
+          } else {
+            noMoreData.value = true;
+          }
         }
       }
     };
@@ -191,7 +196,43 @@ export default defineComponent({
       window.removeEventListener('scroll', handleScroll)
     })
     
+    const sort = function () {
+      if (store.getters['getSort']) {
+        query.value = { 
+          ...query.value, 
+          page: 0, 
+          sort: store.getters['getSort']
+        }
+        initialLoader()
+      }
+    }
+    
+    const market = function () {
+      if (store.getters['getMarket']) {
+        query.value = {
+          ...query.value, 
+          page: 0,
+          market: store.getters['getMarket']
+        }
+      } else {
+        query.value = query.value.sort ? 
+        {
+          page: 0,
+          pid: route.query.pid,
+          sort: query.value.sort
+        }
+        :
+        {
+          page: 0,
+          pid: route.query.pid,
+        }
+      }
+      initialLoader()
+    }
     return { 
+      initialLoader,
+      sort,
+      market,
       container,
       prodList, 
       show,
