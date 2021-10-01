@@ -35,10 +35,10 @@ public class ProductSellListInfoServiceImpl implements ProductSellListInfoServic
 
 	// 현재 사이클 한시간 전인 데이터 갯수 가져옴
 	@Override
-	public Long getProductSellListCount(long pid) {
+	public Long getProductSellListCount(long pid, List<Integer> market) {
 		LocalDateTime now = LocalDateTime.now().minusHours(1);
 		Long cycle = Long.parseLong(now.format(DateTimeFormatter.ofPattern("yyMMddHH")));
-		return productSellListRepository.getRecentProductSellListCount(cycle, pid)
+		return productSellListRepository.getRecentProductSellListCount(cycle, pid, market)
 				.orElse(0l);
 	}
 	

@@ -84,11 +84,11 @@ public class ProductSellListRepositoryImpl implements ProductSellListRepositoryC
 	
 	//현재 사이클 이상인 데이터갯수 가져옴
 	@Override
-	public Optional<Long> getRecentProductSellListCount(Long cycle, long pid){
+	public Optional<Long> getRecentProductSellListCount(Long cycle, long pid, List<Integer> market){
 		QProductSellList qpsl= QProductSellList.productSellList;
 		
 		Long result= queryFactory.selectFrom(qpsl)
-										.where(qpsl.cycle.eq(cycle).and(qpsl.productId.id.eq(pid)))							
+										.where(qpsl.cycle.eq(cycle).and(qpsl.productId.id.eq(pid)),getMarketContition(market, qpsl))							
 										.fetchCount();
 		
 		return Optional.ofNullable(result);

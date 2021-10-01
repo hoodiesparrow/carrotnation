@@ -47,7 +47,7 @@ public class APIController {
 										@RequestParam(defaultValue = "0")int sort, 
 										@RequestParam(defaultValue = "0") List<Integer> market) {
 			List<ProductSellListResponseDTO> productSellLists = productSellListInfoService.getProductSellLists(page, pid, sort, market);
-			Long count = productSellListInfoService.getProductSellListCount(pid);
+			Long count = productSellListInfoService.getProductSellListCount(pid, market);
 						
 			
 			Map<String, Object> ret = new HashMap<String, Object>();
@@ -84,9 +84,9 @@ public class APIController {
 	}
 	
 	@GetMapping("/product")
-	public ResponseEntity<Map<String, Object>> getProductPrice(@RequestParam long pid) {
+	public ResponseEntity<Map<String, Object>> getProductPrice(@RequestParam long pid,@RequestParam(defaultValue = "0") List<Integer> market ) {
 			Map<String, Object> ret = new HashMap<String, Object>();
-			Long count = productSellListInfoService.getProductSellListCount(pid);
+			Long count = productSellListInfoService.getProductSellListCount(pid, market);
 			
 			Product product = productService.getProduct(pid);
 			if(product==null) {
