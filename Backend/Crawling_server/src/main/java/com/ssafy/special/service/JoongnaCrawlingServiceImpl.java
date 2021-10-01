@@ -328,7 +328,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 
 		}
 		HashMap<String, String> map;
-		List<ProductSellList> psllist;
+		List<ProductSellList> psllist =null;
 		Coordinate address;
 		ProductSellList pslcheck;
 		for (ProductDTO pd : list) {
@@ -382,8 +382,8 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 					sellList.setLocation(pd.getLocation());
 					sellList.setImg(pd.getImg());
 					
-					psllist =productSellListRepository.getcoordinate(sellList.getAid(), sellList.getMarket()).orElse(null);
-					if(psllist!=null) {
+					psllist =productSellListRepository.getcoordinate(sellList.getAid(), sellList.getMarket()).orElse(new ArrayList<ProductSellList>());
+					if(psllist.size()!=0) {
 						pslcheck = psllist.get(0);
 						sellList.setX(pslcheck.getX());
 						sellList.setY(pslcheck.getY());

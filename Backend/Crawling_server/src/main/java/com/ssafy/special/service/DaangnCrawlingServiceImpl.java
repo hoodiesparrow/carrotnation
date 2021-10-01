@@ -160,8 +160,8 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 					sellList.setLocation(p.getLocation());
 					
 					
-					psllist =productSellListRepository.getcoordinate(sellList.getAid(), sellList.getMarket()).orElse(null);
-					if(psllist!=null) {
+					psllist =productSellListRepository.getcoordinate(sellList.getAid(), sellList.getMarket()).orElse(new ArrayList<ProductSellList>());
+					if(psllist.size()!=0) {
 						pslcheck = psllist.get(0);
 						sellList.setX(pslcheck.getX());
 						sellList.setY(pslcheck.getY());
