@@ -46,7 +46,7 @@ public class ProductSellArticleSimilerRepositoryImpl implements ProductSellArtic
 		
 		result = queryFactory.select(
 				Projections.constructor(ProductSellArticleSimilerResponseDTO.class,
-						qpsas.articleB.aid,qpsas.articleB.market,qpsas.articleB.productId.id,qpsas.articleB.title,qpsas.articleB.content,
+						qpsas.articleB.id,qpsas.articleB.aid,qpsas.articleB.market,qpsas.articleB.productId.id,qpsas.articleB.title,qpsas.articleB.content,
 						qpsas.articleB.price,qpsas.articleB.createDate,qpsas.articleB.link,qpsas.articleB.img,qpsas.articleB.location,qpsas.articleB.cycle, qpsas.similarity)
 			).from(qpsas)
 			.where(qpsas.articleA.id.eq(id).and(qpsas.cycle.goe(cycle)))

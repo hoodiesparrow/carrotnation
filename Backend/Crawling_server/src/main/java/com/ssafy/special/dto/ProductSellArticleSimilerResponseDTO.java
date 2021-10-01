@@ -14,8 +14,8 @@ import lombok.ToString;
 @ToString
 public class ProductSellArticleSimilerResponseDTO {
 
-	
-	private long id;//게시글 pid
+	private long id;//id
+	private long aid;//게시글 pid
 	private String market;//마켓종류
 		
 	private long productId;//품명

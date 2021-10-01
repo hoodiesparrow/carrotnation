@@ -52,7 +52,8 @@ public class ProductSellListInfoServiceImpl implements ProductSellListInfoServic
 		
 		ProductSellListResponseDTO ret=new ProductSellListResponseDTO();
 		
-		ret.setId(tmp.getAid());
+		ret.setId(tmp.getId());
+		ret.setAid(tmp.getAid());		
 		ret.setMarket(tmp.getMarket());
 		ret.setProductId(tmp.getProductId().getId());
 		ret.setTitle(tmp.getTitle());
