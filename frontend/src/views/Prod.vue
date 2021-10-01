@@ -54,8 +54,8 @@
             </g>
           </svg>
         </div>
-        <div v-if="noMoreData">
-          <hr>
+        <div v-if="noMoreData" class="text-center text-gray-600 bg-purple-200">
+          End of the List
           <!-- <p class="border-t-2 border-gray-300 w-full text-center text-md">리스트의 마지막입니다.</p> -->
         </div>
       </div>
@@ -153,6 +153,9 @@ export default defineComponent({
             case 200:
               noData.value = false
               totalPage.value = res.data.totalpage
+              if (totalPage.value <= 1) {
+                noMoreData.value = true
+              }
               prodList.value.push(...res.data.list)
               initialLoading.value = false;
               console.log(res.data)
