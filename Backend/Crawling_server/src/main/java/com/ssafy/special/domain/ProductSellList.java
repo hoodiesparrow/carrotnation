@@ -26,7 +26,7 @@ public class ProductSellList {
 	@GeneratedValue
 	private long id;
 	
-	private long pid;//게시글 pid
+	private long aid;//게시글 pid
 
 	private String market;//마켓종류
 		
