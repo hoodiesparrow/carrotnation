@@ -9,10 +9,10 @@ import org.springframework.data.repository.query.Param;
 
 import com.ssafy.special.domain.Product;
 import com.ssafy.special.domain.ProductSellList;
-import com.ssafy.special.domain.ProductSellListPK;
 import com.ssafy.special.dto.ProductSellListByDistanceResponseDTO;
 
-public interface ProductSellListRepository extends JpaRepository<ProductSellList, ProductSellListPK>, ProductSellListRepositoryCustom {
+
+public interface ProductSellListRepository extends JpaRepository<ProductSellList, Long>, ProductSellListRepositoryCustom {
 
 //    @Query(value = "SELECT * INTO OUTFILE '/home/ubuntu/mysqltablefile/sellList.txt' FIELDS TERMINATED BY '|' " + 
 //    		"LINES TERMINATED BY '\\n' " + 

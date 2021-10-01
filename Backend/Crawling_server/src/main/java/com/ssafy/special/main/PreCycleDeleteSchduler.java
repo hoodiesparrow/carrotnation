@@ -15,8 +15,8 @@ public class PreCycleDeleteSchduler {
 	private final PreCycleDeleteService preCycleDeleteService;
 	
 
-	@Scheduled(fixedRate = 1000 * 60 * 60 * 24, initialDelay = 1000 * 60 * 60)//24시간마다 동작
-	private void preCycleDelete() {
+	@Scheduled(fixedRate = 1000 * 60 * 60, initialDelay = 1000 * 60)//1시간마다 동작
+	public void preCycleDelete() {
 		log.info("이전 사이클 데이터 삭제를 시작합니다");
 		//ProductSellArticleSimiler의 이전 사이클 삭제
 		preCycleDeleteService.deleteProductSellArticleSimiler();		

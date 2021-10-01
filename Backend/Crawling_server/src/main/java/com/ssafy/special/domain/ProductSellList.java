@@ -7,8 +7,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -16,18 +16,18 @@ import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Getter @Setter
 @AllArgsConstructor
-//@ToString
-@IdClass(ProductSellListPK.class)
 public class ProductSellList {
 
 	@Id
-	private long id;//게시글 pid
-	@Id
+	@GeneratedValue
+	private long id;
+	
+	private long aid;//게시글 pid
+
 	private String market;//마켓종류
 		
 	@ManyToOne

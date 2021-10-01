@@ -144,7 +144,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 				//name이 지정되었으면 ProductSellList테이블에 삽입
 				if(p.getName()!=null) {					
 					ProductSellList sellList=new ProductSellList();
-					sellList.setId(Long.parseLong(p.getSeq()));
+					sellList.setAid(Long.parseLong(p.getSeq()));
 					sellList.setMarket("daangn");
 					sellList.setProductId(product);
 					sellList.setTitle(p.getTitle());
