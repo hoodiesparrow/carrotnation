@@ -21,4 +21,5 @@ public interface ProductSellListRepositoryCustom {
 	
 	Optional<List<ProductPriceResponseDTO>> getProductByPrice(Long cycle,long id);
 
+	void deletePreCycle(long cycle);
 }

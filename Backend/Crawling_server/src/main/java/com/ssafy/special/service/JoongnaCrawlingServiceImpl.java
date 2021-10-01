@@ -360,11 +360,11 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 					ProductSellList sellList = new ProductSellList();
 					if ("0".equals(pd.getSeq())) {
 						map = getQueryMap(pd.getLink());
-						sellList.setId(Integer.parseInt(map.get("articleid")));
+						sellList.setAid(Integer.parseInt(map.get("articleid")));
 						sellList.setMarket("joonnaCafe");
 
 					} else {
-						sellList.setId(Integer.parseInt(pd.getSeq()));
+						sellList.setAid(Integer.parseInt(pd.getSeq()));
 						sellList.setMarket("joonnaApp");
 					}
 
