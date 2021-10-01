@@ -44,15 +44,15 @@ public class ProductSellListInfoServiceImpl implements ProductSellListInfoServic
 	
 	//게시글 상세보기
 	@Override
-	public ProductSellListResponseDTO getProductSellDetail(String market, long pid) {
-		ProductSellList tmp =productSellListRepository.findByIdAndMarket(pid, market).orElse(null);
+	public ProductSellListResponseDTO getProductSellDetail(long id) {
+		ProductSellList tmp =productSellListRepository.findById(id).orElse(null);
 		
 		if(tmp==null)
 			return null;
 		
 		ProductSellListResponseDTO ret=new ProductSellListResponseDTO();
 		
-		ret.setId(tmp.getId());
+		ret.setId(tmp.getAid());
 		ret.setMarket(tmp.getMarket());
 		ret.setProductId(tmp.getProductId().getId());
 		ret.setTitle(tmp.getTitle());

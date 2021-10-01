@@ -11,7 +11,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductSellListResponseDTO {
-	private long id;//게시글 pid
+	private long id;//id
+	private long aid;//게시글 aid
 	private String market;//마켓종류
 		
 	private long productId;//품명
