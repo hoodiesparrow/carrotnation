@@ -1,5 +1,5 @@
 <template>
-  <div class="container max-w-750px  bg-gray-100" ref="container">
+  <div class="container max-w-750px h-screen bg-gray-100" ref="container">
     <SideBar :show="show" @closeSideBar="show=false" class="fixed top-0 z-40 h-full" />
     <div class="sticky top-0 transition duration-300 border-gray-300 z-40" :class="{'shadow-xl': !atTopOfPage, 'border-b-2': atTopOfPage}">
       <!-- <div class="flex justify-between items-center bg-gradient-to-r from-purple-400 to-purple-700 p-4"> -->
@@ -27,9 +27,21 @@
       </div>
     </div>
     <div class="text-left">
-      <div class="flex flex-col">
+      <div v-if="!errorFlag" class="flex flex-col">
         <ProdPriceInfo :prodInfo="prodInfo" />
         <ProdBox v-for="prod in prodList" :key="prod.pid" :product="prod" />
+        <div v-if="initialLoading" class="flex justify-center">
+          <svg xml:space="preserve" viewBox="0 0 100 100" class="w-64 h-full h-64 animate-spin" y="0" x="0" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <g class="ldl-scale">
+              <circle fill="#333" r="40" cy="50" cx="50">
+              </circle>
+              <g>
+                <path fill="#fff" d="M50 74c-13.234 0-24-10.766-24-24h7.268c0 9.226 7.506 16.732 16.732 16.732S66.732 59.226 66.732 50 59.226 33.268 50 33.268V26c13.234 0 24 10.766 24 24S63.234 74 50 74z">
+                </path>
+              </g>
+            </g>
+          </svg>
+        </div>
         <div v-if="isLoading" class="flex justify-center">
           <svg xml:space="preserve" viewBox="0 0 100 100" class="w-16 h-16 animate-spin" y="0" x="0" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
             <g class="ldl-scale">
@@ -42,12 +54,24 @@
             </g>
           </svg>
         </div>
-        <div v-if="initialLoadingFailed">
-          로딩에 실패하였습니다.
-        </div>
         <div v-if="noMoreData">
-          <p class="border-t-2 border-gray-300 w-full text-center">리스트의 마지막입니다.</p>
+          <hr>
+          <!-- <p class="border-t-2 border-gray-300 w-full text-center text-md">리스트의 마지막입니다.</p> -->
         </div>
+      </div>
+
+      <div v-if="initialLoadingFailed" class="flex flex-col items-center mt-32">
+        <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24">
+          <path d="M16.143 2l5.857 5.858v8.284l-5.857 5.858h-8.286l-5.857-5.858v-8.284l5.857-5.858h8.286zm.828-2h-9.942l-7.029 7.029v9.941l7.029 7.03h9.941l7.03-7.029v-9.942l-7.029-7.029zm-6.471 6h3l-1 8h-1l-1-8zm1.5 12.25c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z"/>
+        </svg>
+        <span class="text-lg mt-4">요청이 실패하였습니다.</span>
+        <button class="mt-10 p-1 bg-white border border-black" @click="initialLoader">다시 시도</button>
+      </div>
+      <div v-if="noData" class="flex flex-col items-center mt-32">
+        <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24">
+          <path d="M16.142 2l5.858 5.858v8.284l-5.858 5.858h-8.284l-5.858-5.858v-8.284l5.858-5.858h8.284zm.829-2h-9.942l-7.029 7.029v9.941l7.029 7.03h9.941l7.03-7.029v-9.942l-7.029-7.029zm-8.482 16.992l3.518-3.568 3.554 3.521 1.431-1.43-3.566-3.523 3.535-3.568-1.431-1.432-3.539 3.583-3.581-3.457-1.418 1.418 3.585 3.473-3.507 3.566 1.419 1.417z"/>
+        </svg>
+        <span class="text-lg mt-4">조건을 만족하는 게시글이 존재하지 않습니다.</span>
       </div>
     </div>
   </div>
@@ -91,24 +115,28 @@ export default defineComponent({
     const initialLoading = ref(true)
     const initialLoadingFailed = ref(false)
     const isLoading = ref(false)
+    const noData = ref(false)
     const noMoreData = ref(false)
     const totalPage = ref(0)
     const query = ref({
       pid: route.query.pid,
       page: 0,
     })
+    const errorFlag = computed(() => {
+      return noData.value || initialLoadingFailed.value
+    })
     
-    store.dispatch('requestProductInfo', query.value.pid)
-      .then(res => {
-        prodInfo.value.name = res.data.product.name
-        prodInfo.value.minPrice = res.data.product.minPrice.toLocaleString()
-        prodInfo.value.avgPrice = res.data.product.avgPrice.toLocaleString()
-        prodInfo.value.maxPrice = res.data.product.maxPrice.toLocaleString()
-        prodInfo.value.count = res.data.searchcount
-        console.log(res)
-      })
 
     const initialLoader = function () {
+      store.dispatch('requestProductInfo', query.value.pid)
+        .then(res => {
+          prodInfo.value.name = res.data.product.name
+          prodInfo.value.minPrice = res.data.product.minPrice.toLocaleString()
+          prodInfo.value.avgPrice = res.data.product.avgPrice.toLocaleString()
+          prodInfo.value.maxPrice = res.data.product.maxPrice.toLocaleString()
+          prodInfo.value.count = res.data.searchcount
+          console.log(res)
+        })
       // 초기화
       initialLoading.value = true
       initialLoadingFailed.value = false
@@ -118,24 +146,25 @@ export default defineComponent({
         .then((res) => {
           switch (res.status) {
             case 200:
+              noData.value = false
               totalPage.value = res.data.totalpage
               prodList.value.push(...res.data.list)
+              initialLoading.value = false;
               break
             case 204:
-              initialLoadingFailed.value = true
+              noData.value = true
               console.log('204204')
+              initialLoading.value = false;
               break
+
             default:
-              initialLoadingFailed.value = true
               console.log('other case')
           }
         })
         .catch((err) => {
+          initialLoadingFailed.value = true
           console.log(err);
         })
-        .finally(() => {
-          initialLoading.value = false;
-        });
     }
     initialLoader()
 
@@ -197,39 +226,31 @@ export default defineComponent({
     })
     
     const sort = function () {
-      if (store.getters['getSort']) {
-        query.value = { 
-          ...query.value, 
-          page: 0, 
-          sort: store.getters['getSort']
-        }
-        initialLoader()
+      query.value = { 
+        ...query.value, 
+        page: 0, 
+        sort: store.getters['getSort']
       }
+      initialLoader()
     }
     
     const market = function () {
-      if (store.getters['getMarket']) {
+      if (store.getters['getMarket'] >= 1) {
         query.value = {
           ...query.value, 
           page: 0,
           market: store.getters['getMarket']
         }
       } else {
-        query.value = query.value.sort ? 
-        {
-          page: 0,
-          pid: route.query.pid,
-          sort: query.value.sort
-        }
-        :
-        {
-          page: 0,
-          pid: route.query.pid,
-        }
+        delete query.value.market
+        query.value.page = 0
+        console.log(query.value)
       }
       initialLoader()
     }
     return { 
+      errorFlag,
+      noData,
       initialLoader,
       sort,
       market,

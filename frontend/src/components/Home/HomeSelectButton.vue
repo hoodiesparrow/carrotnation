@@ -42,7 +42,8 @@
                   class="
                     relative
                     flex
-                    px-5
+                    px-4
+                    md:px-8
                     py-4
                     rounded-lg
                     shadow-md
@@ -117,7 +118,8 @@
                   class="
                     relative
                     flex
-                    px-5
+                    px-4
+                    md:px-8
                     py-4
                     rounded-lg
                     shadow-md
