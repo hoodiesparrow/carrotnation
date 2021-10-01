@@ -16,7 +16,9 @@ import lombok.ToString;
 @ToString
 public class ProductSellListByDistanceResponseDTO {
 
-	private long id;//게시글 pid
+	private long id;
+	
+	private long aid;//게시글 pid
 
 	private String market;//마켓종류
 		
@@ -36,11 +38,11 @@ public class ProductSellListByDistanceResponseDTO {
 	
 	private String location;//지역
 	
-	private Long cycle;//크롤링 주기 파악을 위해 만듬
-	
 	private double x;
 	
 	private double y;
+
+	private long cycle;
 	
 	private double distance;
 }

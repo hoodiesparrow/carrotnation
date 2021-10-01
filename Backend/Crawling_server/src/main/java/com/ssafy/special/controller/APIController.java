@@ -13,11 +13,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.special.domain.Product;
+import com.ssafy.special.dto.ByDistance;
 import com.ssafy.special.dto.DatePriceResponseDTO;
 import com.ssafy.special.dto.PriceStepResponseDTO;
 import com.ssafy.special.dto.ProductSellArticleSimilerResponseDTO;
 import com.ssafy.special.dto.ProductSellListResponseDTO;
 import com.ssafy.special.service.DatePriceService;
+import com.ssafy.special.service.NearProductServiceImpl;
 import com.ssafy.special.service.ProductByPriceService;
 import com.ssafy.special.service.ProductSellListInfoService;
 import com.ssafy.special.service.ProductService;
@@ -36,7 +38,7 @@ public class APIController {
 	private final ProductService productService;
 	private final DatePriceService datePriceService;
 	private final ProductByPriceService productByPriceService; 
-
+	private final NearProductServiceImpl nearProductServiceImpl;
 	//ProductSellList 뿌려줌(최신사이클만)
 	@GetMapping("/productselllist")
 	public ResponseEntity<Map<String, Object>> getProductSellList(
@@ -121,4 +123,12 @@ public class APIController {
 		return ResponseEntity.status(HttpStatus.OK).body(productByPriceService.byPrice(pid, cycle));
 	}
 	
+	@GetMapping("/nearProduct")
+	public ResponseEntity<Map<String,List<ByDistance>>> getNearProduct(@RequestParam double lon, @RequestParam double lat,@RequestParam long pid){
+		Map<String,List<ByDistance>> res = new HashMap<String, List<ByDistance>>();
+		res.put("result",nearProductServiceImpl.nearProduct(lon, lat, pid));
+		
+		
+		return ResponseEntity.status(HttpStatus.OK).body(res);
+	}
 }

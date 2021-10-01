@@ -62,7 +62,7 @@ public class MainApplication {
 	}
 	
 
-	@Scheduled(fixedRate = 1000 * 60 * 60) // 1시간
+//	@Scheduled(fixedRate = 1000 * 60 * 60) // 1시간
 	@Async
 	private void crawlingStart() {
 		log.info("Schedule Start ----------------------------------------------------------------------------------");
