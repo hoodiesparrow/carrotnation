@@ -102,6 +102,7 @@ public class ThunderCrawlingServiceImpl implements ThunderCrawlingService {
 		}
 		
 		int i=0;
+		ProductSellList pslcheck;
 		for(ProductDTO p : productList) {
 			if(i!=0 && i%100==0)
 			i++;		
@@ -129,12 +130,19 @@ public class ThunderCrawlingServiceImpl implements ThunderCrawlingService {
 					sellList.setCreateDate(p.getDate());
 					sellList.setLink(p.getLink());
 					sellList.setLocation(p.getLocation());
-					if(p.getLocation()!=null&&!"".equals(p.getLocation().trim())){
-						Map<String,Double> coordnt = adresstoCoorUrils.AdressToCoorUtilstest(p.getLocation());
-						if(coordnt!=null) {
-							sellList.setX(coordnt.get("x"));
-							sellList.setY(coordnt.get("y"));
+					
+					pslcheck =productSellListRepository.findByIdAndMarket(sellList.getId(), sellList.getMarket()).orElse(null);
+					if(pslcheck==null||pslcheck.getX()<=0) {
+						if(p.getLocation()!=null&&!"".equals(p.getLocation().trim())){
+							Map<String,Double> coordnt = adresstoCoorUrils.AdressToCoorUtilstest(p.getLocation());
+							if(coordnt!=null) {
+								sellList.setX(coordnt.get("x"));
+								sellList.setY(coordnt.get("y"));
+							}
 						}
+					}else {
+						sellList.setX(pslcheck.getX());
+						sellList.setY(pslcheck.getY());
 					}
 					
 					boolean result = insertProductSellList(sellList);

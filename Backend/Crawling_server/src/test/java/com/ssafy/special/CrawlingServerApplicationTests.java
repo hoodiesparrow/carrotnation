@@ -224,8 +224,6 @@ class CrawlingServerApplicationTests {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		
 	}
 	
 }

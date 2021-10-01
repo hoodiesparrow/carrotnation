@@ -27,4 +27,5 @@ public interface ProductSellListRepository extends JpaRepository<ProductSellList
   	Optional<List<ProductSellList>> findByProductId(Product product);
   	
   	Optional<List<ProductSellList>> findByCycleLessThan(Long cycle);
+  	
 }

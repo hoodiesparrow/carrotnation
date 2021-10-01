@@ -104,6 +104,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		log.info("(당근)"+ productQuery.getQuery()+" : 부적합한 물건을 제외하는 중입니다");
 		
 //		int i=0;
+		ProductSellList pslcheck;
 		for(ProductDTO p : productList) {
 			isOldDate=false;// 1달 넘어가는 데이터면 탈출시켜
 //			if(i!=0 && i%2000==0)
@@ -153,13 +154,21 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 					sellList.setLink(p.getLink());
 					sellList.setImg(p.getImg());
 					sellList.setLocation(p.getLocation());
-					if(p.getLocation()!=null&&!"".equals(p.getLocation().trim())){
-						Map<String,Double> coordnt = adresstoCoorUrils.AdressToCoorUtilstest(p.getLocation());
-						if(coordnt!=null) {
-							sellList.setX(coordnt.get("x"));
-							sellList.setY(coordnt.get("y"));
+					
+					pslcheck =productSellListRepository.findByIdAndMarket(sellList.getId(), sellList.getMarket()).orElse(null);
+					if(pslcheck==null||pslcheck.getX()<=0) {
+						if(p.getLocation()!=null&&!"".equals(p.getLocation().trim())){
+							Map<String,Double> coordnt = adresstoCoorUrils.AdressToCoorUtilstest(p.getLocation());
+							if(coordnt!=null) {
+								sellList.setX(coordnt.get("x"));
+								sellList.setY(coordnt.get("y"));
+							}
 						}
+					}else {
+						sellList.setX(pslcheck.getX());
+						sellList.setY(pslcheck.getY());
 					}
+					
 					if(sellList.getCreateDate()==null)
 						continue;
 					boolean result = insertProductSellList(sellList);

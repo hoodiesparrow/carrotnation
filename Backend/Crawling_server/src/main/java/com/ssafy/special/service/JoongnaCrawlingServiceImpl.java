@@ -325,6 +325,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 
 		}
 		HashMap<String, String> map;
+		ProductSellList pslcheck;
 		for (ProductDTO pd : list) {
 
 			for (Product p : pdlist) {
@@ -375,13 +376,21 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 					sellList.setLink(pd.getLink());
 					sellList.setLocation(pd.getLocation());
 					sellList.setImg(pd.getImg());
-					if(pd.getLocation()!=null&&!"".equals(pd.getLocation().trim())){
-						Map<String,Double> coordnt = adresstoCoorUrils.AdressToCoorUtilstest(pd.getLocation());
-						if(coordnt!=null) {
-							sellList.setX(coordnt.get("x"));
-							sellList.setY(coordnt.get("y"));
+					
+					pslcheck =productSellListRepository.findByIdAndMarket(sellList.getId(), sellList.getMarket()).orElse(null);
+					if(pslcheck==null||pslcheck.getX()<=0) {
+						if(pd.getLocation()!=null&&!"".equals(pd.getLocation().trim())){
+							Map<String,Double> coordnt = adresstoCoorUrils.AdressToCoorUtilstest(pd.getLocation());
+							if(coordnt!=null) {
+								sellList.setX(coordnt.get("x"));
+								sellList.setY(coordnt.get("y"));
+							}
 						}
+					}else {
+						sellList.setX(pslcheck.getX());
+						sellList.setY(pslcheck.getY());
 					}
+					
 					boolean result = insertProductSellList(sellList);
 					if (!result) {
 						log.info("(중고나라)데이터 삽입에 실패 했습니다");
