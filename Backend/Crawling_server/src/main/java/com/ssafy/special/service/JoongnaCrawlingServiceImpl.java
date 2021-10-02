@@ -137,10 +137,10 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 				con.setDoOutput(true); // POST 데이터를 OutputStream으로 넘겨 주겠다는 설정
 				con.setUseCaches(false);
 				con.setDefaultUseCaches(false);
-				os = con.getOutputStream();
-				wr = new OutputStreamWriter(os);
+				wr = new OutputStreamWriter(con.getOutputStream());
 				wr.write(payload); // json 형식의 message 전달
 				wr.flush();
+				wr.close();
 			} else if ("get".equals(methodlower)) {
 				con.setRequestMethod("GET");
 				con.setDoOutput(false);
@@ -156,8 +156,6 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 						sb.append(line).append("\n");
 					}
 					br.close();
-					wr.close();
-					os.close();
 				} else {
 //				System.out.println(con.getResponseMessage());
 					throw new NotPageException(con.getResponseMessage());
