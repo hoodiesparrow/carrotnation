@@ -122,8 +122,8 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 			// 공통
 			URL url = new URL(linkUrl);
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			con.setConnectTimeout(5000); // 서버에 연결되는 Timeout 시간 설정
-			con.setReadTimeout(5000); // InputStream 읽어 오는 Timeout 시간 설정
+			con.setConnectTimeout(7000); // 서버에 연결되는 Timeout 시간 설정
+			con.setReadTimeout(8000); // InputStream 읽어 오는 Timeout 시간 설정
 
 			if ("post".equals(methodlower)) {
 				con.setRequestMethod("POST");
@@ -404,10 +404,10 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 						}
 					}
 					
-					boolean result = insertProductSellList(sellList);
-					if (!result) {
-						log.info("(중고나라)데이터 삽입에 실패 했습니다");
-					}
+//					boolean result = insertProductSellList(sellList);
+//					if (!result) {
+//						log.info("(중고나라)데이터 삽입에 실패 했습니다");
+//					}
 					break;
 				}
 

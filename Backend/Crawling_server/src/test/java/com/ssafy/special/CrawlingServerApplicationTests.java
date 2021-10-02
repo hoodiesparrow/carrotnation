@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.special.controller.AdressToCoorUtils;
 import com.ssafy.special.controller.SSHUtils;
 import com.ssafy.special.domain.Coordinate;
+import com.ssafy.special.domain.ProductQuery;
 //import com.ssafy.special.domain.Product;
 import com.ssafy.special.domain.ProductSellList;
 import com.ssafy.special.dto.ByDistance;
@@ -32,6 +33,7 @@ import com.ssafy.special.repository.ProductSellArticleSimilerRepository;
 import com.ssafy.special.repository.ProductSellListRepository;
 import com.ssafy.special.service.DaangnCrawlingServiceImpl;
 import com.ssafy.special.service.JoongnaCrawlingService;
+import com.ssafy.special.service.KeywordInfoService;
 import com.ssafy.special.service.SimilarityService;
 import com.ssafy.special.service.ThunderCrawlingService;
 
@@ -46,6 +48,8 @@ import kr.co.shineware.nlp.komoran.model.Token;
 //@Log4j2
 class CrawlingServerApplicationTests {
 
+	@Autowired
+	KeywordInfoService queryInfoService;
 	@Autowired
 	DaangnCrawlingServiceImpl daangnCrawlingService;
 	@Autowired
@@ -238,10 +242,14 @@ class CrawlingServerApplicationTests {
 			e.printStackTrace();
 		}
 	}
-	@Test
+//	@Test
 	void qquu() {
-		Coordinate s = coordinateRepository.findByaddress("충청북도 옥천군 청산면").orElse(null);
-		System.out.println(s);
+		List<ProductQuery> productQuery = queryInfoService.getProductQueryList();
+		
+		for (ProductQuery query : productQuery) {
+			List<String> queryExceptionKeywordList = queryInfoService.getQueryExceptionKeywordList(query);
+			joongnaCrawlingService.joongnainit(query,queryExceptionKeywordList);
+		}
 	}
 	
 //	@Test
