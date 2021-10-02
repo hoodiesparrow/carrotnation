@@ -411,10 +411,10 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 						}
 					}
 					
-//					boolean result = insertProductSellList(sellList);
-//					if (!result) {
-//						log.info("(중고나라)데이터 삽입에 실패 했습니다");
-//					}
+					boolean result = insertProductSellList(sellList);
+					if (!result) {
+						log.info("(중고나라)데이터 삽입에 실패 했습니다");
+					}
 					break;
 				}
 
