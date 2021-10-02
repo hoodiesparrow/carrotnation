@@ -121,6 +121,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		try {
 			// 공통
 			URL url = new URL(linkUrl);
+			System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setConnectTimeout(7000); // 서버에 연결되는 Timeout 시간 설정
 			con.setReadTimeout(8000); // InputStream 읽어 오는 Timeout 시간 설정
