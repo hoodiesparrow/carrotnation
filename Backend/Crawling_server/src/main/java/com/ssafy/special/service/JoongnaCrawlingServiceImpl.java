@@ -3,6 +3,7 @@ package com.ssafy.special.service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -118,6 +119,8 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 	public String urlconnection(String payload, String method, String linkUrl) throws NotPageException {
 		String methodlower = method.toLowerCase();
 		StringBuilder sb = new StringBuilder();
+		OutputStreamWriter wr = null;
+		OutputStream os=null;
 		try {
 			// 공통
 			URL url = new URL(linkUrl);
@@ -125,7 +128,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setConnectTimeout(7000); // 서버에 연결되는 Timeout 시간 설정
 			con.setReadTimeout(8000); // InputStream 읽어 오는 Timeout 시간 설정
-
+			
 			if ("post".equals(methodlower)) {
 				con.setRequestMethod("POST");
 				// json으로 message를 전달하고자 할 때
@@ -134,7 +137,8 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 				con.setDoOutput(true); // POST 데이터를 OutputStream으로 넘겨 주겠다는 설정
 				con.setUseCaches(false);
 				con.setDefaultUseCaches(false);
-				OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
+				os = con.getOutputStream();
+				wr = new OutputStreamWriter(os);
 				wr.write(payload); // json 형식의 message 전달
 				wr.flush();
 			} else if ("get".equals(methodlower)) {
@@ -152,6 +156,8 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 						sb.append(line).append("\n");
 					}
 					br.close();
+					wr.close();
+					os.close();
 				} else {
 //				System.out.println(con.getResponseMessage());
 					throw new NotPageException(con.getResponseMessage());
