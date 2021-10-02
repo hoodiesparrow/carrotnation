@@ -70,7 +70,7 @@ public class ProductSellArticleSimilerRepositoryImpl implements ProductSellArtic
 	public void deleteByProductSellListIds(List<Long> article) {
 		QProductSellArticleSimiler qpsas = QProductSellArticleSimiler.productSellArticleSimiler;
 		
-		queryFactory.delete(qpsas).where(qpsas.articleA.aid.in(article).or(qpsas.articleB.aid.in(article))).execute();	
+		queryFactory.delete(qpsas).where(qpsas.articleA.id.in(article).or(qpsas.articleB.id.in(article))).execute();	
 	}
 	
 }
