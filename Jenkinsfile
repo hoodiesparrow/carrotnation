@@ -22,7 +22,7 @@ stages {
 						sh 'docker images -f "dangling=true" -q \
 							| xargs -r docker rmi'
 						
-            sh 'docker run -d --name crawlingbe -p 8080:8080 -v /home/ubuntu/pemkey/:/home/ubuntu/pemkey/ -v /home/ubuntu/mysqltablefile/:/home/ubuntu/mysqltablefile/ --network usedtrade crawlingbe:latest '
+            sh 'docker run -d --name crawlingbe -p 8443:8443 -v /home/ubuntu/pemkey/:/home/ubuntu/pemkey/ -v /home/ubuntu/mysqltablefile/:/home/ubuntu/mysqltablefile/ --network usedtrade crawlingbe:latest '
 						
         }
     }
