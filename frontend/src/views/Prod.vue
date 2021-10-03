@@ -3,26 +3,24 @@
     <div class="sticky top-0 transition duration-300 border-gray-300 z-40" :class="{'shadow-xl': !atTopOfPage, 'border-b-2': atTopOfPage}">
       <!-- <div class="flex justify-between items-center bg-gradient-to-r from-purple-400 to-purple-700 p-4"> -->
       <div class="flex justify-between items-center bg-purple-700 p-4">
-        <div class="flex">
-            <svg
-              class="h-8 w-8 text-white"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              @click="goToBack()"
-            >
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-              @click="goToQuote" class="cursor-pointer mt-1 mr-3"
-            >
-              <path fill="#FFFFFF" d="M14.172 7.396l1.413-1.39 1.414 1.414-1.414 1.39-1.413-1.414zm2.828 16.604h6v-13h-6v13zm-.559-18.834l1.414 1.414 1.435-1.41-1.415-1.415-1.434 1.411zm.591-3.951l4.771 4.771 1.197-5.986-5.968 1.215zm-8.032 22.785h6v-9h-6v9zm-8 0h6v-6h-6v6zm13.729-14.349l-1.414-1.414-1.45 1.425-3-3.002-7.841 7.797 1.41 1.418 6.427-6.39 2.991 2.993 2.877-2.827z"/>
-            </svg>
-        </div>
-        <span class="text-4xl font-extrabold text-white">{{ prodInfo.name }}</span>
+        <svg
+          class="h-8 w-8 text-white cursor-pointer"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          @click="goToBack()"
+        >
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+        <span class="text-2xl font-extrabold text-white">{{ prodInfo.name }}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+          @click="goToQuote" class="cursor-pointer mx-2"
+        >
+          <path fill="#FFFFFF" d="M14.172 7.396l1.413-1.39 1.414 1.414-1.414 1.39-1.413-1.414zm2.828 16.604h6v-13h-6v13zm-.559-18.834l1.414 1.414 1.435-1.41-1.415-1.415-1.434 1.411zm.591-3.951l4.771 4.771 1.197-5.986-5.968 1.215zm-8.032 22.785h6v-9h-6v9zm-8 0h6v-6h-6v6zm13.729-14.349l-1.414-1.414-1.45 1.425-3-3.002-7.841 7.797 1.41 1.418 6.427-6.39 2.991 2.993 2.877-2.827z"/>
+        </svg>
       </div>
       <div class="bg-white p-3 flex justify-between text-gray-800">
         <div class="flex items-center">
@@ -137,7 +135,9 @@ export default defineComponent({
     })
     
     const goToBack = () => {
-      history.back();
+      router.push({
+        name: 'Home'
+      })
     };
 
     const goToQuote = () => {

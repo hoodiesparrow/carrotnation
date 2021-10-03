@@ -20,10 +20,10 @@
     </div>
 
     <div class="bg-gray-100 p-3 pb-5">
-      <div class="w-full mb-px">
+      <div class="w-full mb-px shadow-md">
         <img :src="product.articleDeatil.img" class="w-full" />
       </div>
-      <div class="mb-2">
+      <div class="mb-2 shadow-md">
         <div class="bg-white mb-px">
           <div class="pt-3">
             <p
@@ -67,7 +67,7 @@
         </div>
       </div>
       <div>
-        <div class="bg-white mb-3 p-5">
+        <div class="bg-white mb-3 p-5 shadow-md">
           <p class="text-xl font-semibold text-gray-500 pb-3">유사 게시글</p>
           <div v-if="product.similerProduct.length > 0">
             <div style="white-space: nowrap; overflow: auto">
