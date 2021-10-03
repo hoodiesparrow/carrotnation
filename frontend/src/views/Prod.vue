@@ -1,15 +1,26 @@
 <template>
   <div class="container max-w-750px" ref="container">
-    <SideBar :show="show" @closeSideBar="show=false" class="fixed top-0 z-40 h-full" />
     <div class="sticky top-0 transition duration-300 border-gray-300 z-40" :class="{'shadow-xl': !atTopOfPage, 'border-b-2': atTopOfPage}">
       <!-- <div class="flex justify-between items-center bg-gradient-to-r from-purple-400 to-purple-700 p-4"> -->
       <div class="flex justify-between items-center bg-purple-700 p-4">
-        <div>
-          <img
-            src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMjQgNmgtMjR2LTRoMjR2NHptMCA0aC0yNHY0aDI0di00em0wIDhoLTI0djRoMjR2LTR6Ii8+PC9zdmc+"
-            @click="show = !show"
-            class="cursor-pointer"
-          />
+        <div class="flex">
+            <svg
+              class="h-8 w-8 text-white"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              @click="goToBack()"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+              @click="goToQuote" class="cursor-pointer mt-1 mr-3"
+            >
+              <path fill="#FFFFFF" d="M14.172 7.396l1.413-1.39 1.414 1.414-1.414 1.39-1.413-1.414zm2.828 16.604h6v-13h-6v13zm-.559-18.834l1.414 1.414 1.435-1.41-1.415-1.415-1.434 1.411zm.591-3.951l4.771 4.771 1.197-5.986-5.968 1.215zm-8.032 22.785h6v-9h-6v9zm-8 0h6v-6h-6v6zm13.729-14.349l-1.414-1.414-1.45 1.425-3-3.002-7.841 7.797 1.41 1.418 6.427-6.39 2.991 2.993 2.877-2.827z"/>
+            </svg>
         </div>
         <span class="text-4xl font-extrabold text-white">{{ prodInfo.name }}</span>
       </div>
@@ -26,10 +37,11 @@
         </div>
       </div>
     </div>
+
     <div class="text-left">
       <div v-if="!errorFlag" class="flex flex-col bg-gray-100">
         <ProdPriceInfo :prodInfo="prodInfo" />
-        <ProdBox v-for="prod in prodList" :key="prod.pid" :product="prod" />
+        <ProdBox v-for="(prod, idx) in prodList" :key="idx" :product="prod" :productName="prodInfo.name" />
         <div v-if="initialLoading" class="flex justify-center">
           <svg xml:space="preserve" viewBox="0 0 100 100" class="w-64 h-full h-64 animate-spin" y="0" x="0" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
             <g class="ldl-scale">
@@ -81,7 +93,6 @@
 import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import { defineComponent, reactive, ref, onMounted, onUnmounted, computed, watch } from "vue";
-import SideBar from "@/components/SideBar.vue";
 import ProdBox from "@/components/ProdItem.vue";
 import ProdPriceInfo from "@/components/Prod/ProdPriceInfo.vue";
 import ProdSortButton from "@/components/Prod/ProdSortButton.vue"
@@ -91,7 +102,6 @@ export default defineComponent({
   name: "Home",
   components: {
     ProdBox,
-    SideBar,
     ProdPriceInfo,
     ProdSortButton,
     ProdMarketButton,
@@ -126,6 +136,18 @@ export default defineComponent({
       return noData.value || initialLoadingFailed.value
     })
     
+    const goToBack = () => {
+      history.back();
+    };
+
+    const goToQuote = () => {
+      router.push({
+        name: "Quote",
+        query: {
+          pid: query.value.pid,
+        },
+      });
+    };
 
     const initialLoader = function () {
       console.log('@initialLoader', query.value)
@@ -277,6 +299,8 @@ export default defineComponent({
       noMoreData,
       prodInfo,
       atTopOfPage,
+      goToQuote,
+      goToBack,
     };
   },
 });

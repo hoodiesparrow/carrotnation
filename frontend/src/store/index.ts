@@ -15,6 +15,10 @@
     id: string,
     market: string,
   }
+  interface byPricequery {
+    pid: string,
+    cycle : string
+  }
 
   const BASE_URL = 'https://j5d205.p.ssafy.io'
 
@@ -80,24 +84,43 @@
         return axios.get(url, header)
       },
 
-      requestProductDetail: function ({ commit }, query: DetailQuery) {
-        const url = `${BASE_URL}/api/productselldetail`
-        const header = {
-          params: query
-        }
-        return axios.get(url, header);
+    requestProductDetail: function ({ commit }, id: number) {
+      const url = `${BASE_URL}/api/productselldetail`
+      const header = {
+        params: { 
+          id: id 
+        } 
       }
+      return axios.get(url, header);
     },
-    getters: {
-      getCategoryData: function (state) {
-        return state.categoryData
-      },
-      getSort: function (state) {
-        return state.sort
-      },
-      getMarket: function (state) {
-        return state.market
-      },
+
+    requestDatePrice: function ({ commit }, pid: string) {
+      const url = `${BASE_URL}/api/dateprice`
+      const header = {
+        params: { pid: pid }
+      }
+      return axios.get(url, header)
     },
-    modules: {},
-  });
+
+    requestByPrice: function ({ commit }, query: byPricequery) {
+      const url = `${BASE_URL}/api/byprice`
+      const header = {
+        params: query
+      }
+      return axios.get(url, header)
+    }
+
+  },
+  getters: {
+    getCategoryData: function (state) {
+      return state.categoryData
+    },
+    getSort: function (state) {
+      return state.sort
+    },
+    getMarket: function (state) {
+      return state.market
+    },
+  },
+  modules: {},
+});

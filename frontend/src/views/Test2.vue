@@ -1,3 +1,7 @@
+<template>
+  {{ lat }}
+  {{ lon }}
+</template>
 <script>
 import { ref } from 'vue'
 
@@ -9,11 +13,14 @@ const options = {
 
 export default {
   setup() {
-
+    const lat = ref('')
+    const lon = ref('')
     const success = function (pos) {
       let crd = pos.coords;
       console.log('Your current position is:');
+      lat.value = crd.latitude
       console.log('Latitude : ' + crd.latitude);
+      lon.value = crd.longitude
       console.log('Longitude: ' + crd.longitude);
       console.log('More or less ' + crd.accuracy + ' meters.');
     }
@@ -24,7 +31,7 @@ export default {
 
     navigator.geolocation.getCurrentPosition(success, error, options);
 
-    return {}
+    return { lat, lon }
   },
 }
 </script>
