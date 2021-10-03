@@ -24,12 +24,11 @@ export default defineComponent({
       type: String,
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const router = useRouter();
     const route = useRoute();
 
     const goToDetail = () => {
-      console.log("click");
       router.push({
         name: "Detail",
         query: {

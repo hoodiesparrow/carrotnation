@@ -97,7 +97,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent, ref, computed, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useStore } from "vuex";
 import SmallCard from "@/components/SmallCard.vue";
@@ -114,18 +114,29 @@ export default defineComponent({
 
     const product = ref(null);
     const productName = route.query.productName;
-    store
-      .dispatch("requestProductDetail", route.query.id)
-      .then((res) => {
-        product.value = res.data;
-        console.log(product.value);
-      })
-      .catch((err) => {
-        console.log(err.data);
-      })
-      .finally(() => {
-        console.log(product.value);
-      });
+
+    const initialLoad = function () {
+      store
+        .dispatch("requestProductDetail", route.query.id)
+        .then((res) => {
+          product.value = res.data;
+        })
+        .catch((err) => {
+          console.log(err.data);
+        })
+        .finally(() => {
+          console.log(product.value);
+        });
+    };
+    initialLoad();
+
+    watch(
+      () => route.query,
+      (newV, oldV) => {
+        console.log(newV);
+        initialLoad();
+      }
+    );
 
     const goToBack = () => {
       history.back();

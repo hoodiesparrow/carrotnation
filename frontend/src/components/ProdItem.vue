@@ -1,6 +1,6 @@
 <template>
   <div
-    class="mt-3 mr-3 ml-3 p-3 transition hover:bg-purple-50 hover:text-black bg-white"
+    class="mb-3 mr-3 ml-3 p-3 transition hover:bg-purple-50 hover:text-black bg-white shadow-md"
     @click="onClickItem"
   >
     <div class="grid grid-rows-4 grid-cols-3 place-content-cente max-w-dm h-48">
@@ -104,7 +104,7 @@ export default defineComponent({
     // const routeData = router.resolve({ name: "BridgeTest", query: { code: "someData" } });
 
     const onClickItem = () => {
-      console.log(props.product.productId);
+      console.log(props.productName);
       router.push({
         name: "Detail",
         query: {

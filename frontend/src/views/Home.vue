@@ -44,7 +44,7 @@
             </span>
           </h2>
           <p class="text-base text-indigo-100 md:text-lg">
-            호머심슨 마지부블리에 바트심슨 리사심슨
+            모바일 디바이스 중고거래를 한눈에
           </p>
         </div>
       </div>

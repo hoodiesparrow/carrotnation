@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full p-4 py-8">
+  <div class="w-full p-2 py-8">
     <div class="w-full grid grid-cols-12 gap-4">
       <div class="col-span-2 flex justify-start pt-8">
         <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -11,7 +11,7 @@
         </svg>
       </div>
 
-      <RadioGroup v-model="tree1Content" class="overflow-hidden col-span-8 pb-3">
+      <RadioGroup v-model="tree1Content" class="overflow-hidden col-span-8 px-1 pb-3">
         <transition
           enter-active-class="transition transform duration-300"
           :enter-from-class="enterFrom"
@@ -42,7 +42,8 @@
                   class="
                     relative
                     flex
-                    px-5
+                    px-4
+                    md:px-8
                     py-4
                     rounded-lg
                     shadow-md
@@ -117,7 +118,8 @@
                   class="
                     relative
                     flex
-                    px-5
+                    px-4
+                    md:px-8
                     py-4
                     rounded-lg
                     shadow-md

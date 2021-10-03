@@ -18,19 +18,34 @@
         <span class="text-4xl font-extrabold text-white">{{ productName }}</span>
       </div>
     </div>
-    <div class="flex flex-col bg-gray-100">
-      <SalesTrend :data="trendprice" :label="trendlabel" :chartOptions="chartOptions" />
+    <div class="flex flex-col bg-gray-100" v-if="flag">
+      <!-- <SalesTrend :data="trendprice" :label="trendlabel" :chartOptions="chartOptions" /> -->
+      <SalesTrend />
+      쨘
     </div>
-    쨘
   </div>
+  {{ flag }}
+  <button @click="button">tester</button>
+  {{ trendprice }}
+  {{ trendlabel }}
 </template>
 
 <script>
-import { defineComponent, reactive, ref, onMounted, onUnmounted, computed } from "vue";
+import {
+  defineComponent,
+  defineAsyncComponent,
+  reactive,
+  ref,
+  onMounted,
+  onUnmounted,
+  computed,
+} from "vue";
 import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
-import SalesTrend from "@/components/charts/SalesTrend.vue";
+// import SalesTrend from "@/components/charts/SalesTrend.vue";
+
+const SalesTrend = defineAsyncComponent(() => import("@/components/charts/SalesTrend.vue"));
 //import SalesPerItem from "@/components/charts/SalesPerItem.vue";
 
 export default defineComponent({
@@ -51,12 +66,16 @@ export default defineComponent({
     const query = ref({
       pid: route.query.pid,
     });
-
-    let trendprice = [];
-    let trendlabel = [];
-    let chartOptions = {
-      responsive: false,
+    const flag = ref(false);
+    const button = function () {
+      flag.value = !flag.value;
     };
+
+    const trendprice = ref([]);
+    const trendlabel = ref([]);
+    const chartOptions = ref({
+      responsive: false,
+    });
 
     const goToBack = () => {
       history.back();
@@ -65,18 +84,20 @@ export default defineComponent({
     store
       .dispatch("requestDatePrice", query.value.pid)
       .then((res) => {
-        var dateprice = res.data.dataprice;
-        productName.value = dateprice[0].productName;
+        productName.value = res.data.dateprice[0].productName;
 
-        for (var i = 0; i < dateprice.length; i++) {
-          trendprice[i] = dateprice[i].price;
-          trendlabel[i] = dateprice[i].pdate;
+        for (var i = 0; i < res.data.dateprice.length; i++) {
+          trendprice.value.push(res.data.dateprice[i].price);
+          trendlabel.value.push(res.data.dateprice[i].pdate);
         }
       })
       .catch((err) => {
         console.log(err);
       });
     return {
+      flag,
+      button,
+      productName,
       goToBack,
       categories,
       trendprice,

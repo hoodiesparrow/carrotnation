@@ -8,7 +8,7 @@
     leave-from="translate-x-0"
     leave-to="-translate-x-48"
   >
-    <div class="min-w-2000px h-full bg-black bg-opacity-50">
+    <div class="w-full h-full bg-black bg-opacity-50">
       <div class="bg-gray-50 h-full w-180px z-50">
         <div class="close_btn">
           <a href="#">
