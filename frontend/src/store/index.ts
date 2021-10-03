@@ -7,30 +7,21 @@ interface query {
   pid: string,
   page: number,
 }
-interface detailquery {
-  id: string,
-  market: string,
+interface byPricequery {
+  pid: string,
+  cycle : string
 }
 
-const BASE_URL = 'https://j5d205.p.ssafy.io'
+const BASE_URL = 'https://j5d205.p.ssafy.io:8443'
 
 export default createStore({
   state: {
     categoryData: categoryData,
-  },
+  }, 
   mutations: {},
   actions: {
     requestProductInfo: function ({ commit }, pid: string) {
       const url = `${BASE_URL}/api/product`
-      const header = { 
-        params: { 
-          pid: pid 
-        } 
-      }
-      return axios.get(url, header)
-    },
-    requestPriceInfo: function ({ commit }, pid: string) {
-      const url = `${BASE_URL}/api/dateprice`
       const header = { 
         params: { 
           pid: pid 
@@ -55,13 +46,32 @@ export default createStore({
       return axios.get(url, header)
     },
 
-    requestProductDetail: function ({ commit }, query: detailquery) {
+    requestProductDetail: function ({ commit }, id: number) {
       const url = `${BASE_URL}/api/productselldetail`
+      const header = {
+        params: { 
+          id: id 
+        } 
+      }
+      return axios.get(url, header);
+    },
+
+    requestDatePrice: function ({ commit }, pid: string) {
+      const url = `${BASE_URL}/api/dateprice`
+      const header = {
+        params: { pid: pid }
+      }
+      return axios.get(url, header)
+    },
+
+    requestByPrice: function ({ commit }, query: byPricequery) {
+      const url = `${BASE_URL}/api/byprice`
       const header = {
         params: query
       }
-      return axios.get(url, header);
+      return axios.get(url, header)
     }
+
   },
   getters: {
     getCategoryData: function (state) {

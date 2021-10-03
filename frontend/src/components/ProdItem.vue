@@ -109,7 +109,6 @@ export default defineComponent({
         name: "Detail",
         query: {
           id: props.product.id,
-          market: props.product.market,
           productName: props.productName,
         },
       });

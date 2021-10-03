@@ -1,6 +1,5 @@
 <template>
   <div class="container max-w-750px">
-    <SideBar :show="show" @closeSideBar="show = false" class="fixed top-0 z-40 h-full" />
     <div class="sticky top-0">
       <div class="flex justify-between items-center bg-purple-700 p-4">
         <div @click="goToBack()">
@@ -21,7 +20,7 @@
       <div class="grid grid-rows-2 bg-white py-2 border-b-2 border-gray-300">
         <img
           src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBkPSJNMjQgNmgtMjR2LTRoMjR2NHptMCA0aC0yNHY0aDI0di00em0wIDhoLTI0djRoMjR2LTR6Ii8+PC9zdmc+"
-          @click="show = !show"
+          @click="goToQuote"
           class="cursor-pointer"
         />
         <div class="col-span-2 text-right">
@@ -37,7 +36,7 @@
       <div class="flex flex-col bg-gray-100">
         <ProdBox
           v-for="prod in prodList"
-          :key="prod.pid"
+          :key="prod.id"
           :product="prod"
           :productName="prodInfo.name"
         />
@@ -75,14 +74,12 @@
 import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import { defineComponent, reactive, ref, onMounted, onUnmounted, computed } from "vue";
-import SideBar from "@/components/SideBar.vue";
 import ProdBox from "@/components/ProdItem.vue";
 
 export default defineComponent({
   name: "Home",
   components: {
     ProdBox,
-    SideBar,
   },
 
   setup() {
@@ -108,6 +105,15 @@ export default defineComponent({
 
     const goToBack = () => {
       history.back();
+    };
+
+    const goToQuote = () => {
+      router.push({
+        name: "Quote",
+        query: {
+          pid: query.value.pid,
+        },
+      });
     };
 
     store.dispatch("requestProductInfo", query.value.pid).then((res) => {
@@ -184,6 +190,7 @@ export default defineComponent({
       totalPage,
       noMoreData,
       prodInfo,
+      goToQuote,
       goToBack,
     };
   },

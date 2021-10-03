@@ -115,7 +115,7 @@ export default defineComponent({
     const product = ref(null);
     const productName = route.query.productName;
     store
-      .dispatch("requestProductDetail", { id: route.query.id, market: route.query.market })
+      .dispatch("requestProductDetail", route.query.id)
       .then((res) => {
         product.value = res.data;
         console.log(product.value);

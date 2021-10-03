@@ -4,6 +4,7 @@ const Prod = () => import(/* webpackChunkName: "prod" */ '@/views/Prod.vue');
 const Home = () => import(/* webpackChunkName: "home" */ '@/views/Home.vue');
 const Test = () => import(/* webpackChunkName: "test" */ '@/views/Test.vue');
 const Detail = () => import(/* webpackChunkName: "detail" */ '@/views/Detail.vue');
+const Quote = () => import(/* webpackChunkName: "quote" */ '@/views/Quote.vue');
 // const Test2 = () => import(/* webpackChunkName: "test2" */ '@/views/Test2.vue');
 
 const routes: Array<RouteRecordRaw> = [
@@ -31,6 +32,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/detail',
     name: 'Detail',
     component: Detail,
+  },
+  {
+    path: '/quote',
+    name: 'Quote',
+    component: Quote,
   }
 ]
 
