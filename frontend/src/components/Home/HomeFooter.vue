@@ -23,9 +23,42 @@
       @after-leave="showButton = true"
     >
       <div v-if="showDiv" class="bg-gray-900 bg-opacity-10 backdrop-blur" @click="showDiv = false">
-        당근나라 번개시세 개발자 정보
-        <br>
-        이용약관 | 모든 상품들에 대해서 당근나라 번개시세는 거래 당사자가 아니며 거래에 관여하지 않고 어떠한 의무와 책무도 부담하지 않습니다.
+        <div class="z-40">
+          <span class="text-lg cursor-pointer" v-show="!open" @click.stop @click="open = !open">About Us</span>
+          <div class="flex flex-col" v-show="open">
+            <div class="flex justify-around cursor-pointer pb-2 text-bold text-lg bg-gray-900 bg-opacity-20" v-show="open" @click.stop @click="open = !open">
+              <span>FE</span>
+              <span>BE</span>
+            </div>
+            <div class="flex justify-around">
+              <div class="flex flex-col">
+                <div class="flex">
+                  <span class="mr-4">김동윤</span>
+                  <githubIcon @click="openGit('hoodiesparrow')" />
+                </div>
+                <div class="flex mt-3">
+                  <span class="mr-4">여정동</span>
+                  <githubIcon @click="openGit('hoodiesparrow')" />
+                </div>
+              </div>
+              <div class="flex flex-col">
+                <div class="flex">
+                  <span class="mr-4">김은비</span>
+                  <githubIcon @click="openGit('hoodiesparrow')" />
+                </div>
+                <div class="flex mt-3">
+                  <span class="mr-4">문영화</span>
+                  <githubIcon @click="openGit('hoodiesparrow')" />
+                </div>
+                <div class="flex mt-3">
+                  <span class="mr-4">추헌국</span>
+                  <githubIcon @click="openGit('hoodiesparrow')" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <span class="text-sm pb-1 cursor-pointer block" @click.stop>이용약관 | SSAFY 5기</span>
+        </div>
       </div>
     </transition>
   </div>
@@ -33,17 +66,28 @@
 
 <script>
 import { ref } from 'vue'
+import githubIcon from '@/components/Home/HomeFooterGithubIcon.vue'
 
 export default {
   name: 'HomeFooter',
+  components: {
+    githubIcon,
+  },
   setup() {
     const showButton = ref(true)
     const showDiv = ref(false)
+    const open = ref(false)
+    const openGit = function (id) {
+      const github = 'https://github.com/'
+      window.open(`${github}${id}`)
+    }
 
     return { 
       showButton,
       showDiv,
-     }
+      open,
+      openGit,
+    }
   }
 }
 </script>

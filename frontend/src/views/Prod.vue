@@ -40,8 +40,8 @@
       <div v-if="!errorFlag" class="flex flex-col bg-gray-100">
         <ProdPriceInfo :prodInfo="prodInfo" />
         <ProdBox v-for="(prod, idx) in prodList" :key="idx" :product="prod" :productName="prodInfo.name" />
-        <div v-if="initialLoading" class="flex justify-center">
-          <svg xml:space="preserve" viewBox="0 0 100 100" class="w-64 h-full h-64 animate-spin" y="0" x="0" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <div v-if="initialLoading" class="pt-40 flex justify-center bg-gray-300">
+          <svg xml:space="preserve" viewBox="0 0 100 100" class="w-64 h-64 animate-spin" y="0" x="0" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
             <g class="ldl-scale">
               <circle fill="#333" r="40" cy="50" cx="50">
               </circle>

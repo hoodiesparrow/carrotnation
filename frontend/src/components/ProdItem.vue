@@ -7,7 +7,7 @@
       <div class="row-span-4">
         <img :src="product.img" class="w-full h-full object-center pr-2 h-5/6" />
       </div>
-      <div class="col-span-2 text-sl font-semibold flex items-center pl-1">{{ getAppName() }}</div>
+      <div class="col-span-2 text-sl font-semibold flex items-center pl-1 text-gray-800">{{ getAppName() }}</div>
       <div
         class="col-span-2 text-xl flex items-center pl-1 pt-2"
         style="
@@ -16,11 +16,12 @@
           overflow: hidden;
           width: 90%;
           display: block;
+          text-gray-900
         "
       >
         {{ product.title }}
       </div>
-      <div class="col-span-2 text-xl font-semibold flex items-center pl-1">
+      <div class="col-span-2 text-xl font-semibold flex items-center pl-1 text-gray-900">
         <p>{{ product.price.toLocaleString() }}원</p>
       </div>
       <div class="col-span-2 text-sm items-center pl-1 text-gray-500">
