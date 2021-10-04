@@ -1,13 +1,39 @@
 <template>
   <div
-    class="mb-3 mr-3 ml-3 p-3 transition hover:bg-purple-50 hover:text-black bg-white shadow-md"
+    class="
+      mb-3
+      mr-3
+      ml-3
+      p-3
+      transition
+      hover:bg-purple-50 hover:text-black
+      bg-white
+      shadow-md
+    "
     @click="onClickItem"
   >
     <div class="grid grid-rows-4 grid-cols-3 place-content-cente max-w-dm h-48">
       <div class="row-span-4">
-        <img :src="product.img" class="w-full h-full object-center pr-2 h-5/6" />
+        <img
+          :src="product.img"
+          class="w-full h-full object-center pr-2 h-5/6"
+        />
       </div>
-      <div class="col-span-2 text-sl font-semibold flex items-center pl-1">{{ getAppName() }}</div>
+      <div class="flex">
+        <div v-if="getAppName() == '당근마켓'" class="w-7">
+          <img class="mt-2.5" src="@/assets/image/daangn.png" />
+        </div>
+        <div v-if="getAppName() == '번개장터'" class="w-7">
+          <img class="mt-2.5" src="@/assets/image/thunder.png" />
+        </div>
+        <div v-if="getAppName() == '중고나라'" class="w-7">
+          <img class="mt-2.5" src="@/assets/image/joongna.png" />
+        </div>
+        <div class="col-span-2 text-sl font-semibold items-center pl-1 mt-3">
+          {{ getAppName() }}
+        </div>
+      </div>
+
       <div
         class="col-span-2 text-xl flex items-center pl-1 pt-2"
         style="
@@ -57,7 +83,8 @@ export default defineComponent({
     const router = useRouter();
     const urlList: UrlList = {
       joonnaApp: "https://m.joongna.com/product-detail/",
-      joonnaCafe: "https://m.cafe.naver.com/ArticleRead.nhn?clubid=10050146&articleid=",
+      joonnaCafe:
+        "https://m.cafe.naver.com/ArticleRead.nhn?clubid=10050146&articleid=",
       daangn: "https://www.daangn.com/articles/",
       thunder: "https://m.bunjang.co.kr/products/",
     };
@@ -71,6 +98,8 @@ export default defineComponent({
         case "daangn":
           return "당근마켓";
         case "joonnaApp":
+          return "중고나라";
+        case "joonnaCafe":
           return "중고나라";
         case "thunder":
           return "번개장터";
