@@ -47,6 +47,7 @@ public class APIController {
 										@RequestParam(defaultValue = "0")int sort, 
 										@RequestParam(defaultValue = "0") List<Integer> market) {
 			List<ProductSellListResponseDTO> productSellLists = productSellListInfoService.getProductSellLists(page, pid, sort, market);
+			
 			Long count = productSellListInfoService.getProductSellListCount(pid, market);
 						
 			
@@ -123,11 +124,20 @@ public class APIController {
 		return ResponseEntity.status(HttpStatus.OK).body(productByPriceService.byPrice(pid, cycle));
 	}
 	
+//	 1 : 날짜 내림차순
+//     2 : 날짜 오름차순
+//     3 : 가격 내림차순
+//     4 : 가격 오름차순
+//     5 : 거리 가까운순
 	@GetMapping("/nearProduct")
-	public ResponseEntity<Map<String,List<ByDistance>>> getNearProduct(@RequestParam double lon, @RequestParam double lat,@RequestParam long pid){
+	public ResponseEntity<Map<String,List<ByDistance>>> getNearProduct(@RequestParam double lon,
+																		@RequestParam double lat,
+																		@RequestParam long pid,
+																		@RequestParam(defaultValue = "0") int page,
+																		@RequestParam(defaultValue = "0") int sort,
+																		@RequestParam(defaultValue = "0") int market){
 		Map<String,List<ByDistance>> res = new HashMap<String, List<ByDistance>>();
-		res.put("result",nearProductServiceImpl.nearProduct(lon, lat, pid));
-		
+		res.put("result",nearProductServiceImpl.nearProduct(lon, lat, pid, page, sort, market));
 		
 		return ResponseEntity.status(HttpStatus.OK).body(res);
 	}

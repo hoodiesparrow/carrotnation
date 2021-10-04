@@ -6,11 +6,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -18,14 +19,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.special.controller.AdressToCoorUtils;
 import com.ssafy.special.controller.SSHUtils;
-import com.ssafy.special.domain.Coordinate;
 import com.ssafy.special.domain.ProductQuery;
 //import com.ssafy.special.domain.Product;
 import com.ssafy.special.domain.ProductSellList;
 import com.ssafy.special.dto.ByDistance;
 import com.ssafy.special.dto.PriceStepResponseDTO;
 import com.ssafy.special.dto.ProductPriceResponseDTO;
-import com.ssafy.special.dto.ProductSellListByDistanceResponseDTO;
 import com.ssafy.special.main.MainApplication;
 import com.ssafy.special.repository.CoordinateRepository;
 import com.ssafy.special.repository.ProductRepository;
@@ -255,7 +254,10 @@ class CrawlingServerApplicationTests {
 	//@Test
 	void coordinate() {
 //		126.939276884816, 37.5651508821041,
-		List<ByDistance> list = productSellListRepository.nearProduct(126.939276884816, 37.5651508821041, (long) 57)
+		List<String> tte = new ArrayList<String>();
+		tte.add("joonnaApp");
+		tte.add("daangn");
+		List<ByDistance> list = productSellListRepository.nearProduct(126.939276884816, 37.5651508821041, (long) 52, tte, PageRequest.of(0, 20, Sort.Direction.ASC, "createDate"))
 				.orElse(null);
 //		List<ProductSellListByDistanceResponseDTO> products = new ArrayList<ProductSellListByDistanceResponseDTO>();
 
@@ -269,7 +271,10 @@ class CrawlingServerApplicationTests {
 //			dto.setTitle(bd.getTitle());
 //			dto.setContent(bd.getTitle());
 //			dto.setPrice(bd.getPrice());
-			System.out.println(bd.getProductId());
+			System.out.println(bd.getPrice());
+			System.out.println(bd.getMarket());
+//			System.out.println(bd.getDistance());
+//			System.out.println(bd.getProductId());
 			System.out.println(bd.getCreateDate());
 //			dto.setCreateDate(bd.getCreateDate());
 //			dto.setLink(bd.getLink());
