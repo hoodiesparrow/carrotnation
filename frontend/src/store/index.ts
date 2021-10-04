@@ -84,31 +84,31 @@
         return axios.get(url, header)
       },
 
-    requestProductDetail: function ({ commit }, id: number) {
-      const url = `${BASE_URL}/api/productselldetail`
-      const header = {
-        params: { 
-          id: id 
-        } 
-      }
-      return axios.get(url, header);
-    },
+      requestProductDetail: function ({ commit }, id: number) {
+        const url = `${BASE_URL}/api/productselldetail`
+        const header = {
+          params: { 
+            id: id 
+          } 
+        }
+        return axios.get(url, header);
+      },
 
-    requestDatePrice: function ({ commit }, pid: string) {
-      const url = `${BASE_URL}/api/dateprice`
-      const header = {
-        params: { pid: pid }
-      }
-      return axios.get(url, header)
-    },
+      requestDatePrice: function ({ commit }, pid: string) {
+        const url = `${BASE_URL}/api/dateprice`
+        const header = {
+          params: { pid: pid }
+        }
+        return axios.get(url, header)
+      },
 
-    requestByPrice: function ({ commit }, query: byPricequery) {
-      const url = `${BASE_URL}/api/byprice`
-      const header = {
-        params: query
+      requestByPrice: function ({ commit }, query: byPricequery) {
+        const url = `${BASE_URL}/api/byprice`
+        const header = {
+          params: query
+        }
+        return axios.get(url, header)
       }
-      return axios.get(url, header)
-    }
 
   },
   getters: {

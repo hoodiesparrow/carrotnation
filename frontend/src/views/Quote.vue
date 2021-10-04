@@ -27,7 +27,7 @@
 <script>
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
-import { defineAsyncComponent, ref } from 'vue'
+import { defineAsyncComponent, ref, reactive } from 'vue'
 
 const SalesTrend = defineAsyncComponent(() =>
   import('@/components/charts/SalesTrend.vue')
@@ -67,7 +67,24 @@ export default {
       history.back()
     }
 
+    // byPrice
+    const date = reactive(new Date(Date.now() - (60 * 60 * 1000)))
+    const cycle = ref('')
+    cycle.value = `${String(date.getFullYear()).slice(2)}${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getDate()).padStart(2, '0')}${String(date.getHours()).padStart(2, '0')}`
+
+    const bypriceQuery = ref({
+      pid: route.query.pid,
+      cycle: cycle.value
+    })
+    store.dispatch('requestByPrice', bypriceQuery.value)
+      .then(res => {
+        console.log(res.data)
+      })
+    // 내일 이어서 차트 뚝딱하고 차트 커스터마이징만 어떻게 해보자
     return {
+      bypriceQuery,
+      date,
+      cycle,
       goToBack,
       name,
       prices,
