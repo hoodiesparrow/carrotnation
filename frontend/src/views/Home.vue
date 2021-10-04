@@ -44,7 +44,7 @@
             </span>
           </h2>
           <p class="text-base text-indigo-100 md:text-lg">
-            호머심슨 마지부블리에 바트심슨 리사심슨
+            모바일 디바이스 중고거래를 한눈에
           </p>
         </div>
       </div>
@@ -80,7 +80,6 @@ const HomeSelectButton = defineAsyncComponent(
 export default defineComponent({
   name: "Home",
   components: {
-    // HomeChart,
     HomeSelectButton,
   },
 
@@ -88,7 +87,6 @@ export default defineComponent({
     const router = useRouter();
     const store = useStore();
 
-    const categories = ref(["판매량 순", "시세 증감율", "시세 예측"]);
     const onClickItem = function () {
       router.push({
         name: "Prod",
@@ -97,7 +95,6 @@ export default defineComponent({
 
     return {
       onClickItem,
-      categories,
     };
   },
 });
