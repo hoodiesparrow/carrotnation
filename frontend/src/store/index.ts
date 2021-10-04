@@ -105,9 +105,7 @@
     requestByPrice: function ({ commit }, query: byPricequery) {
       const url = `${BASE_URL}/api/byprice`
       const header = {
-        params: { 
-          id: id 
-        } 
+        params: query
       }
       return axios.get(url, header)
     }

@@ -36,13 +36,13 @@
         <span class="text-4xl font-extrabold text-white">{{ prodInfo.name }}</span>
       </div>
       <div class="bg-white p-3 flex justify-between text-gray-800">
-        <div class="flex items-center">
+        <div class="flex items-center" @click="getCoorProduct" style="cursor: pointer">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
             <path
               d="M12 0c-4.198 0-8 3.403-8 7.602 0 4.198 3.469 9.21 8 16.398 4.531-7.188 8-12.2 8-16.398 0-4.199-3.801-7.602-8-7.602zm0 11c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3z"
             />
           </svg>
-          <span>내 주변</span>
+          <span class="pl-1">내 주변</span>
         </div>
         <div class="flex">
           <ProdMarketButton @market="market" class="pr-6" />
@@ -158,6 +158,8 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     const store = useStore();
+    const lat = ref("");
+    const lon = ref("");
     const container = ref(null);
     const show = ref(false);
     const atTopOfPage = ref(true);
@@ -310,6 +312,33 @@ export default defineComponent({
       initialLoader();
     };
 
+    const getCoorProduct = function () {
+      const getCoorOptions = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0,
+      };
+
+      const success = function (pos) {
+        let crd = pos.coords;
+        console.log("Your current position is:");
+        lat.value = crd.latitude;
+        console.log("Latitude : " + crd.latitude);
+        lon.value = crd.longitude;
+        console.log("Longitude: " + crd.longitude);
+        console.log("More or less " + crd.accuracy + " meters.");
+      };
+
+      const error = function (err) {
+        console.warn("ERROR(" + err.code + "): " + err.message);
+      };
+
+      navigator.geolocation.getCurrentPosition(success, error, getCoorOptions);
+
+      console.log(lat);
+      console.log(lon);
+    };
+
     const market = function () {
       const { market: temp, ...rest } = query.value;
       if (store.getters["getMarket"] >= 1) {
@@ -346,6 +375,9 @@ export default defineComponent({
       atTopOfPage,
       goToQuote,
       goToBack,
+      getCoorProduct,
+      lat,
+      lon,
     };
   },
 });
