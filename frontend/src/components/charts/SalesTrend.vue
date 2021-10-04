@@ -5,6 +5,14 @@ import { Line } from "vue3-chart-v2";
 export default defineComponent({
   name: "SalesTrend",
   extends: Line,
+  props: {
+    prices: {
+      type: Object
+    },
+    dates: {
+      type: Object
+    },
+  },
   mounted() {
     // Overwriting base render method with actual data.
     const canvas = this.$refs.canvas;
@@ -22,7 +30,7 @@ export default defineComponent({
     gradient2.addColorStop(1, "rgba(0, 231, 255, 0)");
 
     this.renderChart({
-      labels: ["January", "February", "March", "April", "May", "June", "July"],
+      labels: this.dates,
       datasets: [
         {
           label: "시세",
@@ -32,17 +40,7 @@ export default defineComponent({
           pointBorderColor: "white",
           tension: 0.3,
           backgroundColor: gradient,
-          data: [40, 39, 10, 40, 39, 80, 40],
-        },
-        {
-          label: "예상 가격",
-          borderColor: "#05CBE1",
-          pointBackgroundColor: "white",
-          pointBorderColor: "white",
-          borderWidth: 1,
-          tension: 0.3,
-          backgroundColor: gradient2,
-          data: [60, 55, 32, 10, 2, 12, 53],
+          data: this.prices,
         },
       ],
     });

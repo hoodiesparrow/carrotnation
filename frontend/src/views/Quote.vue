@@ -2,108 +2,78 @@
   <div class="container max-w-750px">
     <div class="sticky top-0">
       <div class="flex justify-between items-center bg-purple-700 p-4">
-        <div @click="goToBack()">
-          <svg
-            class="h-8 w-8 text-white"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
-        </div>
-        <span class="text-4xl font-extrabold text-white">{{ productName }}</span>
+        <svg
+          class="h-8 w-8 text-white"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          @click="goToBack"
+        >
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+        <span class="text-2xl font-extrabold text-white">{{ name }}</span>
       </div>
     </div>
-    <div class="flex flex-col bg-gray-100" v-if="flag">
-      <!-- <SalesTrend :data="trendprice" :label="trendlabel" :chartOptions="chartOptions" /> -->
-      <SalesTrend />
-      쨘
+    <div class="bg-white" v-if="flagSalesTrend">
+    <!-- <div class="bg-white"> -->
+      <SalesTrend :prices="prices" :dates="dates" />
     </div>
-  </div>
-  {{ flag }}
-  <button @click="button">tester</button>
-  {{ trendprice }}
-  {{ trendlabel }}
+  </div>    
 </template>
 
 <script>
-import {
-  defineComponent,
-  defineAsyncComponent,
-  reactive,
-  ref,
-  onMounted,
-  onUnmounted,
-  computed,
-} from "vue";
-import { useStore } from "vuex";
-import { useRoute, useRouter } from "vue-router";
-import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
-// import SalesTrend from "@/components/charts/SalesTrend.vue";
+import { useStore } from 'vuex'
+import { useRoute } from 'vue-router'
+import { defineAsyncComponent, ref } from 'vue'
 
-const SalesTrend = defineAsyncComponent(() => import("@/components/charts/SalesTrend.vue"));
-//import SalesPerItem from "@/components/charts/SalesPerItem.vue";
+const SalesTrend = defineAsyncComponent(() =>
+  import('@/components/charts/SalesTrend.vue')
+)
 
-export default defineComponent({
-  component: {
+export default {
+  components: {
     SalesTrend,
-    //SalesPerItem,
-    TabGroup,
-    TabList,
-    Tab,
-    TabPanels,
-    TabPanel,
   },
   setup() {
-    let categories = ref(["가격당 판매량", "판매가 추이"]);
-    const route = useRoute();
-    const store = useStore();
-    const productName = ref();
-    const query = ref({
-      pid: route.query.pid,
-    });
-    const flag = ref(false);
-    const button = function () {
-      flag.value = !flag.value;
-    };
+    const route = useRoute()
+    const store = useStore()
 
-    const trendprice = ref([]);
-    const trendlabel = ref([]);
-    const chartOptions = ref({
-      responsive: false,
-    });
+    const name = ref('')
+    const prices = ref([])
+    const dates = ref([])
+    const flagSalesTrend = ref(false)
 
-    const goToBack = () => {
-      history.back();
-    };
+    store.dispatch('requestDatePrice', route.query.pid)
+      .then(res => {
+        name.value = res.data.dateprice[0].productName
 
-    store
-      .dispatch("requestDatePrice", query.value.pid)
-      .then((res) => {
-        productName.value = res.data.dateprice[0].productName;
-
-        for (var i = 0; i < res.data.dateprice.length; i++) {
-          trendprice.value.push(res.data.dateprice[i].price);
-          trendlabel.value.push(res.data.dateprice[i].pdate);
+        for (let i = res.data.dateprice.length - 1; i >= 0; i--) {
+          prices.value.push(res.data.dateprice[i].price)
+          dates.value.push(res.data.dateprice[i].pdate)
         }
+        flagSalesTrend.value = true
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch(err => {
+        console.log(err)
+      })
+      .finally(_ => {
+        console.log(prices.value, dates.value)
+      })
+
+    const goToBack = function () {
+      history.back()
+    }
+
     return {
-      flag,
-      button,
-      productName,
       goToBack,
-      categories,
-      trendprice,
-      trendlabel,
-      chartOptions,
-    };
-  },
-});
+      name,
+      prices,
+      dates,
+      flagSalesTrend,
+    }
+  }
+}
 </script>
