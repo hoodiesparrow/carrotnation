@@ -63,7 +63,7 @@
         </div>
         <div class="bg-white mb-px pt-5">
           <p class="text-lg font-extrabold text-gray-500 p-3">상품 설명</p>
-          <p class="text-base text-lg font-medium p-4">{{ product.articleDeatil.content }}</p>
+          <div class="text-base text-lg font-medium p-4" v-html="productContent"></div>
         </div>
       </div>
       <div>
@@ -114,12 +114,14 @@ export default defineComponent({
 
     const product = ref(null);
     const productName = route.query.productName;
+    const productContent = ref("");
 
     const initialLoad = function () {
       store
         .dispatch("requestProductDetail", route.query.id)
         .then((res) => {
           product.value = res.data;
+          productContent.value = res.data.articleDeatil.content.replace(/\n/gim, "<br />");
         })
         .catch((err) => {
           console.log(err.data);
@@ -127,13 +129,16 @@ export default defineComponent({
         .finally(() => {
           console.log(product.value);
         });
-    }
-    initialLoad()
-    
-    watch(() => route.query, (newV, oldV) => {
-      console.log(newV)
-      initialLoad()
-    })
+    };
+    initialLoad();
+
+    watch(
+      () => route.query,
+      (newV, oldV) => {
+        console.log(newV);
+        initialLoad();
+      }
+    );
 
     const goToBack = () => {
       history.back();
@@ -143,6 +148,7 @@ export default defineComponent({
       product,
       productName,
       route,
+      productContent,
       goToBack,
       SmallCard,
     };
