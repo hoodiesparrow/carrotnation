@@ -19,6 +19,12 @@
     pid: string,
     cycle : string
   }
+  interface nearProductQuery {
+    pid: string,
+    lon: string,
+    lat: string,
+    market: number,
+  }
 
   const BASE_URL = 'https://j5d205.p.ssafy.io'
 
@@ -27,6 +33,7 @@
       categoryData: categoryData,
       sort: 1,
       market: 0,
+      openCoordinate: false,
     },
     mutations: {
       CHANGE_SORT: function (state, idx: number) {
@@ -34,6 +41,9 @@
       },
       CHANGE_MARKET: function (state, idx: number) {
         state.market = idx
+      },
+      CHANGE_OPENCOOR: function (state, flag: boolean) {
+        state.openCoordinate = flag;
       }
     },
     actions: {
@@ -71,6 +81,14 @@
       requestProductList: function ({ commit }, query: Query) {
         const url = `${BASE_URL}/api/productselllist`
         const header = { 
+          params: query 
+        }
+        return axios.get(url, header)
+      },
+
+      requestNearProduct: function ({ commit }, query: nearProductQuery) {
+        const url = `${BASE_URL}/api/nearProduct`
+        const header = {
           params: query 
         }
         return axios.get(url, header)
@@ -121,6 +139,9 @@
     getMarket: function (state) {
       return state.market
     },
+    getOpenCoor: function (state) {
+      return state.openCoordinate
+    }
   },
   modules: {},
 });
