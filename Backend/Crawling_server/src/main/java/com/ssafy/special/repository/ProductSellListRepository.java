@@ -30,7 +30,7 @@ public interface ProductSellListRepository extends JpaRepository<ProductSellList
   	
   	Optional<List<ProductSellList>> findByLocation(String location);
   	
-  	@Query(value="SELECT *,\r\n" + 
+  	@Query(value="SELECT id as id,aid as aid, market as market, product_id as productId, title as title, content as content, price as price, create_date as createDate, link as link, img as img, location as location, x as x, y as y, cycle as cycle,\r\n" + 
   			"ST_Distance_Sphere(POINT(:lon, :lat), POINT(x, y)) AS distance\r\n" + 
   			"FROM product_sell_list\r\n" + 
   			"WHERE ST_Distance_Sphere(POINT(:lon, :lat), POINT(x, y)) <= 5000 and product_id=:id \r\n" + 

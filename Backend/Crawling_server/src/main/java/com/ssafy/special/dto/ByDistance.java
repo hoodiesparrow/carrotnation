@@ -12,7 +12,7 @@ public interface ByDistance {
 
 	String getMarket();// 마켓종류
 
-	Product getProductId();// 품명
+	long getProductId();// 품명
 
 	String getTitle();// 제목
 

@@ -242,7 +242,7 @@ class CrawlingServerApplicationTests {
 			e.printStackTrace();
 		}
 	}
-//	@Test
+	//@Test
 	void qquu() {
 		List<ProductQuery> productQuery = queryInfoService.getProductQueryList();
 		
@@ -252,16 +252,16 @@ class CrawlingServerApplicationTests {
 		}
 	}
 	
-//	@Test
+	//@Test
 	void coordinate() {
 //		126.939276884816, 37.5651508821041,
 		List<ByDistance> list = productSellListRepository.nearProduct(126.939276884816, 37.5651508821041, (long) 57)
 				.orElse(null);
-		List<ProductSellListByDistanceResponseDTO> products = new ArrayList<ProductSellListByDistanceResponseDTO>();
+//		List<ProductSellListByDistanceResponseDTO> products = new ArrayList<ProductSellListByDistanceResponseDTO>();
 
-		ProductSellListByDistanceResponseDTO dto;
+//		ProductSellListByDistanceResponseDTO dto;
 		for (ByDistance bd : list) {
-			dto = new ProductSellListByDistanceResponseDTO();
+//			dto = new ProductSellListByDistanceResponseDTO();
 //			dto.setId(bd.getId());
 //			dto.setAid(bd.getAid());
 //			dto.setMarket(bd.getMarket());
@@ -278,11 +278,10 @@ class CrawlingServerApplicationTests {
 //			dto.setX(bd.getX());
 //			dto.setY(bd.getY());
 //			dto.setCycle(bd.getCycle());
-			dto.setDistance(bd.getDistance());
+//			dto.setDistance(bd.getDistance());
 			
-			products.add(dto);
+//			products.add(dto);
 		}
 		
-		System.out.println(products);
 	}
 }
