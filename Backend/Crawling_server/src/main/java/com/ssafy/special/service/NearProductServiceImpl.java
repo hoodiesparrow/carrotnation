@@ -66,5 +66,25 @@ public class NearProductServiceImpl implements NearProductService {
 		
 		return list;
 	}
+	@Override
+	public int nearProductCount(double lon, double lat, long pid, int market) {
+		List<String> marketList = new ArrayList<String>();
+		
+		if(market==0) {
+			marketList.add("joonnaApp");
+			marketList.add("joonnaCafe");
+			marketList.add("daangn");
+			marketList.add("thunder");
+		}else if(market==1) {
+			marketList.add("daangn");
+		}else if(market==2) {
+			marketList.add("thunder");
+		}else if(market==3) {
+			marketList.add("joonnaApp");
+			marketList.add("joonnaCafe");
+		}
+		return productSellListRepository.nearProductCount(lon, lat, pid, marketList);
+				
+	}
 
 }

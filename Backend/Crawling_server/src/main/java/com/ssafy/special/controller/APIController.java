@@ -130,15 +130,15 @@ public class APIController {
 //     4 : 가격 오름차순
 //     5 : 거리 가까운순
 	@GetMapping("/nearProduct")
-	public ResponseEntity<Map<String,List<ByDistance>>> getNearProduct(@RequestParam double lon,
+	public ResponseEntity<Map<String,Object>> getNearProduct(@RequestParam double lon,
 																		@RequestParam double lat,
 																		@RequestParam long pid,
 																		@RequestParam(defaultValue = "0") int page,
 																		@RequestParam(defaultValue = "0") int sort,
 																		@RequestParam(defaultValue = "0") int market){
-		Map<String,List<ByDistance>> res = new HashMap<String, List<ByDistance>>();
+		Map<String,Object> res = new HashMap<String, Object>();
 		res.put("result",nearProductServiceImpl.nearProduct(lon, lat, pid, page, sort, market));
-		
+		res.put("total_count", nearProductServiceImpl.nearProductCount(lon, lat, pid, market));
 		return ResponseEntity.status(HttpStatus.OK).body(res);
 	}
 }

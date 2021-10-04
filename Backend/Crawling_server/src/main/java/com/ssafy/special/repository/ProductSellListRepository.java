@@ -37,5 +37,11 @@ public interface ProductSellListRepository extends JpaRepository<ProductSellList
   			,
   			nativeQuery = true)
   	Optional<List<ByDistance>> nearProduct(@Param("lon")double x, @Param("lat")double y,@Param("id")long id, @Param("market") List<String> market, Pageable p);
-//  	@Param("lon")double x, @Param("lat")double y,
+  	
+  	@Query(value="SELECT count(*)" + 
+  			"FROM product_sell_list\r\n" + 
+  			"WHERE ST_Distance_Sphere(POINT(:lon, :lat), POINT(x, y)) <= 10000 and product_id=:id and market in :market \r\n"
+  			,
+  			nativeQuery = true)
+  	int nearProductCount(@Param("lon")double x, @Param("lat")double y,@Param("id")long id, @Param("market") List<String> market);
 }

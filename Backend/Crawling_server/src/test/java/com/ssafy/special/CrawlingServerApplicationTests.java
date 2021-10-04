@@ -289,4 +289,12 @@ class CrawlingServerApplicationTests {
 		}
 		
 	}
+	//@Test
+	void count() {
+		List<String> tte = new ArrayList<String>();
+		tte.add("joonnaApp");
+		tte.add("daangn");
+		int s =productSellListRepository.nearProductCount(126.939276884816, 37.5651508821041, (long) 52, tte);
+		System.out.println(s);
+	}
 }
