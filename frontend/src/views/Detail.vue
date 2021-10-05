@@ -140,8 +140,10 @@ export default defineComponent({
     watch(
       () => route.query,
       (newV, oldV) => {
-        console.log(newV);
-        initialLoad();
+        console.log(route.path);
+        if (route.path === "/detail") {
+          initialLoad();
+        }
       }
     );
 
