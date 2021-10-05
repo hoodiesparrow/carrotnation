@@ -103,19 +103,36 @@ class CrawlingServerApplicationTests {
 
 	}
 
-//	@Test
+	//@Test
 	void komoran() {
 		Komoran komoran = new Komoran(DEFAULT_MODEL.FULL);
-		String s = "갤럭시 톰브라운 버즈 / 와치 단품,세트판매/새상품\n🍅🍅🍅🍅근거리 퀵배송가능~~🍅🍅🍅🍅\n😊미개봉\n😊버즈만 구매시 :30만원\n😊와치만 구매시 :85만원\n😊버즈 + 와치 구매 :110만원\n\n간지 납니다:)\n직거래 지역은 👉1대1 챗 👈주세요^^\n\n👌👌와치는 가죽 스트랩 같이 드려요!";
-		String strToAnalyze = s.replaceAll("[^\\uAC00-\\uD7AF\\u1100-\\u11FF\\u3130-\\u318F]+", " ");
+		String s = "🔎상품설명🔍\r\n" + 
+				" \r\n" + 
+				" - 기종 : 아이폰12\r\n" + 
+				" - 색상 : 퍼플\r\n" + 
+				" - 등급 : SS급 (미세기스 조차 없으며 거의 새폰급입니다.)\r\n" + 
+				" \r\n" + 
+				" - 배터리효율 : 100%\r\n" + 
+				" - 구성 : 핸드폰+방탄필름(5개)+케이스(2종류)+박스\r\n" + 
+				"              ❗️충전기는 없습니다❗️\r\n" + 
+				" - 리퍼기간 : 2022년 6월 19일\r\n" + 
+				" \r\n" + 
+				" - 직거래 : 용인시 양지면에 위치해 있는 \"양지면사무소\"\r\n" + 
+				"                    에서 거래 가능합니다\r\n" + 
+				" - 택배 : (CU&GS25&세븐일레븐)편의점 택배 및\r\n" + 
+				"                                                                (CJ대한통운)\r\n" + 
+				" \r\n" + 
+				" - 통신사 : 모든 3사 통신사 가능\r\n" + 
+				" ";
+		String strToAnalyze = s.replaceAll("[^\\uAC00-\\uD7AF\\u1100-\\u11FF\\u3130-\\u318F0-9]+", " ");
 		System.out.println(strToAnalyze);
 		KomoranResult analyzeResultList = komoran.analyze(strToAnalyze);
 
-		System.out.println(analyzeResultList.getPlainText());
+//		System.out.println(analyzeResultList.getPlainText());
 
 		List<Token> tokenList = analyzeResultList.getTokenList();
 		for (Token token : tokenList) {
-			if ("NNP".equals(token.getPos()) || "NNG".equals(token.getPos())) {
+			if ("NNP".equals(token.getPos()) || "NNG".equals(token.getPos()) || "SN".equals(token.getPos())) {
 				System.out.println(token.getMorph());
 			}
 //            System.out.format("(%2d, %2d) %s/%s\n", token.getBeginIndex(), token.getEndIndex(), token.getMorph(), token.getPos());
