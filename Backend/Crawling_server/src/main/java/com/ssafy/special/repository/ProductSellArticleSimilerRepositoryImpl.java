@@ -49,8 +49,17 @@ public class ProductSellArticleSimilerRepositoryImpl implements ProductSellArtic
 						qpsas.articleB.id,qpsas.articleB.aid,qpsas.articleB.market,qpsas.articleB.productId.id,qpsas.articleB.title,qpsas.articleB.content,
 						qpsas.articleB.price,qpsas.articleB.createDate,qpsas.articleB.link,qpsas.articleB.img,qpsas.articleB.location,qpsas.articleB.cycle, qpsas.similarity)
 			).from(qpsas)
-			.where(qpsas.articleA.id.eq(id).or(qpsas.articleB.id.eq(id)),qpsas.cycle.goe(cycle))
+			.where(qpsas.articleA.id.eq(id),qpsas.cycle.goe(cycle))
 			.fetch();
+		
+		result.addAll(queryFactory.select(
+				Projections.constructor(ProductSellArticleSimilerResponseDTO.class,
+						qpsas.articleA.id,qpsas.articleA.aid,qpsas.articleA.market,qpsas.articleA.productId.id,qpsas.articleA.title,qpsas.articleA.content,
+						qpsas.articleA.price,qpsas.articleA.createDate,qpsas.articleA.link,qpsas.articleA.img,qpsas.articleA.location,qpsas.articleA.cycle, qpsas.similarity)
+			).from(qpsas)
+			.where(qpsas.articleB.id.eq(id),qpsas.cycle.goe(cycle))
+			.fetch());
+		
 		
 		return Optional.ofNullable(result);
 	}
