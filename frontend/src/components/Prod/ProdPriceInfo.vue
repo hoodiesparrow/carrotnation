@@ -1,7 +1,7 @@
 <template>
-  <div @click="expand=!expand" class="px-3 py-2 cursor-pointer">
+  <div @click="expand = !expand" class="px-3 py-2 cursor-pointer">
     <div v-show="!expand" class="flex justify-between">
-      <span class="text-gray-700">총 {{ this.prodInfo.count }}건</span>
+      <span class="text-gray-700">총 {{ this.count }}건</span>
       <div class="flex">
         <span class="pr-2 text-gray-700">평균가 : {{ this.prodInfo.avgPrice }}</span>
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" class="mt-1">
@@ -27,21 +27,25 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref } from "vue";
 
 export default {
   props: {
     prodInfo: {
       type: Object,
-      default: null
-    }
+      default: null,
+    },
+    count: {
+      type: Number,
+      default: null,
+    },
   },
   setup(props) {
-    const expand = ref(false)
+    const expand = ref(false);
 
     return {
       expand,
-    }
+    };
   },
-}
+};
 </script>

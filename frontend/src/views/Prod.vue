@@ -19,20 +19,72 @@
           <polyline points="15 18 9 12 15 6" />
         </svg>
         <span class="text-2xl font-extrabold text-white">{{ prodInfo.name }}</span>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-          @click="goToQuote" class="cursor-pointer mx-2"
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          @click="goToQuote"
+          class="cursor-pointer mx-2"
         >
-          <path fill="#FFFFFF" d="M14.172 7.396l1.413-1.39 1.414 1.414-1.414 1.39-1.413-1.414zm2.828 16.604h6v-13h-6v13zm-.559-18.834l1.414 1.414 1.435-1.41-1.415-1.415-1.434 1.411zm.591-3.951l4.771 4.771 1.197-5.986-5.968 1.215zm-8.032 22.785h6v-9h-6v9zm-8 0h6v-6h-6v6zm13.729-14.349l-1.414-1.414-1.45 1.425-3-3.002-7.841 7.797 1.41 1.418 6.427-6.39 2.991 2.993 2.877-2.827z"/>
+          <path
+            fill="#FFFFFF"
+            d="M14.172 7.396l1.413-1.39 1.414 1.414-1.414 1.39-1.413-1.414zm2.828 16.604h6v-13h-6v13zm-.559-18.834l1.414 1.414 1.435-1.41-1.415-1.415-1.434 1.411zm.591-3.951l4.771 4.771 1.197-5.986-5.968 1.215zm-8.032 22.785h6v-9h-6v9zm-8 0h6v-6h-6v6zm13.729-14.349l-1.414-1.414-1.45 1.425-3-3.002-7.841 7.797 1.41 1.418 6.427-6.39 2.991 2.993 2.877-2.827z"
+          />
         </svg>
       </div>
       <div class="bg-white p-3 flex justify-between text-gray-800">
-        <div class="flex items-center" @click="getCoorProduct" style="cursor: pointer">
+        <div class="flex items-center" style="cursor: pointer">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
             <path
               d="M12 0c-4.198 0-8 3.403-8 7.602 0 4.198 3.469 9.21 8 16.398 4.531-7.188 8-12.2 8-16.398 0-4.199-3.801-7.602-8-7.602zm0 11c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3z"
             />
           </svg>
-          <span class="pl-1">내 주변</span>
+          <span class="px-1">내 주변만</span>
+          <div>
+            <span class="pr-2 font-bold text-purple-800" v-if="!enabled"> On </span>
+            <span class="pr-2 font-bold text-purple-400" v-else> Off </span>
+          </div>
+          <div class="switch rounded-full">
+            <Switch
+              v-model="enabled"
+              :class="enabled ? 'bg-teal-900' : 'bg-teal-700'"
+              class="
+                relative
+                inline-flex
+                items-center
+                h-6
+                rounded-full
+                w-11
+                border-2 border-transparent
+                rounded-full
+                cursor-pointer
+                transition-colors
+                ease-in-out
+                duration-200
+                focus:outline-none
+                focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75
+              "
+            >
+              <span class="sr-only">Enable notifications</span>
+              <span
+                :class="enabled ? 'translate-x-6' : 'translate-x-0'"
+                class="
+                  inline-block
+                  w-4
+                  h-4
+                  rounded-full
+                  bg-white
+                  shadow-2xl
+                  transform
+                  ring-0
+                  transition
+                  ease-in-out
+                  duration-200
+                "
+              />
+            </Switch>
+          </div>
         </div>
         <div class="flex">
           <ProdMarketButton @market="market" class="pr-6" />
@@ -43,10 +95,24 @@
 
     <div class="text-left">
       <div v-if="!errorFlag" class="flex flex-col bg-gray-100">
-        <ProdPriceInfo :prodInfo="prodInfo" />
-        <ProdBox v-for="(prod, idx) in prodList" :key="idx" :product="prod" :productName="prodInfo.name" />
-        <div v-if="initialLoading" class="pt-40 flex justify-center bg-gray-300">
-          <svg xml:space="preserve" viewBox="0 0 100 100" class="w-64 h-64 animate-spin" y="0" x="0" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <ProdPriceInfo :prodInfo="prodInfo" :count="totalCount" />
+        <ProdBox
+          v-for="(prod, idx) in prodList"
+          :key="idx"
+          :product="prod"
+          :productName="prodInfo.name"
+        />
+        <div v-if="initialLoading" class="flex justify-center">
+          <svg
+            xml:space="preserve"
+            viewBox="0 0 100 100"
+            class="w-64 h-full h-64 animate-spin"
+            y="0"
+            x="0"
+            xmlns="http://www.w3.org/2000/svg"
+            version="1.1"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+          >
             <g class="ldl-scale">
               <circle fill="#333" r="40" cy="50" cx="50"></circle>
               <g>
@@ -116,6 +182,7 @@
 import { useStore } from "vuex";
 import { useRoute, useRouter } from "vue-router";
 import { defineComponent, reactive, ref, onMounted, onUnmounted, computed, watch } from "vue";
+import { Switch } from "@headlessui/vue";
 import ProdBox from "@/components/ProdItem.vue";
 import ProdPriceInfo from "@/components/Prod/ProdPriceInfo.vue";
 import ProdSortButton from "@/components/Prod/ProdSortButton.vue";
@@ -128,24 +195,27 @@ export default defineComponent({
     ProdPriceInfo,
     ProdSortButton,
     ProdMarketButton,
+    Switch,
   },
 
   setup() {
+    const enabled = ref(true);
     const route = useRoute();
     const router = useRouter();
     const store = useStore();
-    const lat = ref("");
-    const lon = ref("");
+    const lat = ref('');
+    const lon = ref('');
     const container = ref(null);
     const show = ref(false);
     const atTopOfPage = ref(true);
     const prodInfo = ref({
-      name: "",
+      name: '',
       minPrice: 0,
       avgPrice: 0,
       maxPrice: 0,
       count: 0,
     });
+    const totalCount = ref(0);
     const prodList = ref([]);
     const initialLoading = ref(true);
     const initialLoadingFailed = ref(false);
@@ -163,13 +233,13 @@ export default defineComponent({
 
     const goToBack = () => {
       router.push({
-        name: 'Home'
-      })
+        name: 'Home',
+      });
     };
 
     const goToQuote = () => {
       router.push({
-        name: "Quote",
+        name: 'Quote',
         query: {
           pid: query.value.pid,
         },
@@ -177,53 +247,124 @@ export default defineComponent({
     };
 
     const initialLoader = function () {
-      console.log("@initialLoader", query.value);
-      const infoQuery = {
-        pid: query.value.pid,
-        market: query.value.market === undefined ? 0 : query.value.market,
-      };
-      console.log(infoQuery);
-      store.dispatch("requestProductInfo", infoQuery).then((res) => {
-        prodInfo.value.name = res.data.product.name;
-        prodInfo.value.minPrice = res.data.product.minPrice.toLocaleString();
-        prodInfo.value.avgPrice = res.data.product.avgPrice.toLocaleString();
-        prodInfo.value.maxPrice = res.data.product.maxPrice.toLocaleString();
-        prodInfo.value.count = res.data.searchcount;
-      });
-      // 초기화
-      initialLoading.value = true;
-      initialLoadingFailed.value = false;
-      prodList.value = [];
+      console.log('@initialLoader', enabled.value);
 
-      store
-        .dispatch("requestProductList", query.value)
-        .then((res) => {
-          switch (res.status) {
-            case 200:
-              noData.value = false;
-              totalPage.value = res.data.totalpage;
-              if (totalPage.value <= 1) {
-                noMoreData.value = true;
+      if (enabled.value) {
+        const infoQuery = { 
+          pid: query.value.pid,
+          market: query.value.market === undefined ? 0 : query.value.market
+        }
+        console.log(infoQuery)
+        store.dispatch('requestProductInfo', infoQuery)
+          .then(res => {
+            prodInfo.value.name = res.data.product.name
+            prodInfo.value.minPrice = res.data.product.minPrice.toLocaleString()
+            prodInfo.value.avgPrice = res.data.product.avgPrice.toLocaleString()
+            prodInfo.value.maxPrice = res.data.product.maxPrice.toLocaleString()
+            prodInfo.value.count = res.data.searchcount
+            totalCount.value = res.data.searchcount
+          })
+
+        //console.log(infoQuery)
+        // 초기화
+        initialLoading.value = true;
+        initialLoadingFailed.value = false;
+        prodList.value = [];
+        totalPage.value = 0;
+
+        store
+          .dispatch('requestProductList', query.value)
+          .then((res) => {
+            switch (res.status) {
+              case 200:
+                if (totalCount.value > 0) noData.value = false;
+                else noData.value = true;
+                totalPage.value = res.data.totalpage;
+                if (totalPage.value <= 1) {
+                  noMoreData.value = true;
+                }
+                prodList.value.push(...res.data.list);
+                initialLoading.value = false;
+                console.log(res.data);
+                break;
+              case 204:
+                noData.value = true;
+                initialLoading.value = false;
+                break;
+
+              default:
+                console.log('other case');
+            }
+          })
+          .catch((err) => {
+            initialLoadingFailed.value = true;
+            console.log(err);
+          });
+      } else {
+        const getCoorOptions = {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0,
+        };
+
+        const error = function (err) {
+          console.warn('ERROR(' + err.code + '): ' + err.message);
+        };
+
+        const success = function (pos) {
+          let crd = pos.coords;
+          console.log('Your current position is:');
+          lat.value = crd.latitude;
+          console.log('Latitude : ' + lat.value);
+          lon.value = crd.longitude;
+          console.log('Longitude: ' + lon.value);
+          console.log('More or less ' + crd.accuracy + ' meters.');
+
+          const nearProductQuery = {
+            pid: query.value.pid,
+            market: query.value.market === undefined ? 0 : query.value.market,
+            lat: lat.value,
+            lon: lon.value,
+          };
+
+          initialLoading.value = true;
+          initialLoadingFailed.value = false;
+          prodList.value = [];
+          totalPage.value = 0;
+
+          store
+            .dispatch('requestNearProduct', nearProductQuery)
+            .then((res) => {
+              switch (res.status) {
+                case 200:
+                  totalCount.value = res.data.total_count;
+                  if (totalCount.value > 0) noData.value = false;
+                  else noData.value = true;
+                  totalPage.value = res.data.total_count / 20;
+                  if (totalPage.value <= 1) {
+                    noMoreData.value = true;
+                  }
+                  prodList.value.push(...res.data.result);
+                  initialLoading.value = false;
+                  console.log(res.data);
+                  break;
+                case 204:
+                  noData.value = true;
+                  initialLoading.value = false;
+                  break;
+
+                default:
+                  console.log('other case');
               }
-              prodList.value.push(...res.data.list);
-              initialLoading.value = false;
-              console.log(res.data);
-              break;
-            case 204:
-              noData.value = true;
-              initialLoading.value = false;
-              break;
-
-            default:
-              console.log("other case");
-          }
-        })
-        .catch((err) => {
-          initialLoadingFailed.value = true;
-          console.log(err);
-        });
+            })
+            .catch((err) => {
+              initialLoadingFailed.value = true;
+              console.log(err);
+            });
+        };
+        navigator.geolocation.getCurrentPosition(success, error, getCoorOptions);
+      }
     };
-    initialLoader();
 
     // infinite scroll
     const handleScroll = () => {
@@ -246,26 +387,42 @@ export default defineComponent({
           !initialLoadingFailed.value
         ) {
           if (query.value.page <= totalPage.value - 2) {
-            console.log("additional loading seq.");
+            console.log('additional loading seq.');
             isLoading.value = true;
             setTimeout(() => {
               window.scrollTo(0, container.value.scrollHeight);
             }, 20);
 
             setTimeout(() => {
-              query.value.page += 1;
-              store
-                .dispatch("requestProductList", query.value)
-                .then((res) => {
-                  totalPage.value = res.data.totalpage;
-                  prodList.value.push(...res.data.list);
-                })
-                .catch((err) => {
-                  console.log(err);
-                })
-                .finally(() => {
-                  isLoading.value = false;
-                });
+              if (enabled.value) {
+                query.value.page += 1;
+                store
+                  .dispatch('requestProductList', query.value)
+                  .then((res) => {
+                    totalPage.value = res.data.totalpage;
+                    prodList.value.push(...res.data.list);
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  })
+                  .finally(() => {
+                    isLoading.value = false;
+                  });
+              } else {
+                query.value.page += 1;
+                store
+                  .dispatch('requestNerProduct', query.value)
+                  .then((res) => {
+                    totalPage.value = res.data.total_count / 20;
+                    prodList.value.push(...res.data.result);
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  })
+                  .finally(() => {
+                    isLoading.value = false;
+                  });
+              }
             }, 1000);
           } else {
             noMoreData.value = true;
@@ -274,56 +431,39 @@ export default defineComponent({
       }
     };
 
+    watch(
+      () => enabled.value,
+      (newValue, oldValue) => {
+        store.commit('CHANGE_OPENCOOR', enabled.value);
+        initialLoader();
+      }
+    );
+
     onMounted(() => {
-      window.addEventListener("scroll", handleScroll);
+      window.addEventListener('scroll', handleScroll);
+      initialLoader();
     });
+
     onUnmounted(() => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener('scroll', handleScroll);
     });
 
     const sort = function () {
       query.value = {
         ...query.value,
         page: 0,
-        sort: store.getters["getSort"],
+        sort: store.getters['getSort'],
       };
       initialLoader();
     };
 
-    const getCoorProduct = function () {
-      const getCoorOptions = {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 0,
-      };
-
-      const success = function (pos) {
-        let crd = pos.coords;
-        console.log("Your current position is:");
-        lat.value = crd.latitude;
-        console.log("Latitude : " + crd.latitude);
-        lon.value = crd.longitude;
-        console.log("Longitude: " + crd.longitude);
-        console.log("More or less " + crd.accuracy + " meters.");
-      };
-
-      const error = function (err) {
-        console.warn("ERROR(" + err.code + "): " + err.message);
-      };
-
-      navigator.geolocation.getCurrentPosition(success, error, getCoorOptions);
-
-      console.log(lat);
-      console.log(lon);
-    };
-
     const market = function () {
       const { market: temp, ...rest } = query.value;
-      if (store.getters["getMarket"] >= 1) {
+      if (store.getters['getMarket'] >= 1) {
         query.value = {
           ...rest,
           page: 0,
-          market: store.getters["getMarket"],
+          market: store.getters['getMarket'],
         };
       } else {
         query.value = {
@@ -334,7 +474,9 @@ export default defineComponent({
       }
       initialLoader();
     };
+
     return {
+      enabled,
       errorFlag,
       noData,
       initialLoader,
@@ -346,6 +488,7 @@ export default defineComponent({
       query,
       handleScroll,
       initialLoading,
+      initialLoadingFailed,
       isLoading,
       totalPage,
       noMoreData,
@@ -353,10 +496,21 @@ export default defineComponent({
       atTopOfPage,
       goToQuote,
       goToBack,
-      getCoorProduct,
       lat,
       lon,
+      totalCount,
     };
   },
 });
 </script>
+<style>
+.switch {
+  background: #8e2de2; /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #4a00e0, #8e2de2); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to right,
+    #4a00e0,
+    #8e2de2
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+</style>
