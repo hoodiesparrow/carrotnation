@@ -88,7 +88,10 @@
 
     <div class="sticky bottom-0">
       <a :href="product.articleDeatil.link">
-        <div class="flex-column font-semibold text-center bg-purple-200 p-4" @click="redir">
+        <div
+          class="flex-column font-semibold text-center bg-purple-200 p-4 bg-opacity-90"
+          @click="redir"
+        >
           <p class="text-2xl">판매 사이트로 이동</p>
         </div>
       </a>
