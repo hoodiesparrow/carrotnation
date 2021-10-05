@@ -148,7 +148,7 @@ public class SimilarityServiceImpl implements SimilarityService {
 					tempst = new StringTokenizer(ss.nextToken(),"|");
 					psas.setArticleB(new ProductSellList(Long.parseLong(tempst.nextToken()), tempst.nextToken()));
 					similarityScore =Double.parseDouble(ss.nextToken());
-					if(similarityScore<=90&&similarityScore>=10) {
+					if(similarityScore<=80&&similarityScore>=10) {
 						psas.setSimilarity(similarityScore);
 						insertProductSellArticleSimiler(psas);
 					}

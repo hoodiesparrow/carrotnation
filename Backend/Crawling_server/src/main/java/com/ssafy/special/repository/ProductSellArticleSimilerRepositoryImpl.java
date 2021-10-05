@@ -49,7 +49,7 @@ public class ProductSellArticleSimilerRepositoryImpl implements ProductSellArtic
 						qpsas.articleB.id,qpsas.articleB.aid,qpsas.articleB.market,qpsas.articleB.productId.id,qpsas.articleB.title,qpsas.articleB.content,
 						qpsas.articleB.price,qpsas.articleB.createDate,qpsas.articleB.link,qpsas.articleB.img,qpsas.articleB.location,qpsas.articleB.cycle, qpsas.similarity)
 			).from(qpsas)
-			.where(qpsas.articleA.id.eq(id).and(qpsas.cycle.goe(cycle)))
+			.where(qpsas.articleA.id.eq(id).or(qpsas.articleB.id.eq(id)),qpsas.cycle.goe(cycle))
 			.fetch();
 		
 		return Optional.ofNullable(result);
