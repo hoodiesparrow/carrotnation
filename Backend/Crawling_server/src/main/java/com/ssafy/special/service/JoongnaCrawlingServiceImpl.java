@@ -423,9 +423,6 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 
 	@Transactional
 	private boolean insertProductSellList(ProductSellList sellList) {
-		//이미 존재하는 데이터이면 안집어넣음
-		if(productSellListRepository.findFirstByCycleAndAidAndMarketOrderByIdDesc(sellList.getCycle(), sellList.getAid(), sellList.getMarket())!=null)
-			return true;
 		try {
 			productSellListRepository.save(sellList);
 		} catch (Exception e) {

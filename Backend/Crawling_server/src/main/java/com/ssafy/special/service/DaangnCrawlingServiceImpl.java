@@ -364,7 +364,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 	@Transactional
 	private boolean insertProductSellList(ProductSellList sellList) {
 		//이미 존재하는 데이터이면 안집어넣음
-		if(productSellListRepository.findFirstByCycleAndAidAndMarketOrderByIdDesc(sellList.getCycle(), sellList.getAid(), sellList.getMarket())!=null)
+		if(productSellListRepository.countByCycleAndAidAndMarket(sellList.getCycle(), sellList.getAid(), sellList.getMarket())>0)
 			return true;
 		try {
 			productSellListRepository.save(sellList);
