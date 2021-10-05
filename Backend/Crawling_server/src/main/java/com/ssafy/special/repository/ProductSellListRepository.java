@@ -44,4 +44,6 @@ public interface ProductSellListRepository extends JpaRepository<ProductSellList
   			,
   			nativeQuery = true)
   	int nearProductCount(@Param("lon")double x, @Param("lat")double y,@Param("id")long id, @Param("market") List<String> market);
+  	
+  	ProductSellList findByCycleAndAidAndMarket(long cycle, long aid, String market);
 }
