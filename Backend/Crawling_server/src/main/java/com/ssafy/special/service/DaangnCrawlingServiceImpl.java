@@ -72,7 +72,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		
 		//productQuery로 크롤링을 진행하여 검색결과(productDTO)를 쿼리제외키워드로 필터링함
 		int page=1;
-		int endpage=800;
+		int endpage=10;
 		boolean isOldDate=false;// 1달 넘어가는 데이터면 탈출시켜
 		while(true) {
 			if(page!=0 && page%200==0 && page!=endpage) {
@@ -126,20 +126,20 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 					p.setName(product.getName());//품목 지정
 					try {
 						if(p.getDate()==null)
-							isOldDate=detailCrawling(p);//게시글 날짜 지정
+							isOldDate=detailCrawling(p);//게시글 날짜, 내용 지정
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				}else if(hasRequireKeyword(p.getContent(), requireKeyword.get(product.getId()))){//제목에서 필수 키워드가 없으면 내용에서 필수 키워드를 가지고 있는지 확인함
-					p.setName(product.getName());//품목 지정
-					try {
-						if(p.getDate()==null)
-							isOldDate=detailCrawling(p);//게시글 날짜 지정
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}				
+				}else {
+					try {//게시글 날짜, 내용 가져옴
+						isOldDate=detailCrawling(p);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}					
+					if(hasRequireKeyword(p.getContent(), requireKeyword.get(product.getId()))){//제목에서 필수 키워드가 없으면 내용에서 필수 키워드를 가지고 있는지 확인함
+						p.setName(product.getName());//품목 지정			
+					}
 				}
 				if(isOldDate)
 					break;
@@ -245,7 +245,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 			product.setPrice(Long.parseLong(price));
 			
 			//게시글 내용
-			product.setContent(content.select(".article-content").text());			
+//			product.setContent(content.select(".article-content").text());//여기선 개행 제대로 못받음		
 			// 원본 게시글 링크
 			product.setLink(carrotDetail+content.select("a").attr("href"));			
 			// 원본 게시글 pid
@@ -277,10 +277,13 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		Document doc;
 		Element content;
 		String time;
+		String articleDetail;
+		
 		try {
 			doc = Jsoup.connect(product.getLink()).get();
 			content = doc.selectFirst("#content > #article-description");
 			time=content.select("#article-category time").text();
+			articleDetail = content.select("#article-detail").html();
 		}catch (Exception e) {
 			log.info("해당 URL을 상세 크롤링하던중 에러가 발생하였습니다 "+ product.getLink());
 			return false;
@@ -315,6 +318,10 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		
 		product.setTime(time.replace("끌올", ""));
 		product.setDate(dateTime);
+		articleDetail = articleDetail.replaceAll("<br>|</br>|</p>", "\n");
+		articleDetail = articleDetail.replaceAll("<p>", "");
+		
+		product.setContent(articleDetail);
 		
 		return false;	
 	}
