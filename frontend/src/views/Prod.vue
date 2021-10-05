@@ -281,6 +281,7 @@ export default defineComponent({
                 }
                 prodList.value.push(...res.data.list);
                 initialLoading.value = false;
+                noData.value = false;
                 break;
               case 204:
                 noData.value = true;
