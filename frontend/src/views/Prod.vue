@@ -223,7 +223,7 @@ export default defineComponent({
     const noData = ref(false);
     const noMoreData = ref(false);
     const totalPage = ref(0);
-    const pid = computed(() => route.query.pid)
+    const pid = computed(() => route.query.pid);
     const query = ref({
       pid: pid.value,
       page: 0,
@@ -249,20 +249,19 @@ export default defineComponent({
 
     const initialLoader = function () {
       if (enabled.value) {
-        const infoQuery = { 
+        const infoQuery = {
           pid: pid.value,
-          market: query.value.market === undefined ? 0 : query.value.market
-        }
-        store.dispatch('requestProductInfo', infoQuery)
-          .then(res => {
-            prodInfo.value.name = res.data.product.name
-            prodInfo.value.minPrice = res.data.product.minPrice.toLocaleString()
-            prodInfo.value.avgPrice = res.data.product.avgPrice.toLocaleString()
-            prodInfo.value.maxPrice = res.data.product.maxPrice.toLocaleString()
-            prodInfo.value.count = res.data.searchcount
-            totalCount.value = res.data.searchcount
-            console.log('@req. Pinfo_totalCount', totalCount.value)
-          })
+          market: query.value.market === undefined ? 0 : query.value.market,
+        };
+        store.dispatch("requestProductInfo", infoQuery).then((res) => {
+          prodInfo.value.name = res.data.product.name;
+          prodInfo.value.minPrice = res.data.product.minPrice.toLocaleString();
+          prodInfo.value.avgPrice = res.data.product.avgPrice.toLocaleString();
+          prodInfo.value.maxPrice = res.data.product.maxPrice.toLocaleString();
+          prodInfo.value.count = res.data.searchcount;
+          totalCount.value = res.data.searchcount;
+          console.log("@req. Pinfo_totalCount", totalCount.value);
+        });
 
         //console.log(infoQuery)
         // 초기화
@@ -407,7 +406,7 @@ export default defineComponent({
               } else {
                 query.value.page += 1;
                 store
-                  .dispatch("requestNerProduct", query.value)
+                  .dispatch("requestNearProduct", query.value)
                   .then((res) => {
                     totalPage.value = res.data.total_count / 20;
                     prodList.value.push(...res.data.result);
