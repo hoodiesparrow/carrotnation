@@ -21,14 +21,21 @@ public class ProductByPriceServiceImpl implements ProductByPriceService {
 	@Override
 	public Map<String, PriceStepResponseDTO> byPrice(Long id, Long cycle) {
 		List<ProductPriceResponseDTO> list = productSellListRepository.getProductByPrice(cycle,id).orElse(new ArrayList<ProductPriceResponseDTO>());
+		if(list==null||list.size()==0) {
+			return null;
+		}
 		int[] arr = new int[5];
 		long[] stepPrice = new long[6];
 		stepPrice[5] = list.get(0).getMaxPrice();
 		stepPrice[0] = priceRound(stepPrice[5]*0.1);
-		stepPrice[1] = priceRound(stepPrice[5]*0.28);
-		stepPrice[2] = priceRound(stepPrice[5]*0.46);
-		stepPrice[3] = priceRound(stepPrice[5]*0.64);
-		stepPrice[4] = priceRound(stepPrice[5]*0.82);
+		stepPrice[1] = priceRound(stepPrice[5]*0.33);
+		stepPrice[2] = priceRound(stepPrice[5]*0.50);
+		stepPrice[3] = priceRound(stepPrice[5]*0.70);
+		stepPrice[4] = priceRound(stepPrice[5]*0.86);
+//		stepPrice[1] = priceRound(stepPrice[5]*0.28);
+//		stepPrice[2] = priceRound(stepPrice[5]*0.46);
+//		stepPrice[3] = priceRound(stepPrice[5]*0.64);
+//		stepPrice[4] = priceRound(stepPrice[5]*0.82);
 		
 		Map<String,PriceStepResponseDTO> pricemap = new HashMap<String, PriceStepResponseDTO>();
 		
