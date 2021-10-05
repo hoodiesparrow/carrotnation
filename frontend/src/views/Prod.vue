@@ -223,8 +223,9 @@ export default defineComponent({
     const noData = ref(false);
     const noMoreData = ref(false);
     const totalPage = ref(0);
+    const pid = computed(() => route.query.pid)
     const query = ref({
-      pid: route.query.pid,
+      pid: pid.value,
       page: 0,
     });
     const errorFlag = computed(() => {
@@ -241,28 +242,27 @@ export default defineComponent({
       router.push({
         name: "Quote",
         query: {
-          pid: query.value.pid,
+          pid: pid.value,
         },
       });
     };
 
     const initialLoader = function () {
-      console.log("@initialLoader", enabled.value);
-
       if (enabled.value) {
-        const infoQuery = {
-          pid: query.value.pid,
-          market: query.value.market === undefined ? 0 : query.value.market,
-        };
-        console.log(infoQuery);
-        store.dispatch("requestProductInfo", infoQuery).then((res) => {
-          prodInfo.value.name = res.data.product.name;
-          prodInfo.value.minPrice = res.data.product.minPrice.toLocaleString();
-          prodInfo.value.avgPrice = res.data.product.avgPrice.toLocaleString();
-          prodInfo.value.maxPrice = res.data.product.maxPrice.toLocaleString();
-          prodInfo.value.count = res.data.searchcount;
-          totalCount.value = res.data.searchcount;
-        });
+        const infoQuery = { 
+          pid: pid.value,
+          market: query.value.market === undefined ? 0 : query.value.market
+        }
+        store.dispatch('requestProductInfo', infoQuery)
+          .then(res => {
+            prodInfo.value.name = res.data.product.name
+            prodInfo.value.minPrice = res.data.product.minPrice.toLocaleString()
+            prodInfo.value.avgPrice = res.data.product.avgPrice.toLocaleString()
+            prodInfo.value.maxPrice = res.data.product.maxPrice.toLocaleString()
+            prodInfo.value.count = res.data.searchcount
+            totalCount.value = res.data.searchcount
+            console.log('@req. Pinfo_totalCount', totalCount.value)
+          })
 
         //console.log(infoQuery)
         // 초기화
@@ -276,15 +276,12 @@ export default defineComponent({
           .then((res) => {
             switch (res.status) {
               case 200:
-                if (totalCount.value > 0) noData.value = false;
-                else noData.value = true;
                 totalPage.value = res.data.totalpage;
                 if (totalPage.value <= 1) {
                   noMoreData.value = true;
                 }
                 prodList.value.push(...res.data.list);
                 initialLoading.value = false;
-                console.log(res.data);
                 break;
               case 204:
                 noData.value = true;
@@ -320,7 +317,7 @@ export default defineComponent({
           console.log("More or less " + crd.accuracy + " meters.");
 
           const nearProductQuery = {
-            pid: query.value.pid,
+            pid: pid.value,
             market: query.value.market === undefined ? 0 : query.value.market,
             lat: lat.value,
             lon: lon.value,
@@ -346,7 +343,6 @@ export default defineComponent({
                   }
                   prodList.value.push(...res.data.result);
                   initialLoading.value = false;
-                  console.log(res.data);
                   break;
                 case 204:
                   noData.value = true;
@@ -499,6 +495,7 @@ export default defineComponent({
       lat,
       lon,
       totalCount,
+      pid,
     };
   },
 });
