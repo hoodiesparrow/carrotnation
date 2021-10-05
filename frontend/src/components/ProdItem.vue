@@ -42,11 +42,12 @@
           overflow: hidden;
           width: 90%;
           display: block;
+          text-gray-900
         "
       >
         {{ product.title }}
       </div>
-      <div class="col-span-2 text-xl font-semibold flex pl-1 mt-2">
+      <div class="col-span-2 text-xl font-semibold flex pl-1 mt-2 text-gray-900">
         <p>{{ product.price.toLocaleString() }}원</p>
       </div>
       <div

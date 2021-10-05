@@ -1,64 +1,21 @@
-<script>
-import { defineComponent } from 'vue'
-import { Line } from 'vue3-chart-v2'
-
-export default defineComponent({
-  name: 'MonthlyChart',
-  extends: Line,
-  mounted () {
-    // Overwriting base render method with actual data.
-    const canvas = this.$refs.canvas
-
-    const gradient = canvas
-      .getContext('2d')
-      .createLinearGradient(0, 0, 0, 450)
-
-    gradient.addColorStop(0, "rgba(255, 0,0, 0.5)");
-    gradient.addColorStop(0.5, "rgba(255, 0, 0, 0.25)");
-    gradient.addColorStop(1, "rgba(255, 0, 0, 0)");
-
-    const gradient2 = canvas
-      .getContext('2d')
-      .createLinearGradient(0, 0, 0, 450)
-
-    gradient2.addColorStop(0, "rgba(0, 231, 255, 0.9)");
-    gradient2.addColorStop(0.5, "rgba(0, 231, 255, 0.25)")
-    gradient2.addColorStop(1, "rgba(0, 231, 255, 0)");
-
-
-    this.renderChart({
-      labels: [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July"
-      ],
-      datasets: [
-        {
-          label: "시세",
-          borderColor: "#FC2525",
-          pointBackgroundColor: "white",
-          borderWidth: 1,
-          pointBorderColor: "white",
-          tension: 0.3,
-          backgroundColor: gradient,
-          data: [40, 39, 10, 40, 39, 80, 40],
-        },
-        {
-          label: "예상 가격",
-          borderColor: "#05CBE1",
-          pointBackgroundColor: "white",
-          pointBorderColor: "white",
-          borderWidth: 1,
-          tension: 0.3,
-          backgroundColor: gradient2,
-          data: [60, 55, 32, 10, 2, 12, 53]
-        }
-      ]
-    })
-  }
-})
-</script>
+<template>
+  
+        <svg
+          version="1.1"
+          id="Layer_1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          viewBox="0 0 512.011 512.011"
+          style="enable-background: new 0 0 512.011 512.011"
+          xml:space="preserve"
+          class="w-4 y-4"
+        >
+          <path
+            d="M505.755,123.592c-8.341-8.341-21.824-8.341-30.165,0L256.005,343.176L36.421,123.592c-8.341-8.341-21.824-8.341-30.165,0
+              s-8.341,21.824,0,30.165l234.667,234.667c4.16,4.16,9.621,6.251,15.083,6.251c5.462,0,10.923-2.091,15.083-6.251l234.667-234.667
+              C514.096,145.416,514.096,131.933,505.755,123.592z"
+          />
+        </svg>
+</template>

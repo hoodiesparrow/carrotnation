@@ -19,6 +19,12 @@
     pid: string,
     cycle : string
   }
+  interface nearProductQuery {
+    pid: string,
+    lon: string,
+    lat: string,
+    market: number,
+  }
 
   const BASE_URL = 'https://j5d205.p.ssafy.io'
 
@@ -27,6 +33,7 @@
       categoryData: categoryData,
       sort: 1,
       market: 0,
+      openCoordinate: true,
     },
     mutations: {
       CHANGE_SORT: function (state, idx: number) {
@@ -34,6 +41,9 @@
       },
       CHANGE_MARKET: function (state, idx: number) {
         state.market = idx
+      },
+      CHANGE_OPENCOOR: function (state, flag: boolean) {
+        state.openCoordinate = flag;
       }
     },
     actions: {
@@ -76,6 +86,14 @@
         return axios.get(url, header)
       },
 
+      requestNearProduct: function ({ commit }, query: nearProductQuery) {
+        const url = `${BASE_URL}/api/nearProduct`
+        const header = {
+          params: query 
+        }
+        return axios.get(url, header)
+      },
+
       requestProductSalesInfo: function ({ commit }, pid: string) {
         const url = `${BASE_URL}/api/dateprice`
         const header = {
@@ -84,31 +102,31 @@
         return axios.get(url, header)
       },
 
-    requestProductDetail: function ({ commit }, id: number) {
-      const url = `${BASE_URL}/api/productselldetail`
-      const header = {
-        params: { 
-          id: id 
-        } 
-      }
-      return axios.get(url, header);
-    },
+      requestProductDetail: function ({ commit }, id: number) {
+        const url = `${BASE_URL}/api/productselldetail`
+        const header = {
+          params: { 
+            id: id 
+          } 
+        }
+        return axios.get(url, header);
+      },
 
-    requestDatePrice: function ({ commit }, pid: string) {
-      const url = `${BASE_URL}/api/dateprice`
-      const header = {
-        params: { pid: pid }
-      }
-      return axios.get(url, header)
-    },
+      requestDatePrice: function ({ commit }, pid: string) {
+        const url = `${BASE_URL}/api/dateprice`
+        const header = {
+          params: { pid: pid }
+        }
+        return axios.get(url, header)
+      },
 
-    requestByPrice: function ({ commit }, query: byPricequery) {
-      const url = `${BASE_URL}/api/byprice`
-      const header = {
-        params: query
+      requestByPrice: function ({ commit }, query: byPricequery) {
+        const url = `${BASE_URL}/api/byprice`
+        const header = {
+          params: query
+        }
+        return axios.get(url, header)
       }
-      return axios.get(url, header)
-    }
 
   },
   getters: {
@@ -121,6 +139,9 @@
     getMarket: function (state) {
       return state.market
     },
+    getOpenCoor: function (state) {
+      return state.openCoordinate
+    }
   },
   modules: {},
 });
