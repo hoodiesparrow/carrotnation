@@ -324,6 +324,7 @@ export default defineComponent({
             market: query.value.market === undefined ? 0 : query.value.market,
             lat: lat.value,
             lon: lon.value,
+            sort: query.value.sort === undefined ? 1 : query.value.sort,
           };
 
           initialLoading.value = true;
