@@ -61,9 +61,9 @@
     <div class="">
       <div class="w-full">
         <HomeSelectButton />
-      <br>
       </div>
     </div>
+    <HomeFooter />
   </div>
 </template>
 
@@ -76,11 +76,15 @@ import { useStore } from "vuex";
 const HomeSelectButton = defineAsyncComponent(
   () => import("@/components/Home/HomeSelectButton.vue")
 );
+const HomeFooter = defineAsyncComponent(
+  () => import("@/components/Home/HomeFooter.vue")
+);
 
 export default defineComponent({
   name: "Home",
   components: {
     HomeSelectButton,
+    HomeFooter,
   },
 
   setup() {
