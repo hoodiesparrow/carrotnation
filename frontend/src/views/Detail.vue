@@ -136,6 +136,16 @@ export default defineComponent({
     };
     initialLoad();
 
+    watch(
+      () => route.query,
+      (newV, oldV) => {
+        console.log(route.path);
+        if (route.path === "/detail") {
+          initialLoad();
+        }
+      }
+    );
+
     const goToBack = () => {
       history.back();
     };
