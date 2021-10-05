@@ -261,6 +261,7 @@ export default defineComponent({
             prodInfo.value.maxPrice = res.data.product.maxPrice.toLocaleString()
             prodInfo.value.count = res.data.searchcount
             totalCount.value = res.data.searchcount
+            console.log('@req. Pinfo_totalCount', totalCount.value)
           })
 
         //console.log(infoQuery)
@@ -275,8 +276,6 @@ export default defineComponent({
           .then((res) => {
             switch (res.status) {
               case 200:
-                if (totalCount.value > 0) noData.value = false;
-                else noData.value = true;
                 totalPage.value = res.data.totalpage;
                 if (totalPage.value <= 1) {
                   noMoreData.value = true;
