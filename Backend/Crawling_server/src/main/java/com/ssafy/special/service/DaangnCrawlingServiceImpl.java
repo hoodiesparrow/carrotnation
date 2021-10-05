@@ -72,7 +72,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		
 		//productQuery로 크롤링을 진행하여 검색결과(productDTO)를 쿼리제외키워드로 필터링함
 		int page=1;
-		int endpage=10;
+		int endpage=800;
 		boolean isOldDate=false;// 1달 넘어가는 데이터면 탈출시켜
 		while(true) {
 			if(page!=0 && page%200==0 && page!=endpage) {
