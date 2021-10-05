@@ -250,6 +250,7 @@ export default defineComponent({
 
     const initialLoader = function () {
       if (enabled.value) {
+        console.log('@@@@@@@@@true@@@@@@@@@')
         const infoQuery = { 
           pid: pid.value,
           market: query.value.market === undefined ? 0 : query.value.market
@@ -298,6 +299,7 @@ export default defineComponent({
             console.log(err);
           });
       } else {
+        console.log('@@@@@@@@@false@@@@@@@@@')
         const getCoorOptions = {
           enableHighAccuracy: true,
           timeout: 5000,
