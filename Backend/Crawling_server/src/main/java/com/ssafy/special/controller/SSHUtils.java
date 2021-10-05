@@ -128,4 +128,17 @@ public class SSHUtils {
 		}
 		return response.toString();
 	}
+	
+	public void getSSHResponseNotResponse(String command) {
+		
+		try {
+			channelExec = (ChannelExec) session.openChannel("exec");
+			channelExec.setCommand(command);
+			channelExec.connect();
+		} catch (JSchException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 }
