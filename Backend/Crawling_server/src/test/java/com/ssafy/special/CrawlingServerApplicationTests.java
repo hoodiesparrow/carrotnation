@@ -33,6 +33,7 @@ import com.ssafy.special.repository.ProductSellListRepository;
 import com.ssafy.special.service.DaangnCrawlingServiceImpl;
 import com.ssafy.special.service.JoongnaCrawlingService;
 import com.ssafy.special.service.KeywordInfoService;
+import com.ssafy.special.service.ProductByPriceService;
 import com.ssafy.special.service.SimilarityService;
 import com.ssafy.special.service.ThunderCrawlingService;
 
@@ -70,7 +71,8 @@ class CrawlingServerApplicationTests {
 	AdressToCoorUtils adresstocoor;
 	@Autowired
 	SimilarityService similarityService;
-
+	@Autowired
+	ProductByPriceService pby;
 	@Autowired
 	CoordinateRepository coordinateRepository;
 //	@Test
@@ -313,5 +315,9 @@ class CrawlingServerApplicationTests {
 		tte.add("daangn");
 		int s =productSellListRepository.nearProductCount(126.939276884816, 37.5651508821041, (long) 52, tte);
 		System.out.println(s);
+	}
+	//@Test
+	void TT() {
+		System.out.println(pby.byPrice((long) 5, Long.parseLong("21100519")));
 	}
 }

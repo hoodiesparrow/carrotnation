@@ -26,14 +26,12 @@ public class ProductByPriceServiceImpl implements ProductByPriceService {
 		}
 		int[] arr = new int[5];
 		long[] stepPrice = new long[6];
-		long minprice = list.get(0).getMinPrice();
 		stepPrice[0] = list.get(0).getMinPrice();
 		stepPrice[5] = list.get(0).getMaxPrice();
-		int lowpercent = Math.round((stepPrice[0]/stepPrice[5])*100);
-		int step = ((100-lowpercent)/5)*0;
+		double lowpercent = ((double)stepPrice[0]/stepPrice[5])*100.0;
+		int step = (int) Math.round(((100-lowpercent)/5));
 		double stepD = step*0.01;
 		double start = (lowpercent*0.01)+stepD;
-		
 		stepPrice[1] = priceRound(stepPrice[5]*start);
 		start+=stepD;
 		stepPrice[2] = priceRound(stepPrice[5]*start);
@@ -64,7 +62,7 @@ public class ProductByPriceServiceImpl implements ProductByPriceService {
 		psr = new PriceStepResponseDTO();
 		psr.setMin(stepPrice[0]);
 		psr.setMax(stepPrice[1]);
-		psr.setCount(0);
+		psr.setCount(arr[0]);
 		pricemap.put("1Step", psr);
 		for(int i=1;i<5;i++) {
 			psr = new PriceStepResponseDTO();
