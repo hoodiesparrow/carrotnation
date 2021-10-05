@@ -1,10 +1,19 @@
-<script>
-import { defineComponent } from "vue";
-import { Bar } from "vue3-chart-v2";
+<template>
+  <h2>가격 구간 별 게시글 수</h2>
+  <div>
+    <vue3-chart-js v-bind="{ ...barChart }" ref="canvas" />
+  </div>
+</template>
 
-export default defineComponent({
-  name: "SalesByPrice",
-  extends: Bar,
+<script>
+import Vue3ChartJs from "@j-t-mcc/vue3-chartjs";
+import { onMounted, ref } from 'vue'
+
+export default {
+  name: "App",
+  components: {
+    Vue3ChartJs,
+  },
   props: {
     prices: {
       type: Object
@@ -13,34 +22,40 @@ export default defineComponent({
       type: Object
     },
   },
-  mounted() {
-    // Overwriting base render method with actual data.
-    const canvas = this.$refs.canvas;
+  setup(props) {
+    const canvas = ref(null)
+    const barChart = {
+      type: "bar",
+      data: {
+        labels: props.dates,
+        datasets: [
+          {
+            label: '게시글 수',
+            // backgroundColor: ["#1abc9c", "#f1c40f", "#2980b9", "#34495e"],
+            data: props.prices,
+          },
+        ],
+      },
+    };
+    const asd = ref(null)
+    onMounted(() => {
+      asd.value = canvas.value.chartRef
+      const gradient = asd.value.getContext('2d').createLinearGradient(0, 0, 0, 450)
+      console.log(gradient)
+      
+      gradient.addColorStop(0, "rgba(255, 0,0, 0.5)");
+      gradient.addColorStop(0.5, "rgba(255, 0, 0, 0.25)");
+      gradient.addColorStop(1, "rgba(255, 0, 0, 0)");
 
-    const gradient = canvas.getContext("2d").createLinearGradient(0, 0, 0, 450);
+      barChart.data.datasets[0].backgroundColor = gradient
+      canvas.value.update()
+    })
 
-    gradient.addColorStop(0, "rgba(255, 0,0, 0.5)");
-    gradient.addColorStop(0.5, "rgba(255, 0, 0, 0.25)");
-    gradient.addColorStop(1, "rgba(255, 0, 0, 0)");
-
-    const gradient2 = canvas.getContext("2d").createLinearGradient(0, 0, 0, 450);
-
-    gradient2.addColorStop(0, "rgba(0, 231, 255, 0.9)");
-    gradient2.addColorStop(0.5, "rgba(0, 231, 255, 0.25)");
-    gradient2.addColorStop(1, "rgba(0, 231, 255, 0)");
-
-    this.renderChart({
-      labels: this.dates,
-      datasets: [
-        {
-          label: "게시글 수",
-          borderColor: "#05CBE1",
-          borderWidth: 1,
-          backgroundColor: gradient2,
-          data: this.prices,
-        },
-      ],
-    });
+    return {
+      barChart,
+      canvas,
+      asd,
+    };
   },
-});
+};
 </script>
