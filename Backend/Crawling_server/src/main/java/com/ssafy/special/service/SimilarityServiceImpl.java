@@ -77,7 +77,7 @@ public class SimilarityServiceImpl implements SimilarityService {
 				if ("".equals(psl.getContent()) || psl.getContent() == null)
 					continue;
 				try {
-					strToAnalyze = psl.getContent().replaceAll("[^\\uAC00-\\uD7AF\\u1100-\\u11FF\\u3130-\\u318F]+",
+					strToAnalyze = psl.getContent().replaceAll("[^\\uAC00-\\uD7AF\\u1100-\\u11FF\\u3130-\\u318F0-9]+",
 							" ");
 
 					analyzeResultList = komoran.analyze(strToAnalyze);
@@ -91,12 +91,12 @@ public class SimilarityServiceImpl implements SimilarityService {
 				boolean checkword=false;
 				temp.append(psl.getId()).append("|").append(psl.getMarket()).append(" ");
 				for (Token token : tokenList) {
-					if ("NNP".equals(token.getPos()) || "NNG".equals(token.getPos())) {
-						String s = token.getMorph();
-						if(!temp.toString().contains(token.getMorph())) {
-							if(!checkword)
+					if ("NNP".equals(token.getPos()) || "NNG".equals(token.getPos()) || "SN".equals(token.getPos())) {
+						if(!temp.toString().contains(token.getMorph().toString())) {
+							if(!checkword) {
 								checkword=true;
-							temp.append(token.getMorph()).append(" ");
+							}
+							temp.append(token.getMorph().toString()).append(" ");
 						}
 					}
 				}
@@ -148,7 +148,7 @@ public class SimilarityServiceImpl implements SimilarityService {
 					tempst = new StringTokenizer(ss.nextToken(),"|");
 					psas.setArticleB(new ProductSellList(Long.parseLong(tempst.nextToken()), tempst.nextToken()));
 					similarityScore =Double.parseDouble(ss.nextToken());
-					if(similarityScore<=80&&similarityScore>=10) {
+					if(similarityScore<=90&&similarityScore>=10) {
 						psas.setSimilarity(similarityScore);
 						insertProductSellArticleSimiler(psas);
 					}
