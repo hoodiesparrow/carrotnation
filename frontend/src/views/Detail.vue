@@ -123,7 +123,6 @@ export default defineComponent({
           product.value = res.data;
           productContent.value = res.data.articleDeatil.content.replace(/\n/gim, "<br />");
           productContent.value = res.data.articleDeatil.content.replace(/\\n/gi, "<br />");
-          console.log(productContent.value);
         })
         .catch((err) => {
           console.log(err.data);
@@ -133,14 +132,6 @@ export default defineComponent({
         });
     };
     initialLoad();
-
-    watch(
-      () => route.query,
-      (newV, oldV) => {
-        console.log(newV);
-        initialLoad();
-      }
-    );
 
     const goToBack = () => {
       history.back();

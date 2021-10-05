@@ -64,7 +64,6 @@
             }
           }
         }
-        console.log(header)
         return axios.get(url, header)
       },
 
