@@ -203,13 +203,13 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     const store = useStore();
-    const lat = ref('');
-    const lon = ref('');
+    const lat = ref("");
+    const lon = ref("");
     const container = ref(null);
     const show = ref(false);
     const atTopOfPage = ref(true);
     const prodInfo = ref({
-      name: '',
+      name: "",
       minPrice: 0,
       avgPrice: 0,
       maxPrice: 0,
@@ -233,13 +233,13 @@ export default defineComponent({
 
     const goToBack = () => {
       router.push({
-        name: 'Home',
+        name: "Home",
       });
     };
 
     const goToQuote = () => {
       router.push({
-        name: 'Quote',
+        name: "Quote",
         query: {
           pid: query.value.pid,
         },
@@ -247,23 +247,22 @@ export default defineComponent({
     };
 
     const initialLoader = function () {
-      console.log('@initialLoader', enabled.value);
+      console.log("@initialLoader", enabled.value);
 
       if (enabled.value) {
-        const infoQuery = { 
+        const infoQuery = {
           pid: query.value.pid,
-          market: query.value.market === undefined ? 0 : query.value.market
-        }
-        console.log(infoQuery)
-        store.dispatch('requestProductInfo', infoQuery)
-          .then(res => {
-            prodInfo.value.name = res.data.product.name
-            prodInfo.value.minPrice = res.data.product.minPrice.toLocaleString()
-            prodInfo.value.avgPrice = res.data.product.avgPrice.toLocaleString()
-            prodInfo.value.maxPrice = res.data.product.maxPrice.toLocaleString()
-            prodInfo.value.count = res.data.searchcount
-            totalCount.value = res.data.searchcount
-          })
+          market: query.value.market === undefined ? 0 : query.value.market,
+        };
+        console.log(infoQuery);
+        store.dispatch("requestProductInfo", infoQuery).then((res) => {
+          prodInfo.value.name = res.data.product.name;
+          prodInfo.value.minPrice = res.data.product.minPrice.toLocaleString();
+          prodInfo.value.avgPrice = res.data.product.avgPrice.toLocaleString();
+          prodInfo.value.maxPrice = res.data.product.maxPrice.toLocaleString();
+          prodInfo.value.count = res.data.searchcount;
+          totalCount.value = res.data.searchcount;
+        });
 
         //console.log(infoQuery)
         // 초기화
@@ -273,7 +272,7 @@ export default defineComponent({
         totalPage.value = 0;
 
         store
-          .dispatch('requestProductList', query.value)
+          .dispatch("requestProductList", query.value)
           .then((res) => {
             switch (res.status) {
               case 200:
@@ -293,7 +292,7 @@ export default defineComponent({
                 break;
 
               default:
-                console.log('other case');
+                console.log("other case");
             }
           })
           .catch((err) => {
@@ -308,23 +307,24 @@ export default defineComponent({
         };
 
         const error = function (err) {
-          console.warn('ERROR(' + err.code + '): ' + err.message);
+          console.warn("ERROR(" + err.code + "): " + err.message);
         };
 
         const success = function (pos) {
           let crd = pos.coords;
-          console.log('Your current position is:');
+          console.log("Your current position is:");
           lat.value = crd.latitude;
-          console.log('Latitude : ' + lat.value);
+          console.log("Latitude : " + lat.value);
           lon.value = crd.longitude;
-          console.log('Longitude: ' + lon.value);
-          console.log('More or less ' + crd.accuracy + ' meters.');
+          console.log("Longitude: " + lon.value);
+          console.log("More or less " + crd.accuracy + " meters.");
 
           const nearProductQuery = {
             pid: query.value.pid,
             market: query.value.market === undefined ? 0 : query.value.market,
             lat: lat.value,
             lon: lon.value,
+            sort: query.value.sort === undefined ? 1 : query.value.sort,
           };
 
           initialLoading.value = true;
@@ -333,7 +333,7 @@ export default defineComponent({
           totalPage.value = 0;
 
           store
-            .dispatch('requestNearProduct', nearProductQuery)
+            .dispatch("requestNearProduct", nearProductQuery)
             .then((res) => {
               switch (res.status) {
                 case 200:
@@ -354,7 +354,7 @@ export default defineComponent({
                   break;
 
                 default:
-                  console.log('other case');
+                  console.log("other case");
               }
             })
             .catch((err) => {
@@ -387,7 +387,7 @@ export default defineComponent({
           !initialLoadingFailed.value
         ) {
           if (query.value.page <= totalPage.value - 2) {
-            console.log('additional loading seq.');
+            console.log("additional loading seq.");
             isLoading.value = true;
             setTimeout(() => {
               window.scrollTo(0, container.value.scrollHeight);
@@ -397,7 +397,7 @@ export default defineComponent({
               if (enabled.value) {
                 query.value.page += 1;
                 store
-                  .dispatch('requestProductList', query.value)
+                  .dispatch("requestProductList", query.value)
                   .then((res) => {
                     totalPage.value = res.data.totalpage;
                     prodList.value.push(...res.data.list);
@@ -411,7 +411,7 @@ export default defineComponent({
               } else {
                 query.value.page += 1;
                 store
-                  .dispatch('requestNerProduct', query.value)
+                  .dispatch("requestNerProduct", query.value)
                   .then((res) => {
                     totalPage.value = res.data.total_count / 20;
                     prodList.value.push(...res.data.result);
@@ -434,36 +434,36 @@ export default defineComponent({
     watch(
       () => enabled.value,
       (newValue, oldValue) => {
-        store.commit('CHANGE_OPENCOOR', enabled.value);
+        store.commit("CHANGE_OPENCOOR", enabled.value);
         initialLoader();
       }
     );
 
     onMounted(() => {
-      window.addEventListener('scroll', handleScroll);
+      window.addEventListener("scroll", handleScroll);
       initialLoader();
     });
 
     onUnmounted(() => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     });
 
     const sort = function () {
       query.value = {
         ...query.value,
         page: 0,
-        sort: store.getters['getSort'],
+        sort: store.getters["getSort"],
       };
       initialLoader();
     };
 
     const market = function () {
       const { market: temp, ...rest } = query.value;
-      if (store.getters['getMarket'] >= 1) {
+      if (store.getters["getMarket"] >= 1) {
         query.value = {
           ...rest,
           page: 0,
-          market: store.getters['getMarket'],
+          market: store.getters["getMarket"],
         };
       } else {
         query.value = {
