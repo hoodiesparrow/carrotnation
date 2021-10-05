@@ -33,7 +33,7 @@
       categoryData: categoryData,
       sort: 1,
       market: 0,
-      openCoordinate: false,
+      openCoordinate: true,
     },
     mutations: {
       CHANGE_SORT: function (state, idx: number) {

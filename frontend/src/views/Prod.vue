@@ -249,20 +249,21 @@ export default defineComponent({
     const initialLoader = function () {
       console.log("@initialLoader", query.value);
 
-      if (enabled.value) {
-        const infoQuery = {
-          pid: query.value.pid,
-          market: query.value.market === undefined ? 0 : query.value.market,
-        };
-        //console.log(infoQuery);
-        store.dispatch("requestProductInfo", infoQuery).then((res) => {
-          prodInfo.value.name = res.data.product.name;
-          prodInfo.value.minPrice = res.data.product.minPrice.toLocaleString();
-          prodInfo.value.avgPrice = res.data.product.avgPrice.toLocaleString();
-          prodInfo.value.maxPrice = res.data.product.maxPrice.toLocaleString();
-          prodInfo.value.count = res.data.searchcount;
-        });
+      const infoQuery = {
+        pid: query.value.pid,
+        market: query.value.market === undefined ? 0 : query.value.market,
+      };
 
+      store.dispatch("requestProductInfo", infoQuery).then((res) => {
+        prodInfo.value.name = res.data.product.name;
+        prodInfo.value.minPrice = res.data.product.minPrice.toLocaleString();
+        prodInfo.value.avgPrice = res.data.product.avgPrice.toLocaleString();
+        prodInfo.value.maxPrice = res.data.product.maxPrice.toLocaleString();
+        prodInfo.value.count = res.data.searchcount;
+      });
+
+      if (enabled.value) {
+        //console.log(infoQuery)
         // 초기화
         initialLoading.value = true;
         initialLoadingFailed.value = false;
@@ -363,7 +364,6 @@ export default defineComponent({
         navigator.geolocation.getCurrentPosition(success, error, getCoorOptions);
       }
     };
-    initialLoader();
 
     // infinite scroll
     const handleScroll = () => {
@@ -393,19 +393,35 @@ export default defineComponent({
             }, 20);
 
             setTimeout(() => {
-              query.value.page += 1;
-              store
-                .dispatch("requestProductList", query.value)
-                .then((res) => {
-                  totalPage.value = res.data.totalpage;
-                  prodList.value.push(...res.data.list);
-                })
-                .catch((err) => {
-                  console.log(err);
-                })
-                .finally(() => {
-                  isLoading.value = false;
-                });
+              if (enabled.value) {
+                query.value.page += 1;
+                store
+                  .dispatch("requestProductList", query.value)
+                  .then((res) => {
+                    totalPage.value = res.data.totalpage;
+                    prodList.value.push(...res.data.list);
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  })
+                  .finally(() => {
+                    isLoading.value = false;
+                  });
+              } else {
+                query.value.page += 1;
+                store
+                  .dispatch("requestNerProduct", query.value)
+                  .then((res) => {
+                    totalPage.value = res.data.total_count / 20;
+                    prodList.value.push(...res.data.result);
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  })
+                  .finally(() => {
+                    isLoading.value = false;
+                  });
+              }
             }, 1000);
           } else {
             noMoreData.value = true;
@@ -425,6 +441,7 @@ export default defineComponent({
     onMounted(() => {
       window.addEventListener("scroll", handleScroll);
       enabled.value = store.getters["getOpenCoor"];
+      initialLoader();
     });
 
     onUnmounted(() => {
@@ -438,34 +455,6 @@ export default defineComponent({
         sort: store.getters["getSort"],
       };
       initialLoader();
-    };
-
-    const getCoorProduct = function () {
-      const getCoorOptions = {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 0,
-      };
-
-      const success = function (pos) {
-        let crd = pos.coords;
-        console.log("Your current position is:");
-        lat.value = crd.latitude;
-        console.log("Latitude : " + lat.value);
-        lon.value = crd.longitude;
-        console.log("Longitude: " + lon.value);
-        console.log("More or less " + crd.accuracy + " meters.");
-
-        const nearProductQuery = {
-          pid: query.value.pid,
-          lat: lat.value,
-          lon: lon.value,
-        };
-        prodList.value = [];
-        store.dispatch("requestNearProduct", nearProductQuery).then((res) => {
-          prodList.value.push(...res.data.result);
-        });
-      };
     };
 
     const market = function () {
@@ -506,7 +495,6 @@ export default defineComponent({
       atTopOfPage,
       goToQuote,
       goToBack,
-      getCoorProduct,
       lat,
       lon,
       totalCount,
