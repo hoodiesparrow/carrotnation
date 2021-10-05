@@ -114,7 +114,7 @@ public class ProductSellListRepositoryImpl implements ProductSellListRepositoryC
 		QProductSellList qpsl= QProductSellList.productSellList;
 		List<ProductPriceResponseDTO> result = queryFactory.select(
 										Projections.constructor(ProductPriceResponseDTO.class,
-												qpsl.aid, qpsl.market,qpsl.price,qpsl.productId.maxPrice)
+												qpsl.aid, qpsl.market,qpsl.price,qpsl.productId.maxPrice,qpsl.productId.minPrice)
 										)
 										.from(qpsl)
 										.where(qpsl.cycle.eq(cycle).and(qpsl.productId.id.eq(id)))

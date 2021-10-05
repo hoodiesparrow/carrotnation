@@ -16,5 +16,6 @@ public class ProductPriceResponseDTO {
 	private String market;//마켓종류
 	private long price;//가격
 	private long maxPrice;//최고가
+	private long minPrice;//최저가
 	
 }
