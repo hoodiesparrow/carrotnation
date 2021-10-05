@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-750px w-full absolute bottom-0 overflow-hidden">
+  <div class="max-w-750px w-full overflow-hidden">
     <transition
       enter-active-class="transition transform duration-300"
       enter-from-class="translate-y-full"

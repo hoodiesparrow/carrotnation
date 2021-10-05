@@ -7,6 +7,7 @@
       max-w-750px
       text-center
       min-h-screen
+      h-full
       bg-gradient-to-r
       from-blue-100
       to-pink-100
@@ -58,12 +59,12 @@
       </svg>
     </div>
 
-    <div class="">
+    <div class="flex flex-col justify-between">
       <div class="w-full">
         <HomeSelectButton />
       </div>
+      <HomeFooter />
     </div>
-    <HomeFooter />
   </div>
 </template>
 

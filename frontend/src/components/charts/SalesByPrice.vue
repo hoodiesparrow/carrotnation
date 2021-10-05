@@ -1,10 +1,10 @@
 <script>
 import { defineComponent } from "vue";
-import { Line } from "vue3-chart-v2";
+import { Bar } from "vue3-chart-v2";
 
 export default defineComponent({
-  name: "SalesTrend",
-  extends: Line,
+  name: "SalesByPrice",
+  extends: Bar,
   props: {
     prices: {
       type: Object
@@ -35,10 +35,7 @@ export default defineComponent({
         {
           label: "게시글 수",
           borderColor: "#05CBE1",
-          pointBackgroundColor: "white",
           borderWidth: 1,
-          pointBorderColor: "white",
-          tension: 0.3,
           backgroundColor: gradient2,
           data: this.prices,
         },
