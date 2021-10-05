@@ -33,13 +33,13 @@ export default defineComponent({
       labels: this.dates,
       datasets: [
         {
-          label: "평균 가격",
-          borderColor: "#FC2525",
+          label: "게시글 수",
+          borderColor: "#05CBE1",
           pointBackgroundColor: "white",
           borderWidth: 1,
           pointBorderColor: "white",
           tension: 0.3,
-          backgroundColor: gradient,
+          backgroundColor: gradient2,
           data: this.prices,
         },
       ],
