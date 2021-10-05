@@ -86,7 +86,6 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		while (true) {
 			try {
 				joongnaPostCrawling(productQuery.getQuery(), page++, exception, pdlist);
-
 			} catch (PageEndException e) {
 				break;
 			}
@@ -343,9 +342,9 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 
 				List<String> commarequire = requireKeyword.get(p.getId());
 
-				HashMap<String, List<String>> inandexc = new HashMap<String, List<String>>();
-				inandexc.put("except", commaexcept);
-				inandexc.put("require", commarequire);
+//				HashMap<String, List<String>> inandexc = new HashMap<String, List<String>>();
+//				inandexc.put("except", commaexcept);
+//				inandexc.put("require", commarequire);
 				if (!stuffexception(pd.getTitle(), commaexcept)) {
 					continue;
 				}
@@ -353,20 +352,13 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 					pd.setName(p.getName());
 				} else {
 					// 내용기반 확인
-					if ("0".equals(pd.getSeq())) {
-						String allContent = pd.getTitle() + pd.getContent();
-						if (stuffrequire(allContent, commarequire)) {
-							pd.setName(p.getName());
-						}
-					} else {
-						String allContent = pd.getTitle() + pd.getContent();
-						if (stuffrequire(allContent, commarequire)) {
-							pd.setName(p.getName());
-						}
+					String allContent = pd.getTitle() + pd.getContent();
+					if (stuffrequire(allContent, commarequire)) {
+						pd.setName(p.getName());
 					}
 				}
 
-				if (pd.getName() != null && !cal.isBefore(pd.getDate())) {
+				if (pd.getName() != null && cal.isBefore(pd.getDate())) {
 					ProductSellList sellList = new ProductSellList();
 					if ("0".equals(pd.getSeq())) {
 						map = getQueryMap(pd.getLink());
