@@ -72,7 +72,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 		
 		//productQuery로 크롤링을 진행하여 검색결과(productDTO)를 쿼리제외키워드로 필터링함
 		int page=1;
-		int endpage=10;
+		int endpage=800;
 		boolean isOldDate=false;// 1달 넘어가는 데이터면 탈출시켜
 		while(true) {
 			if(page!=0 && page%200==0 && page!=endpage) {
@@ -364,7 +364,7 @@ public class DaangnCrawlingServiceImpl implements DaangnCrawlingService{
 	@Transactional
 	private boolean insertProductSellList(ProductSellList sellList) {
 		//이미 존재하는 데이터이면 안집어넣음
-		if(productSellListRepository.findFirstByCycleAndAidAndMarketOrderByIdDesc(sellList.getCycle(), sellList.getAid(), sellList.getMarket())!=null)
+		if(productSellListRepository.countByCycleAndAidAndMarket(sellList.getCycle(), sellList.getAid(), sellList.getMarket())>0)
 			return true;
 		try {
 			productSellListRepository.save(sellList);
