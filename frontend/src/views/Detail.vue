@@ -122,6 +122,8 @@ export default defineComponent({
         .then((res) => {
           product.value = res.data;
           productContent.value = res.data.articleDeatil.content.replace(/\n/gim, "<br />");
+          productContent.value = res.data.articleDeatil.content.replace(/\\n/gi, "<br />");
+          console.log(productContent.value);
         })
         .catch((err) => {
           console.log(err.data);
