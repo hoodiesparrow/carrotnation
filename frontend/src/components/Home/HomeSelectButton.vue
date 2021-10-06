@@ -66,7 +66,7 @@
                           :class="checked ? 'text-blue-100' : 'text-indigo-900'"
                           class="inline"
                         >
-                          <span class="text-xl font-bold">{{ option }}</span>
+                          <span class="sm:text-llg md:text-xl font-bold">{{ option }}</span>
                         </RadioGroupDescription>
                       </div>
                     </div>
@@ -142,7 +142,7 @@
                           :class="checked ? 'text-blue-100' : 'text-indigo-900'"
                           class="inline"
                         >
-                          <span class="text-xl font-bold">{{ option }}</span>
+                          <span class="sm:text-llg md:text-xl font-bold">{{ option }}</span>
                         </RadioGroupDescription>
                       </div>
                     </div>

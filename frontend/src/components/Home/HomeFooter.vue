@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-750px w-full absolute bottom-0 overflow-hidden">
+  <div class="max-w-750px w-full overflow-hidden">
     <transition
       enter-active-class="transition transform duration-300"
       enter-from-class="translate-y-full"
@@ -34,25 +34,20 @@
               <div class="flex flex-col">
                 <div class="flex">
                   <span class="mr-4">김동윤</span>
-                  <githubIcon @click="openGit('hoodiesparrow')" />
                 </div>
                 <div class="flex mt-3">
                   <span class="mr-4">여정동</span>
-                  <githubIcon @click="openGit('hoodiesparrow')" />
                 </div>
               </div>
               <div class="flex flex-col">
                 <div class="flex">
                   <span class="mr-4">김은비</span>
-                  <githubIcon @click="openGit('hoodiesparrow')" />
                 </div>
                 <div class="flex mt-3">
                   <span class="mr-4">문영화</span>
-                  <githubIcon @click="openGit('hoodiesparrow')" />
                 </div>
                 <div class="flex mt-3">
                   <span class="mr-4">추헌국</span>
-                  <githubIcon @click="openGit('hoodiesparrow')" />
                 </div>
               </div>
             </div>
@@ -66,27 +61,18 @@
 
 <script>
 import { ref } from 'vue'
-import githubIcon from '@/components/Home/HomeFooterGithubIcon.vue'
 
 export default {
   name: 'HomeFooter',
-  components: {
-    githubIcon,
-  },
   setup() {
     const showButton = ref(true)
     const showDiv = ref(false)
     const open = ref(false)
-    const openGit = function (id) {
-      const github = 'https://github.com/'
-      window.open(`${github}${id}`)
-    }
 
     return { 
       showButton,
       showDiv,
       open,
-      openGit,
     }
   }
 }

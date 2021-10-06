@@ -34,7 +34,7 @@
         </svg>
       </div>
       <div class="bg-white p-3 flex justify-between text-gray-800">
-        <div class="flex items-center" style="cursor: pointer">
+        <div class="flex items-center" style="">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
             <path
               d="M12 0c-4.198 0-8 3.403-8 7.602 0 4.198 3.469 9.21 8 16.398 4.531-7.188 8-12.2 8-16.398 0-4.199-3.801-7.602-8-7.602zm0 11c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3z"
@@ -43,12 +43,11 @@
           <span class="px-1">내 주변만</span>
           <div>
             <span class="pr-2 font-bold text-purple-800" v-if="!enabled"> On </span>
-            <span class="pr-2 font-bold text-purple-400" v-else> Off </span>
+            <span class="pr-2 font-bold text-gray-600" v-else> Off </span>
           </div>
           <div class="switch rounded-full">
             <Switch
               v-model="enabled"
-              :class="enabled ? 'bg-teal-900' : 'bg-teal-700'"
               class="
                 relative
                 inline-flex
@@ -65,6 +64,8 @@
                 focus:outline-none
                 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75
               "
+              :class="enabled ? 'bg-gray-600' : 'bg-yellow-500'"
+
             >
               <span class="sr-only">Enable notifications</span>
               <span
@@ -297,6 +298,7 @@ export default defineComponent({
             console.log(err);
           });
       } else {
+        console.log('@@@@@@@@@false@@@@@@@@@')
         const getCoorOptions = {
           enableHighAccuracy: true,
           timeout: 5000,
@@ -500,14 +502,4 @@ export default defineComponent({
   },
 });
 </script>
-<style>
-.switch {
-  background: #8e2de2; /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #4a00e0, #8e2de2); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(
-    to right,
-    #4a00e0,
-    #8e2de2
-  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-}
-</style>
+

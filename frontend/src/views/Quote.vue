@@ -1,5 +1,5 @@
 <template>
-  <div class="container max-w-750px">
+  <div class="container h-screen max-w-750px bg-white">
     <div class="sticky top-0">
       <div class="flex justify-between items-center bg-purple-700 p-4">
         <svg
@@ -17,11 +17,11 @@
         <span class="text-2xl font-extrabold text-white">{{ name }}</span>
       </div>
     </div>
-    <div class="bg-white" v-if="flagSalesTrend">
+    <div class="bg-white pt-4" v-if="flagSalesTrend">
     <!-- <div class="bg-white"> -->
       <SalesTrend :prices="prices" :dates="dates" />
     </div>
-    <div class="bg-white" v-if="flagSalesByPrice">
+    <div class="bg-white pt-4" v-if="flagSalesByPrice">
     <!-- <div class="bg-white"> -->
       <SalesByPrice :prices="byPriceCounts" :dates="byPriceIntervals" />
     </div>
@@ -61,7 +61,7 @@ export default {
 
         for (let i = res.data.dateprice.length - 1; i >= 0; i--) {
           prices.value.push(res.data.dateprice[i].price)
-          dates.value.push(res.data.dateprice[i].pdate)
+          dates.value.push(`${String(res.data.dateprice[i].pdate).slice(5, 7)}월 ${String(res.data.dateprice[i].pdate).slice(8, 10)}일`)
         }
         flagSalesTrend.value = true
       })
@@ -95,7 +95,7 @@ export default {
       .then(res => {
         for ( let i = 0; i < 5; i++) {
           byPriceCounts.value.push(res.data[stepArr[i]].count)
-          byPriceIntervals.value.push(`${res.data[stepArr[i]].min}~${res.data[stepArr[i]].max}`)
+          byPriceIntervals.value.push(`${(res.data[stepArr[i]].min).toLocaleString()}원~${(res.data[stepArr[i]].max).toLocaleString()}원`)
         }
         console.log(byPriceCounts.value)
         console.log(byPriceIntervals.value)
