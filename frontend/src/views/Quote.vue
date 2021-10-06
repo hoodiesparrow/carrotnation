@@ -1,5 +1,5 @@
 <template>
-  <div class="container max-w-750px">
+  <div class="container h-screen max-w-750px bg-white">
     <div class="sticky top-0">
       <div class="flex justify-between items-center bg-purple-700 p-4">
         <svg
@@ -17,11 +17,11 @@
         <span class="text-2xl font-extrabold text-white">{{ name }}</span>
       </div>
     </div>
-    <div class="bg-white" v-if="flagSalesTrend">
+    <div class="bg-white pt-4" v-if="flagSalesTrend">
     <!-- <div class="bg-white"> -->
       <SalesTrend :prices="prices" :dates="dates" />
     </div>
-    <div class="bg-white" v-if="flagSalesByPrice">
+    <div class="bg-white pt-4" v-if="flagSalesByPrice">
     <!-- <div class="bg-white"> -->
       <SalesByPrice :prices="byPriceCounts" :dates="byPriceIntervals" />
     </div>

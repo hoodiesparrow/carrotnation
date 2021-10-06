@@ -1,5 +1,5 @@
 <template>
-  <h2>가격 구간 별 게시글 수</h2>
+  <p class="text-center text-lg">일별 평균 가격</p>
   <div>
     <vue3-chart-js v-bind="{ ...lineChart }" ref="canvas" />
   </div>
@@ -30,7 +30,7 @@ export default {
         labels: props.dates,
         datasets: [
           {
-            label: '일별 평균 가격',
+            label: '가격',
             fill: true,
             tension: 0.3,
             borderColor: "white",

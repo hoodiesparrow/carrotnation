@@ -1,5 +1,5 @@
 <template>
-  <h2>가격 구간 별 게시글 수</h2>
+  <p class="text-center text-lg">가격 구간 별 게시글 수</p>
   <div>
     <vue3-chart-js v-bind="{ ...barChart }" ref="canvas" />
   </div>
