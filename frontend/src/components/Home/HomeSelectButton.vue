@@ -2,12 +2,27 @@
   <div class="w-full p-2 py-8">
     <div class="w-full grid grid-cols-12 gap-4">
       <div class="col-span-2 flex justify-start pt-8">
-        <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-          viewBox="0 0 309.143 309.143" style="enable-background:new 0 0 309.143 309.143;" xml:space="preserve" class="w-12 h-12 cursor-pointer" @click="onClickBackward" v-if="!isTreeRoot">
-        <path style="fill:#231F20;" d="M112.855,154.571L240.481,26.946c2.929-2.929,2.929-7.678,0-10.606L226.339,2.197
+        <svg
+          version="1.1"
+          id="Capa_1"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          x="0px"
+          y="0px"
+          viewBox="0 0 309.143 309.143"
+          style="enable-background: new 0 0 309.143 309.143"
+          xml:space="preserve"
+          class="w-12 h-12 cursor-pointer"
+          @click="onClickBackward"
+          v-if="!isTreeRoot"
+        >
+          <path
+            style="fill: #231f20"
+            d="M112.855,154.571L240.481,26.946c2.929-2.929,2.929-7.678,0-10.606L226.339,2.197
           C224.933,0.79,223.025,0,221.036,0c-1.989,0-3.897,0.79-5.303,2.197L68.661,149.268c-2.929,2.929-2.929,7.678,0,10.606
           l147.071,147.071c1.406,1.407,3.314,2.197,5.303,2.197c1.989,0,3.897-0.79,5.303-2.197l14.142-14.143
-          c2.929-2.929,2.929-7.678,0-10.606L112.855,154.571z"/>
+          c2.929-2.929,2.929-7.678,0-10.606L112.855,154.571z"
+          />
         </svg>
       </div>
 
@@ -214,34 +229,29 @@ export default {
   },
 
   setup() {
-    const store = useStore()
-    const router = useRouter()
-    const selected = ref(plans[0])
-    const currentTran = ref(1) // 이게 필요한가..
-    const tranFlag1 = ref(true)
-    const tranFlag2 = ref(false)
+    const store = useStore();
+    const router = useRouter();
+    const selected = ref(plans[0]);
+    const currentTran = ref(1); // 이게 필요한가..
+    const tranFlag1 = ref(true);
+    const tranFlag2 = ref(false);
 
-    const enterFrom = ref('translate-x-full')
-    const enterTo = ref('translate-x-0')
-    const leaveFrom = ref('translate-x-0')
-    const leaveTo = ref('-translate-x-full')
+    const enterFrom = ref("translate-x-full");
+    const enterTo = ref("translate-x-0");
+    const leaveFrom = ref("translate-x-0");
+    const leaveTo = ref("-translate-x-full");
 
-    const tree1Depth = ref(['휴대폰'])
-    const tree1 = ref(get(store.getters['getCategoryData'], tree1Depth.value))
-    const tree1Content = computed(() => 
-      Object.keys(tree1.value).slice(1)
-    )
+    const tree1Depth = ref(["휴대폰"]);
+    const tree1 = ref(get(store.getters["getCategoryData"], tree1Depth.value));
+    const tree1Content = computed(() => Object.keys(tree1.value).slice(1));
     // const tree1Content = ref(Object.keys(tree1.value).slice(1))
-    console.log(tree1);
 
-    const tree2Depth = ref(['휴대폰'])
-    const tree2 = ref([])
-    const tree2Content = computed(() => 
-      Object.keys(tree2.value).slice(1)
-    )
+    const tree2Depth = ref(["휴대폰"]);
+    const tree2 = ref([]);
+    const tree2Content = computed(() => Object.keys(tree2.value).slice(1));
     const isTreeRoot = computed(() => {
-      return tree1Depth.value.length === 1 ? true : false
-    })
+      return tree1Depth.value.length === 1 ? true : false;
+    });
 
     const treeTag = computed(() => {
       // 얘도 분리해야 도중에 안바뀜..but 빨리 지나가서 보이지는 않네 ㅋㅋ
@@ -261,39 +271,34 @@ export default {
 
     const onClickBackward = () => {
       if (tree1Depth.value.length !== 1) {
-        tree1Depth.value.pop()
-        tree2Depth.value.pop()
+        tree1Depth.value.pop();
+        tree2Depth.value.pop();
         // 1번 트리를 사용중인 경우
-        enterFrom.value = '-translate-x-full'
-        enterTo.value ='translate-x-0'
-        leaveFrom.value = 'translate-x-0'
-        leaveTo.value = 'translate-x-full'
+        enterFrom.value = "-translate-x-full";
+        enterTo.value = "translate-x-0";
+        leaveFrom.value = "translate-x-0";
+        leaveTo.value = "translate-x-full";
 
         if (tranFlag1.value === true) {
-          tree2.value = get(store.getters['getCategoryData'], tree2Depth.value)
-          console.log(enterFrom.value)
+          tree2.value = get(store.getters["getCategoryData"], tree2Depth.value);
           tranFlag1.value = false;
         } else {
-          tree1.value = get(store.getters['getCategoryData'], tree1Depth.value)
-          console.log(enterFrom.value)
+          tree1.value = get(store.getters["getCategoryData"], tree1Depth.value);
           tranFlag2.value = false;
         }
       }
-    }
+    };
 
     const onClickT1 = (idx) => {
-      enterFrom.value = 'translate-x-full'
-      enterTo.value ='translate-x-0'
-      leaveFrom.value = 'translate-x-0'
-      leaveTo.value = '-translate-x-full'
-      tree1Depth.value.push(tree1Content.value[idx])
-      tree2Depth.value.push(tree1Content.value[idx])
-      tree2.value = get(store.getters['getCategoryData'], tree2Depth.value)
-      console.log(tree2.value)
+      enterFrom.value = "translate-x-full";
+      enterTo.value = "translate-x-0";
+      leaveFrom.value = "translate-x-0";
+      leaveTo.value = "-translate-x-full";
+      tree1Depth.value.push(tree1Content.value[idx]);
+      tree2Depth.value.push(tree1Content.value[idx]);
+      tree2.value = get(store.getters["getCategoryData"], tree2Depth.value);
       // tag가 없으면? >>> router push
       if (Object.keys(tree2.value).indexOf("tag") === -1) {
-        console.log("end of the tree, router push required");
-        console.log(tree2.value.pid);
         router.push({
           name: "Prod",
           query: {
@@ -301,23 +306,19 @@ export default {
           },
         });
       } else {
-        console.log("button animation called");
         tranFlag1.value = false;
       }
     };
     const onClickT2 = (idx) => {
-      enterFrom.value = 'translate-x-full'
-      enterTo.value ='translate-x-0'
-      leaveFrom.value = 'translate-x-0'
-      leaveTo.value = '-translate-x-full'
-      tree1Depth.value.push(tree2Content.value[idx])
-      tree2Depth.value.push(tree2Content.value[idx])
-      tree1.value = get(store.getters['getCategoryData'], tree1Depth.value)
-      console.log(tree1.value)
+      enterFrom.value = "translate-x-full";
+      enterTo.value = "translate-x-0";
+      leaveFrom.value = "translate-x-0";
+      leaveTo.value = "-translate-x-full";
+      tree1Depth.value.push(tree2Content.value[idx]);
+      tree2Depth.value.push(tree2Content.value[idx]);
+      tree1.value = get(store.getters["getCategoryData"], tree1Depth.value);
       // tag가 없으면? >>> router push
       if (Object.keys(tree1.value).indexOf("tag") === -1) {
-        console.log("end of the tree, router push required");
-        console.log(tree1.value.pid);
         router.push({
           name: "Prod",
           query: {
@@ -325,7 +326,6 @@ export default {
           },
         });
       } else {
-        console.log("button animation called");
         tranFlag2.value = false;
       }
     };
@@ -352,9 +352,7 @@ export default {
       enterTo,
       leaveFrom,
       leaveTo,
-    }
+    };
   },
 };
 </script>
-
-// console.log(get(store.getters['getCategoryData'], deviceCategory.value))

@@ -11,11 +11,11 @@
       bg-gradient-to-r
       from-blue-100
       to-pink-100
-      flex flex-col justify-between
+      flex flex-col
+      justify-between
     "
   >
     <div>
-
       <div class="relative bg-purple-400">
         <div
           class="
@@ -47,9 +47,7 @@
                 <span class="relative text-green-900">번개시세</span>
               </span>
             </h2>
-            <p class="text-base text-indigo-100 md:text-lg">
-              모바일 디바이스 중고거래를 한눈에
-            </p>
+            <p class="text-base text-indigo-100 md:text-lg">모바일 디바이스 중고거래를 한눈에</p>
           </div>
         </div>
       </div>
@@ -81,9 +79,7 @@ import { useStore } from "vuex";
 const HomeSelectButton = defineAsyncComponent(
   () => import("@/components/Home/HomeSelectButton.vue")
 );
-const HomeFooter = defineAsyncComponent(
-  () => import("@/components/Home/HomeFooter.vue")
-);
+const HomeFooter = defineAsyncComponent(() => import("@/components/Home/HomeFooter.vue"));
 
 export default defineComponent({
   name: "Home",

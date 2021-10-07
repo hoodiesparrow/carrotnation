@@ -65,7 +65,6 @@
                 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75
               "
               :class="enabled ? 'bg-gray-600' : 'bg-yellow-500'"
-
             >
               <span class="sr-only">Enable notifications</span>
               <span
@@ -261,7 +260,6 @@ export default defineComponent({
           prodInfo.value.maxPrice = res.data.product.maxPrice.toLocaleString();
           prodInfo.value.count = res.data.searchcount;
           totalCount.value = res.data.searchcount;
-          console.log("@req. Pinfo_totalCount", totalCount.value);
         });
 
         //console.log(infoQuery)
@@ -290,15 +288,12 @@ export default defineComponent({
                 break;
 
               default:
-                console.log("other case");
             }
           })
           .catch((err) => {
             initialLoadingFailed.value = true;
-            console.log(err);
           });
       } else {
-        console.log('@@@@@@@@@false@@@@@@@@@')
         const getCoorOptions = {
           enableHighAccuracy: true,
           timeout: 5000,
@@ -311,12 +306,8 @@ export default defineComponent({
 
         const success = function (pos) {
           let crd = pos.coords;
-          console.log("Your current position is:");
           lat.value = crd.latitude;
-          console.log("Latitude : " + lat.value);
           lon.value = crd.longitude;
-          console.log("Longitude: " + lon.value);
-          console.log("More or less " + crd.accuracy + " meters.");
 
           const nearProductQuery = {
             pid: pid.value,
@@ -352,12 +343,10 @@ export default defineComponent({
                   break;
 
                 default:
-                  console.log("other case");
               }
             })
             .catch((err) => {
               initialLoadingFailed.value = true;
-              console.log(err);
             });
         };
         navigator.geolocation.getCurrentPosition(success, error, getCoorOptions);
@@ -385,7 +374,6 @@ export default defineComponent({
           !initialLoadingFailed.value
         ) {
           if (query.value.page <= totalPage.value - 2) {
-            console.log("additional loading seq.");
             isLoading.value = true;
             setTimeout(() => {
               window.scrollTo(0, container.value.scrollHeight);
@@ -400,9 +388,7 @@ export default defineComponent({
                     totalPage.value = res.data.totalpage;
                     prodList.value.push(...res.data.list);
                   })
-                  .catch((err) => {
-                    console.log(err);
-                  })
+                  .catch((err) => {})
                   .finally(() => {
                     isLoading.value = false;
                   });
@@ -414,9 +400,7 @@ export default defineComponent({
                     totalPage.value = res.data.total_count / 20;
                     prodList.value.push(...res.data.result);
                   })
-                  .catch((err) => {
-                    console.log(err);
-                  })
+                  .catch((err) => {})
                   .finally(() => {
                     isLoading.value = false;
                   });
@@ -468,7 +452,6 @@ export default defineComponent({
           ...rest,
           page: 0,
         };
-        console.log(query.value);
       }
       initialLoader();
     };
@@ -502,4 +485,3 @@ export default defineComponent({
   },
 });
 </script>
-

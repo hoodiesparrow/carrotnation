@@ -63,7 +63,9 @@
         </div>
         <div class="bg-white mb-px pt-5">
           <p class="text-lg font-extrabold text-gray-500 p-3">상품 설명</p>
-          <div class="text-base text-lg font-medium p-4 whitespace-pre-line">{{ productContent }}</div>
+          <div class="text-base text-lg font-medium p-4 whitespace-pre-line">
+            {{ productContent }}
+          </div>
         </div>
       </div>
       <div>
@@ -127,19 +129,14 @@ export default defineComponent({
           productContent.value = res.data.articleDeatil.content.replace(/\n/gim, "<br />");
           productContent.value = res.data.articleDeatil.content.replace(/\\n/gi, "<br />");
         })
-        .catch((err) => {
-          console.log(err.data);
-        })
-        .finally(() => {
-          console.log(product.value);
-        });
+        .catch((err) => {})
+        .finally(() => {});
     };
     initialLoad();
 
     watch(
       () => route.query,
       (newV, oldV) => {
-        console.log(route.path);
         if (route.path === "/detail") {
           initialLoad();
         }
