@@ -452,7 +452,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 				Elements spantag = doc.select("span");
 				sb = new StringBuilder();
 				for (Element e : spantag) {
-					sb.append(e.text()).append(" ");
+					sb.append(e.text()).append("\n");
 				}
 
 			}catch (NullPointerException e) {
