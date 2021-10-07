@@ -260,7 +260,7 @@ class CrawlingServerApplicationTests {
 			e.printStackTrace();
 		}
 	}
-//	@Test
+	//@Test
 	void qquu() {
 		List<ProductQuery> productQuery = queryInfoService.getProductQueryList();
 		

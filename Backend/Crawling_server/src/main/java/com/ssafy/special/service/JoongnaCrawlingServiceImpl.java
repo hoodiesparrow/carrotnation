@@ -86,6 +86,8 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		while (true) {
 			try {
 				joongnaPostCrawling(productQuery.getQuery(), page++, exception, pdlist);
+				if(page==5) 
+					break;
 			} catch (PageEndException e) {
 				break;
 			}
@@ -302,7 +304,7 @@ public class JoongnaCrawlingServiceImpl implements JoongnaCrawlingService {
 		try {
 			JsonNode node = mapper.readTree(sb.toString());
 			String content = node.get("data").get("productDescription").toString();
-
+			
 			return content;
 
 		} catch (JsonProcessingException err) {
