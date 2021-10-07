@@ -18,15 +18,14 @@ public class DatePriceRepositoryImpl implements DatePriceRepositoryCustom {
 	private final JPAQueryFactory queryFactory;	
 
 	@Override
-	public Optional<List<DatePriceResponseDTO>> getDatePriceResponseDTO(long p){
+	public Optional<List<DatePriceResponseDTO>> getDatePriceResponseDTO(long p,int size){
 		QDatePrice dp = QDatePrice.datePrice;
 		
 		List<DatePriceResponseDTO> result=
 				queryFactory.select(Projections.constructor(DatePriceResponseDTO.class, dp.productId.id, dp.productId.name, dp.pdate, dp.price))
 				.from(dp)
 				.where(dp.productId.id.eq(p))
-//				.offset(page.getOffset())
-//				.limit(page.getPageSize())
+				.limit(size)
 				.orderBy(dp.pdate.desc())
 				.fetch();
 		
