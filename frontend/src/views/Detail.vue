@@ -122,15 +122,11 @@ export default defineComponent({
     const productContent = ref("");
 
     const initialLoad = function () {
-      store
-        .dispatch("requestProductDetail", route.query.id)
-        .then((res) => {
-          product.value = res.data;
-          productContent.value = res.data.articleDeatil.content.replace(/\n/gim, "<br />");
-          productContent.value = res.data.articleDeatil.content.replace(/\\n/gi, "<br />");
-        })
-        .catch((err) => {})
-        .finally(() => {});
+      store.dispatch("requestProductDetail", route.query.id).then((res) => {
+        product.value = res.data;
+        productContent.value = res.data.articleDeatil.content.replace(/\n/gim, "<br />");
+        productContent.value = res.data.articleDeatil.content.replace(/\\n/gi, "<br />");
+      });
     };
     initialLoad();
 

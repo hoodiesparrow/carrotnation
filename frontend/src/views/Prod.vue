@@ -388,7 +388,6 @@ export default defineComponent({
                     totalPage.value = res.data.totalpage;
                     prodList.value.push(...res.data.list);
                   })
-                  .catch((err) => {})
                   .finally(() => {
                     isLoading.value = false;
                   });
@@ -400,7 +399,6 @@ export default defineComponent({
                     totalPage.value = res.data.total_count / 20;
                     prodList.value.push(...res.data.result);
                   })
-                  .catch((err) => {})
                   .finally(() => {
                     isLoading.value = false;
                   });

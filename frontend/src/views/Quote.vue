@@ -51,23 +51,19 @@ export default {
     const dates = ref([]);
     const flagSalesTrend = ref(false);
 
-    store
-      .dispatch("requestDatePrice", route.query.pid)
-      .then((res) => {
-        name.value = res.data.dateprice[0].productName;
+    store.dispatch("requestDatePrice", route.query.pid).then((res) => {
+      name.value = res.data.dateprice[0].productName;
 
-        for (let i = res.data.dateprice.length - 1; i >= 0; i--) {
-          prices.value.push(res.data.dateprice[i].price);
-          dates.value.push(
-            `${String(res.data.dateprice[i].pdate).slice(5, 7)}월 ${String(
-              res.data.dateprice[i].pdate
-            ).slice(8, 10)}일`
-          );
-        }
-        flagSalesTrend.value = true;
-      })
-      .catch((err) => {})
-      .finally((_) => {});
+      for (let i = res.data.dateprice.length - 1; i >= 0; i--) {
+        prices.value.push(res.data.dateprice[i].price);
+        dates.value.push(
+          `${String(res.data.dateprice[i].pdate).slice(5, 7)}월 ${String(
+            res.data.dateprice[i].pdate
+          ).slice(8, 10)}일`
+        );
+      }
+      flagSalesTrend.value = true;
+    });
 
     const goToBack = function () {
       history.back();
