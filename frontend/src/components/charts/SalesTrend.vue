@@ -7,7 +7,7 @@
 
 <script>
 import Vue3ChartJs from "@j-t-mcc/vue3-chartjs";
-import { onMounted, ref } from 'vue'
+import { onMounted, ref } from "vue";
 
 export default {
   name: "App",
@@ -16,21 +16,21 @@ export default {
   },
   props: {
     prices: {
-      type: Object
+      type: Object,
     },
     dates: {
-      type: Object
+      type: Object,
     },
   },
   setup(props) {
-    const canvas = ref(null)
+    const canvas = ref(null);
     const lineChart = {
       type: "line",
       data: {
         labels: props.dates,
         datasets: [
           {
-            label: '가격',
+            label: "가격",
             fill: true,
             tension: 0.3,
             borderColor: "white",
@@ -44,20 +44,18 @@ export default {
         ],
       },
     };
-    const asd = ref(null)
+    const asd = ref(null);
     onMounted(() => {
-      asd.value = canvas.value.chartRef
-      const gradient = asd.value.getContext('2d').createLinearGradient(0, 0, 0, 450)
-      console.log(gradient)
-      
+      asd.value = canvas.value.chartRef;
+      const gradient = asd.value.getContext("2d").createLinearGradient(0, 0, 0, 450);
+
       gradient.addColorStop(0, "rgba(0, 231, 255, 0.9)");
       gradient.addColorStop(0.5, "rgba(0, 231, 255, 0.25)");
       gradient.addColorStop(1, "rgba(0, 231, 255, 0)");
 
-
-      lineChart.data.datasets[0].backgroundColor = gradient
-      canvas.value.update()
-    })
+      lineChart.data.datasets[0].backgroundColor = gradient;
+      canvas.value.update();
+    });
 
     return {
       lineChart,
