@@ -34,7 +34,7 @@
               class="
                 mb-6
                 font-sans
-                text-3xl
+                text-2xl
                 font-bold
                 tracking-tight
                 text-white
@@ -59,10 +59,9 @@
           ></path>
         </svg>
       </div>
-
       <div class="flex flex-col justify-between">
         <div class="w-full">
-          <HomeSelectButton />
+          <div class="w-full"><HomeSelectButton /></div>
         </div>
       </div>
     </div>

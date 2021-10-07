@@ -37,9 +37,9 @@
           @after-leave="tranFlag2 = true"
         >
           <div v-if="tranFlag1">
-            <span class="text-lg">{{ treeTag }}</span>
+            <span class="text-2xl font-bold">{{ treeTag }}</span>
             <RadioGroupLabel class="sr-only">{{ treeTag }}를 선택하세요.</RadioGroupLabel>
-            <div class="space-y-2">
+            <div class="space-y-2 py-5">
               <RadioGroupOption
                 as="template"
                 v-for="(option, idx) in tree1Content"
@@ -113,9 +113,9 @@
           @after-leave="tranFlag1 = true"
         >
           <div v-if="tranFlag2">
-            <span class="text-lg">{{ treeTag }}</span>
-            <RadioGroupLabel class="sr-only">{{ treeTag }}를 선택하세요.</RadioGroupLabel>
-            <div class="space-y-2">
+            <span class="text-2xl font-bold">{{ treeTag }}</span>
+            <RadioGroupLabel class="sr-only">{{ treeTag }}을 선택하세요.</RadioGroupLabel>
+            <div class="space-y-2 py-5">
               <RadioGroupOption
                 as="template"
                 v-for="(option, idx) in tree2Content"
