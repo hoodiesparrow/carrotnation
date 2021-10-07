@@ -43,13 +43,13 @@ public class DatePriceServiceImpl implements DatePriceService {
 	}
 	
 	@Override
-	public List<DatePriceResponseDTO> getDatePrice(long pid) {
+	public List<DatePriceResponseDTO> getDatePrice(long pid, int size) {
 		Product product = productRepository.findById(pid).orElse(null);
 		
 		if(product == null)
 			return null;
 		
-		List<DatePriceResponseDTO> ret = datePriceRepository.getDatePriceResponseDTO(pid).orElse(new ArrayList<DatePriceResponseDTO>());
+		List<DatePriceResponseDTO> ret = datePriceRepository.getDatePriceResponseDTO(pid, size).orElse(new ArrayList<DatePriceResponseDTO>());
 		
 		return ret;		
 	}

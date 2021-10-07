@@ -101,10 +101,10 @@ public class APIController {
 	}
 	
 	@GetMapping("/dateprice")
-	public ResponseEntity<Map<String, Object>> getDatePrice(@RequestParam long pid) {
+	public ResponseEntity<Map<String, Object>> getDatePrice(@RequestParam long pid,@RequestParam(defaultValue = "7") int size ) {
 			Map<String, Object> ret = new HashMap<String, Object>();
 			
-			List<DatePriceResponseDTO> list = datePriceService.getDatePrice(pid);
+			List<DatePriceResponseDTO> list = datePriceService.getDatePrice(pid,size);
 			
 			if(list==null) {
 				ret.put("msg", "제품번호를 다시 확인해 주세요");
