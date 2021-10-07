@@ -37,7 +37,7 @@
           @after-leave="tranFlag2 = true"
         >
           <div v-if="tranFlag1">
-            <span class="text-2xl font-bold">{{ treeTag }}</span>
+            <span class="text-xl font-bold">{{ treeTag }}</span>
             <RadioGroupLabel class="sr-only">{{ treeTag }}를 선택하세요.</RadioGroupLabel>
             <div class="space-y-2 py-5">
               <RadioGroupOption
@@ -113,7 +113,7 @@
           @after-leave="tranFlag1 = true"
         >
           <div v-if="tranFlag2">
-            <span class="text-2xl font-bold">{{ treeTag }}</span>
+            <span class="text-xl font-bold">{{ treeTag }}</span>
             <RadioGroupLabel class="sr-only">{{ treeTag }}을 선택하세요.</RadioGroupLabel>
             <div class="space-y-2 py-5">
               <RadioGroupOption
