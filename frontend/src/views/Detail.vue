@@ -63,9 +63,7 @@
         </div>
         <div class="bg-white mb-px pt-5">
           <p class="text-lg font-extrabold text-gray-500 p-3">상품 설명</p>
-          <div class="text-base text-lg font-medium p-4 whitespace-pre-line">
-            {{ productContent }}
-          </div>
+          <p class="text-base text-lg font-medium p-4 whitespace-pre-wrap">{{ productContent }}</p>
         </div>
       </div>
       <div>
@@ -102,8 +100,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch } from "vue";
-import { useRouter, useRoute } from "vue-router";
+import { defineComponent, ref, watch } from "vue";
+import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import SmallCard from "@/components/SmallCard.vue";
 
@@ -113,7 +111,6 @@ export default defineComponent({
     SmallCard,
   },
   setup() {
-    const router = useRouter();
     const store = useStore();
     const route = useRoute();
 
@@ -122,11 +119,18 @@ export default defineComponent({
     const productContent = ref("");
 
     const initialLoad = function () {
-      store.dispatch("requestProductDetail", route.query.id).then((res) => {
-        product.value = res.data;
-        productContent.value = res.data.articleDeatil.content.replace(/\n/gim, "<br />");
-        productContent.value = res.data.articleDeatil.content.replace(/\\n/gi, "<br />");
-      });
+      store
+        .dispatch("requestProductDetail", route.query.id)
+        .then((res) => {
+          product.value = res.data;
+          if (res.data.articleDeatil.market === 'joonnaApp') {
+            const length = res.data.articleDeatil.content.length
+            productContent.value = res.data.articleDeatil.content.slice(1, length-1).replace(/\\n/gi, '\n');
+          }
+          else {
+            productContent.value = res.data.articleDeatil.content.replace(/\\n/gi, "<br />");
+          }
+        })
     };
     initialLoad();
 
