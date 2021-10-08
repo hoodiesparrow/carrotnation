@@ -31,11 +31,11 @@
 
 ## Architecture 및 기술스택
 
-![기술스택.PNG](C:\SSAFY\specialproject\be\exec\img\아키텍처.PNG)
+![기술스택.PNG](./img/아키텍처.PNG)
 
 
 
-![기술스택](C:\SSAFY\specialproject\be\exec\img\기술스택.PNG)
+![기술스택](./img/기술스택.PNG)
 
 
 
@@ -74,9 +74,9 @@
 
 - 기본 import SQL
 
-   [coordinate.sql](DB\coordinate.sql) 
+   [coordinate.sql](./DB/coordinate.sql) 
 
-   [제품, 크롤링키워드.sql](DB\제품, 크롤링키워드.sql) 
+   [제품, 크롤링키워드.sql](./DB/제품, 크롤링키워드.sql) 
 
 - DB dump File
 
@@ -126,19 +126,19 @@
 
   또한 정렬 기능을 이용하여 마켓별 가격 및 게시글 생성 순 정렬이 가능합니다.
 
-![main](C:\SSAFY\specialproject\be\exec\img\main.gif)
+![main](./img/main.gif)
 
 
 
 - 현 사용자 위치를 통해 해당 품목의 직거래(10km 이내) 가능 물품 리스트를 보여줍니다.
 
-![coordinateBaseSearch2](C:\SSAFY\specialproject\be\exec\img\coordinateBaseSearch2.gif)
+![coordinateBaseSearch2](./img/coordinateBaseSearch2.gif)
 
 
 
 - 하둡 맵리듀스를 통해 inverted 및 self-join 구현하고 자카드 유사도 알고리즘을 통해 비슷한 게시글을 추천해 줍니다.
 
-![similar2](C:\SSAFY\specialproject\be\exec\img\similar2.gif)
+![similar2](./img/similar2.gif)
 
 
 
