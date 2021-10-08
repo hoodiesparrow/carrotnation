@@ -140,3 +140,7 @@
 
 ![similar2](C:\SSAFY\specialproject\be\exec\img\similar2.gif)
 
+
+
+## 스크립트
+
