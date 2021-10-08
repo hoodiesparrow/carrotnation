@@ -1,0 +1,215 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+-- -----------------------------------------------------
+-- Schema ssafyspecial
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema ssafyspecial
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `ssafyspecial` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci ;
+USE `ssafyspecial` ;
+
+-- -----------------------------------------------------
+-- Table `ssafyspecial`.`coordinate`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ssafyspecial`.`coordinate` (
+  `code` BIGINT NOT NULL,
+  `address` VARCHAR(255) NULL DEFAULT NULL,
+  `count` INT NOT NULL,
+  `dong` VARCHAR(255) NULL DEFAULT NULL,
+  `gugun` VARCHAR(255) NULL DEFAULT NULL,
+  `lat` VARCHAR(255) NULL DEFAULT NULL,
+  `lon` VARCHAR(255) NULL DEFAULT NULL,
+  `sido` VARCHAR(255) NULL DEFAULT NULL,
+  `count_ad` INT NOT NULL,
+  PRIMARY KEY (`code`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `ssafyspecial`.`product_query`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ssafyspecial`.`product_query` (
+  `query` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`query`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `ssafyspecial`.`product`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ssafyspecial`.`product` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `avg_price` BIGINT NOT NULL,
+  `max_price` BIGINT NOT NULL,
+  `min_price` BIGINT NOT NULL,
+  `name` VARCHAR(255) NOT NULL,
+  `release_price` BIGINT NOT NULL,
+  `query` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `FK1fp6i8chxal19b56cvwogegna` (`query` ASC) VISIBLE,
+  CONSTRAINT `FK1fp6i8chxal19b56cvwogegna`
+    FOREIGN KEY (`query`)
+    REFERENCES `ssafyspecial`.`product_query` (`query`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 113
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `ssafyspecial`.`date_price`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ssafyspecial`.`date_price` (
+  `id` BIGINT NOT NULL,
+  `pdate` DATE NULL DEFAULT NULL,
+  `price` BIGINT NOT NULL,
+  `product_id` BIGINT NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `FKdsgjbsf6log228xjmxyo4cg8j` (`product_id` ASC) VISIBLE,
+  CONSTRAINT `FKdsgjbsf6log228xjmxyo4cg8j`
+    FOREIGN KEY (`product_id`)
+    REFERENCES `ssafyspecial`.`product` (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `ssafyspecial`.`exception_keyword`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ssafyspecial`.`exception_keyword` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `keyword` VARCHAR(255) NULL DEFAULT NULL,
+  `market` VARCHAR(255) NULL DEFAULT NULL,
+  `product_id` BIGINT NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `FK5yhigbsdbhefmja3ttkmfram2` (`product_id` ASC) VISIBLE,
+  CONSTRAINT `FK5yhigbsdbhefmja3ttkmfram2`
+    FOREIGN KEY (`product_id`)
+    REFERENCES `ssafyspecial`.`product` (`id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 310
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `ssafyspecial`.`product_sell_list`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ssafyspecial`.`product_sell_list` (
+  `id` BIGINT NOT NULL,
+  `aid` BIGINT NOT NULL,
+  `content` VARCHAR(8192) NULL DEFAULT NULL,
+  `create_date` DATETIME(6) NULL DEFAULT NULL,
+  `cycle` BIGINT NULL DEFAULT NULL,
+  `img` VARCHAR(255) NULL DEFAULT NULL,
+  `link` VARCHAR(255) NULL DEFAULT NULL,
+  `location` VARCHAR(255) NULL DEFAULT NULL,
+  `market` VARCHAR(255) NULL DEFAULT NULL,
+  `price` BIGINT NOT NULL,
+  `title` VARCHAR(255) NULL DEFAULT NULL,
+  `x` DOUBLE NOT NULL,
+  `y` DOUBLE NOT NULL,
+  `product_id` BIGINT NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `FKklu6rso3tr1gv810oprb578gj` (`product_id` ASC) VISIBLE,
+  CONSTRAINT `FKklu6rso3tr1gv810oprb578gj`
+    FOREIGN KEY (`product_id`)
+    REFERENCES `ssafyspecial`.`product` (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `ssafyspecial`.`product_sell_article_similer`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ssafyspecial`.`product_sell_article_similer` (
+  `articlea` BIGINT NOT NULL,
+  `articleb` BIGINT NOT NULL,
+  `cycle` BIGINT NULL DEFAULT NULL,
+  `similarity` DOUBLE NULL DEFAULT NULL,
+  PRIMARY KEY (`articlea`, `articleb`),
+  INDEX `FK5nixk6415egtgkh2uiacw3ni4` (`articleb` ASC) VISIBLE,
+  CONSTRAINT `FK5nixk6415egtgkh2uiacw3ni4`
+    FOREIGN KEY (`articleb`)
+    REFERENCES `ssafyspecial`.`product_sell_list` (`id`),
+  CONSTRAINT `FKbq2evuxyqvnhec71pnch5ibo0`
+    FOREIGN KEY (`articlea`)
+    REFERENCES `ssafyspecial`.`product_sell_list` (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `ssafyspecial`.`query_exception_keyword`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ssafyspecial`.`query_exception_keyword` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `keyword` VARCHAR(255) NULL DEFAULT NULL,
+  `query` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `FKn5n9r91hb886rlootrayjgsu6` (`query` ASC) VISIBLE,
+  CONSTRAINT `FKn5n9r91hb886rlootrayjgsu6`
+    FOREIGN KEY (`query`)
+    REFERENCES `ssafyspecial`.`product_query` (`query`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 560
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `ssafyspecial`.`require_keyword`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ssafyspecial`.`require_keyword` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `keyword` VARCHAR(255) NULL DEFAULT NULL,
+  `market` VARCHAR(255) NULL DEFAULT NULL,
+  `product_id` BIGINT NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `FKcfdcjdngob4v5uoco84116kt4` (`product_id` ASC) VISIBLE,
+  CONSTRAINT `FKcfdcjdngob4v5uoco84116kt4`
+    FOREIGN KEY (`product_id`)
+    REFERENCES `ssafyspecial`.`product` (`id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 132
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+-- -----------------------------------------------------
+-- Table `ssafyspecial`.`sale_count`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ssafyspecial`.`sale_count` (
+  `id` BIGINT NOT NULL,
+  `count` BIGINT NOT NULL,
+  `price` BIGINT NOT NULL,
+  `product_id` BIGINT NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `FK5qjxeivyth6xqn84x8v7vrfkn` (`product_id` ASC) VISIBLE,
+  CONSTRAINT `FK5qjxeivyth6xqn84x8v7vrfkn`
+    FOREIGN KEY (`product_id`)
+    REFERENCES `ssafyspecial`.`product` (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
