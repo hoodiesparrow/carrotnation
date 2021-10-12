@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Component
 public class AdressToCoorUtils {
 	String GEOCODE_URL = "http://dapi.kakao.com/v2/local/search/address.json?query=";
-	String GEOCODE_USER_INFO="KakaoAK 66ed3a9e44ffe0340c0c5305d4b0143e";
+	String GEOCODE_USER_INFO="KakaoAK 37a231de28b658f70d03dc7470b67ef4";
 
 	public Map<String, Double> AdressToCoorUtilstest(String add) {
 		Map<String, Double> coord = new HashMap<String, Double>();
