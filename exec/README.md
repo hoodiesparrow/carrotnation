@@ -51,10 +51,6 @@
 ## 데이터 베이스 접속
 
 
-- id : ssafy
-
-- pw : ssafy
-
 - DB이름 : ssafyspecial
 
 - 버전
@@ -65,11 +61,9 @@
 
   ```sql
   url: jdbc:mysql://j5d205.p.ssafy.io:3306/ssafyspecial
-  username: ssafy
-  password: *
   driver-class-name: com.mysql.cj.jdbc.Driver
   ```
-
+  
 - ER-Diagram
 
 - 기본 import SQL

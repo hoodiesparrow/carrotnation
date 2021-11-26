@@ -4,7 +4,6 @@ server:
   ssl:
     key-store: classpath:keystore.p12
     key-store-type: PKCS12
-    key-store-password: j5d205
 
 spring:
   datasource:
