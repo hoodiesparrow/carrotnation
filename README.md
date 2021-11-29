@@ -57,13 +57,6 @@
 
   8.0.26-0ubuntu0.20.04.2
 
-- 접속정보
-
-  ```sql
-  url: jdbc:mysql://j5d205.p.ssafy.io:3306/ssafyspecial
-  driver-class-name: com.mysql.cj.jdbc.Driver
-  ```
-
 - ER-Diagram
 
 - 기본 import SQL
